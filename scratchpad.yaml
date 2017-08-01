@@ -10,3 +10,4 @@ scratchpad:
   prop3:
     subprop1: bla
     subprop2: bl**ab**la
+  prop4: more testing *required*
