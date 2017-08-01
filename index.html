@@ -13,24 +13,17 @@
       integrity="sha256-+zCUcY/sA+WlNjVbacV7arrm0zBt2haIQUBbwNKEN7k="
       crossorigin="anonymous"
     ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.1/showdown.min.js"
+      integrity="sha256-cgmBpa41tevGSToVfdP9vzuJ5H5WsT12vZizDOlMSFU="
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div id="targ">
     </div>
     <script type="text/javascript">
-      let source2 = `
-      scratchpad:
-        prop1: val1
-        prop2:
-          - 1
-          - 2
-          - 3
-          - 4
-          - ~
-          - abla
-        prop3:
-          subprop1: bla
-          subprop2: blabla`
+      let converter = new showdown.Converter()
 
       let json2html = (data, name) => {
         //return JSON.stringify(data, null, 2)
@@ -39,20 +32,24 @@
         if(_.isPlainObject(data)){
           return `<ul class='_object${nameClass}'>
             ${_.map(data, (e,k) => `
-              <li>
-                <span class="label">${k}</span>:
+              <li class="${k}">
+                <span class="label">${k}:</span>
                 ${json2html(e,k)}
               </li>
             `).join('')}
           </ul>`
         } else if (_.isArray(data)) {
           return `<ol class='_array${nameClass}'>
-            ${data.map(e => `<li>${json2html(e)}</li>`).join('')}
+            ${data.map((e,k) => `
+              <li class="${k}">
+                ${json2html(e)}
+              </li>
+            `).join('')}
           </ol>`
         } else if (_.isNumber(data)) {
           return `<span class='_number${nameClass}'>${data}</span>`
         } else if (_.isString(data)) {
-          return `<span class='_string${nameClass}'>${data}</span>`
+          return `<span class='_string${nameClass}'>${converter.makeHtml(data)}</span>`
         } else if (_.isBoolean(data)) {
           return `<span class='_boolean${nameClass}'>${data}</span>`
         } else if (_.isNull(data)) {
@@ -62,9 +59,15 @@
         }
       }
 
-      let result = json2html(jsyaml.load(source2))
+      fetch("scratchpad.yaml").then(res => res.text()).then(source => {
 
-      document.getElementById('targ').innerHTML = result;
+        console.log(source)
+        let result = ``
+        result += `<a href="https://github.com/resin-io/scratchpad/edit/master/scratchpad.yaml">Edit this page</a>`
+        result += json2html(jsyaml.load(source))
+
+        document.getElementById('targ').innerHTML = result;
+      })
     </script>
   </body>
 </html>
