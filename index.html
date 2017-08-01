@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"
+      integrity="sha256-jCRPoAgIIooCTnLmaSyKMPrFgFh6/T0e8c3i+KkZZ6U="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.9.1/js-yaml.min.js"
+      integrity="sha256-+zCUcY/sA+WlNjVbacV7arrm0zBt2haIQUBbwNKEN7k="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div id="targ">
+    </div>
+    <script type="text/javascript">
+      let source2 = `
+      scratchpad:
+        prop1: val1
+        prop2:
+          - 1
+          - 2
+          - 3
+          - 4
+          - ~
+          - abla
+        prop3:
+          subprop1: bla
+          subprop2: blabla`
+
+      let json2html = (data, name) => {
+        //return JSON.stringify(data, null, 2)
+        let nameClass = name ? ` ${name}` : ``
+
+        if(_.isPlainObject(data)){
+          return `<ul class='_object${nameClass}'>
+            ${_.map(data, (e,k) => `
+              <li>
+                <span class="label">${k}</span>:
+                ${json2html(e,k)}
+              </li>
+            `).join('')}
+          </ul>`
+        } else if (_.isArray(data)) {
+          return `<ol class='_array${nameClass}'>
+            ${data.map(e => `<li>${json2html(e)}</li>`).join('')}
+          </ol>`
+        } else if (_.isNumber(data)) {
+          return `<span class='_number${nameClass}'>${data}</span>`
+        } else if (_.isString(data)) {
+          return `<span class='_string${nameClass}'>${data}</span>`
+        } else if (_.isBoolean(data)) {
+          return `<span class='_boolean${nameClass}'>${data}</span>`
+        } else if (_.isNull(data)) {
+          return `<span class='_null${nameClass}'></span>`
+        } else {
+          return data
+        }
+      }
+
+      let result = json2html(jsyaml.load(source2))
+
+      document.getElementById('targ').innerHTML = result;
+    </script>
+  </body>
+</html>
