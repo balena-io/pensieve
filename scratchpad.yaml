@@ -1,4 +1,5 @@
 scratchpad:
-  Entry 1: Issues with Line Endings
-    Signs and Symptoms: Line endings differ between windows and the unix-y world (they used to be different again for mac but not for many years), which can result in issues. E.g. a user seeing something like: `/usr/src/app/run.sh: line 2: $'\r': command not found`
-    Treatments: To resolve this, the user needs to configure git to auto convert line endings. Point them at https://help.github.com/articles/dealing-with-line-endings/#platform-windows.
+  Entry 1: 
+    Title: "Issues with Line Endings"
+    Signs and Symptoms: "Line endings differ between windows and the unix-y world (they used to be different again for mac but not for many years), which can result in issues. E.g. a user seeing something like: `/usr/src/app/run.sh: line 2: $'\r': command not found`"
+    Treatments: "To resolve this, the user needs to configure git to auto convert line endings. Point them at https://help.github.com/articles/dealing-with-line-endings/#platform-windows."
