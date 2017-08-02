@@ -36,7 +36,13 @@
     </style>
   </head>
   <body>
-    <div id="target" class="markdown-body"> </div>
+    <div id="target" class="markdown-body">
+      <div align="right">
+        <a href="https://github.com/resin-io/scratchpad/edit/master/scratchpad.yaml">
+          Edit this page
+        </a>
+      </div>
+    </div>
     <script type="text/javascript">
       let converter = new showdown.Converter()
 
@@ -75,11 +81,8 @@
       }
 
       fetch("scratchpad.yaml").then(res => res.text()).then(source => {
-        let result = ``
-        result += `<a href="https://github.com/resin-io/scratchpad/edit/master/scratchpad.yaml">Edit this page</a>`
-        result += json2html(jsyaml.load(source))
-
-        document.getElementById('target').innerHTML = result;
+        let result = json2html(jsyaml.load(source))
+        document.getElementById('target').insertAdjacentHTML('beforeend', result)
       })
     </script>
   </body>
