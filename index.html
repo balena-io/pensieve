@@ -18,10 +18,25 @@
       integrity="sha256-cgmBpa41tevGSToVfdP9vzuJ5H5WsT12vZizDOlMSFU="
       crossorigin="anonymous"
     ></script>
+    <link rel="stylesheet" href="github-markdown.css">
+    <style>
+    	.markdown-body {
+    		box-sizing: border-box;
+    		min-width: 200px;
+    		max-width: 980px;
+    		margin: 0 auto;
+    		padding: 45px;
+    	}
+
+    	@media (max-width: 767px) {
+    		.markdown-body {
+    			padding: 15px;
+    		}
+    	}
+    </style>
   </head>
   <body>
-    <div id="targ">
-    </div>
+    <div id="target" class="markdown-body"> </div>
     <script type="text/javascript">
       let converter = new showdown.Converter()
 
@@ -60,13 +75,11 @@
       }
 
       fetch("scratchpad.yaml").then(res => res.text()).then(source => {
-
-        console.log(source)
         let result = ``
         result += `<a href="https://github.com/resin-io/scratchpad/edit/master/scratchpad.yaml">Edit this page</a>`
         result += json2html(jsyaml.load(source))
 
-        document.getElementById('targ').innerHTML = result;
+        document.getElementById('target').innerHTML = result;
       })
     </script>
   </body>
