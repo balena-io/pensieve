@@ -3,37 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.js"
-      integrity="sha256-jCRPoAgIIooCTnLmaSyKMPrFgFh6/T0e8c3i+KkZZ6U="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.9.1/js-yaml.min.js"
-      integrity="sha256-+zCUcY/sA+WlNjVbacV7arrm0zBt2haIQUBbwNKEN7k="
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.7.1/showdown.min.js"
-      integrity="sha256-cgmBpa41tevGSToVfdP9vzuJ5H5WsT12vZizDOlMSFU="
-      crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href="github-markdown.css">
-    <style>
-    	.markdown-body {
-    		box-sizing: border-box;
-    		min-width: 200px;
-    		max-width: 980px;
-    		margin: 0 auto;
-    		padding: 45px;
-    	}
-
-    	@media (max-width: 767px) {
-    		.markdown-body {
-    			padding: 15px;
-    		}
-    	}
-    </style>
+    <link rel="stylesheet" href="./styles/github-markdown.css">
+    <link rel="stylesheet" href="./styles/main.css">
   </head>
   <body>
     <div id="target" class="markdown-body">
@@ -43,47 +14,6 @@
         </a>
       </div>
     </div>
-    <script type="text/javascript">
-      let converter = new showdown.Converter()
-
-      let json2html = (data, name) => {
-        //return JSON.stringify(data, null, 2)
-        let nameClass = name ? ` ${name}` : ``
-
-        if(_.isPlainObject(data)){
-          return `<ul class='_object${nameClass}'>
-            ${_.map(data, (e,k) => `
-              <li class="${k}">
-                <span class="label">${k}:</span>
-                ${json2html(e,k)}
-              </li>
-            `).join('')}
-          </ul>`
-        } else if (_.isArray(data)) {
-          return `<ol class='_array${nameClass}'>
-            ${data.map((e,k) => `
-              <li class="${k}">
-                ${json2html(e)}
-              </li>
-            `).join('')}
-          </ol>`
-        } else if (_.isNumber(data)) {
-          return `<span class='_number${nameClass}'>${data}</span>`
-        } else if (_.isString(data)) {
-          return `<span class='_string${nameClass}'>${converter.makeHtml(data)}</span>`
-        } else if (_.isBoolean(data)) {
-          return `<span class='_boolean${nameClass}'>${data}</span>`
-        } else if (_.isNull(data)) {
-          return `<span class='_null${nameClass}'></span>`
-        } else {
-          return data
-        }
-      }
-
-      fetch("scratchpad.yaml").then(res => res.text()).then(source => {
-        let result = json2html(jsyaml.load(source))
-        document.getElementById('target').insertAdjacentHTML('beforeend', result)
-      })
-    </script>
+    <script src="./build/bundle.js"></script>
   </body>
 </html>
