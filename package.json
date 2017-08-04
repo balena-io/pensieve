@@ -1,0 +1,30 @@
+{
+  "name": "scratchpad",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/main.js -o build/bundle.js",
+    "watch": "watchify src/main.js -o build/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/resin-io/scratchpad.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/resin-io/scratchpad/issues"
+  },
+  "homepage": "https://github.com/resin-io/scratchpad#readme",
+  "dependencies": {
+    "js-yaml": "^3.9.1",
+    "lodash": "^4.17.4",
+    "showdown": "^1.7.1"
+  },
+  "devDependencies": {
+    "browserify": "^14.4.0",
+    "watchify": "^3.9.0"
+  }
+}
