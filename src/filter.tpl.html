@@ -1,0 +1,43 @@
+<div class="columns">
+  <div class="on-half column">
+    <button class="btn" type="button" on-click="@this.set('showFilterForm', true)">Add filter</button>
+  </div>
+  <div class="on-half column">
+    {{#if activeInputs.length}}
+    currently filtering on:
+    {{#each activeInputs}}
+      <br>{{name}} <em>{{operator}}</em> <strong>{{value}}</strong> <a href="#" on-click="['removeInput', this]">remove</a>
+    {{/each}}
+    {{/if}}
+  </div>
+</div>
+
+{{#if showFilterForm}}
+<hr>
+<div class="columns">
+  <div class="one-fourth column">
+    <select value="{{currentFilter.name}}">
+      {{#each inputs}}
+        <option>{{name}}</option>
+      {{/each}}
+    </select>
+  </div>
+  <div class="one-fourth column">
+      <select value="{{currentFilter.operator}}">
+        {{#each filterFormOperators}}
+          <option>{{.}}</option>
+        {{/each}}
+      </select>
+  </div>
+  <div class="one-fourth column">
+      {{#if filterFormType === 'string'}}
+        <input type="text" value="{{currentFilter.value}}">
+      {{/if}}
+  </div>
+  <div class="one-fourth column">
+    <button class="btn" type="button" on-click="addFilter">Add</button>
+  </div>
+</div>
+{{/if}}
+
+<hr>
