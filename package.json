@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha test/filter.spec.js",
     "build": "browserify src/main.js -o build/bundle.js",
     "watch": "watchify src/main.js -o build/bundle.js"
   },
@@ -25,6 +25,8 @@
   },
   "devDependencies": {
     "browserify": "^14.4.0",
+    "chai": "^4.1.0",
+    "mocha": "^3.5.0",
     "watchify": "^3.9.0"
   }
 }

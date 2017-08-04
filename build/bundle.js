@@ -23947,9 +23947,14 @@ let json2html = (data, name) => {
   }
 }
 
-fetch("scratchpad.yaml").then(res => res.text()).then(source => {
-  let result = json2html(jsyaml.load(source))
+const render = (source) => {
+  const result = json2html(source)
   document.getElementById('target').insertAdjacentHTML('beforeend', result)
+}
+
+fetch('scratchpad.yaml').then(res => res.text()).then((rawYaml) => {
+  const source = jsyaml.load(rawYaml);
+  render(source);
 })
 
 },{"js-yaml":1,"lodash":31,"showdown":32}]},{},[33]);

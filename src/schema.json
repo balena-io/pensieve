@@ -1,0 +1,11 @@
+{
+  "GitHub issue": {
+    "type": "string"
+  },
+  "Signs and Symptoms": {
+    "type": "string"
+  },
+  "Treatments": {
+    "type": "string"
+  }
+}
