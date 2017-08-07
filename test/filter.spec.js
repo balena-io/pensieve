@@ -131,5 +131,46 @@ describe('resin-filter', () => {
         );
       });
     });
+
+    describe('date types', () => {
+      it('should correctly test values using the "is" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Last Updated'];
+
+        input.operator = 'is';
+        input.value = '2017-05-02T00:00:00.000Z';
+
+        expect(t.filter(collection, input)).to.have.all.keys('Bluetooth not working');
+      });
+
+      it('should correctly test values using the "is before" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Last Updated'];
+
+        input.operator = 'is before';
+        input.value = '2016-12-25T00:00:00.000Z';
+
+        expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
+      });
+
+      it('should correctly test values using the "is after" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Last Updated'];
+
+        input.operator = 'is after';
+        input.value = '2016-12-25T00:00:00.000Z';
+
+        expect(t.filter(collection, input)).to.have.all.keys(
+          "Docker won't start",
+          'Bluetooth not working'
+        );
+      });
+    });
   });
 });

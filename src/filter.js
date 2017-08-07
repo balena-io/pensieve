@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 const filterTests = {
   string: {
@@ -15,6 +16,25 @@ const filterTests = {
     'is true': (target) => !!target,
     'is false': (target) => !target,
   },
+  /**
+    Date types use momentjs for comparison, so the input and target value
+    should be in one of the following forms:
+    - ISO 8601
+    - Unix timestamp (seconds or milliseconds)
+    - JS Date object
+    See https://momentjs.com/docs/#/parsing/ for more information
+  */
+  date: {
+    'is': (target, value) => {
+      return target && moment(target).isSame(value);
+    },
+    'is before': (target, value) => {
+      return target && moment(target).isBefore(value);
+    },
+    'is after': (target, value) => {
+      return target && moment(target).isAfter(value);
+    },
+  }
 };
 
 class Tamis {

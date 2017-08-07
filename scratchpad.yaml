@@ -33,12 +33,14 @@ Scratchpad:
     GitHub issue: 'https://github.com/resin-io/hq/issues/784'
     Fix Difficulty: 1
     Pull Leech Logs: false
+    Last Updated: 2017-01-27
 
   Issues with Line Endings:
     Signs and Symptoms: "Line endings differ between windows and the unix-y world (they used to be different again for mac but not for many years), which can result in issues. E.g. a user seeing something like: `/usr/src/app/run.sh: line 2: $'\r': command not found`"
     Treatments: "To resolve this, the user needs to configure git to auto convert line endings. Point them at https://help.github.com/articles/dealing-with-line-endings/#platform-windows."
     Fix Difficulty: 4
     Pull Leech Logs: false
+    Last Updated: 2016-10-07
 
   Bluetooth not working:
     Signs and Symptoms: "Bluetooth device not available."
@@ -48,3 +50,5 @@ Scratchpad:
       On the Raspberry Pi 3 you can point them to this example project: https://github.com/resin-io-projects/rpi3-bluetooth
     Fix Difficulty: 2
     Pull Leech Logs: true
+    Last Updated: 2017-05-02
+
