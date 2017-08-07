@@ -30,7 +30,7 @@
       </select>
   </div>
   <div class="one-fourth column">
-      {{#if filterFormType === 'string'}}
+      {{#if filterFormType === 'string' || filterFormType === 'semver-range'}}
         <input type="text" value="{{currentFilter.value}}">
       {{/if}}
       {{#if filterFormType === 'number'}}

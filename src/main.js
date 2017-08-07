@@ -38,7 +38,11 @@ let json2html = (data, name) => {
   } else if (_.isNumber(data)) {
     return `<span class='_number${nameClass}'>${data}</span>`
   } else if (_.isString(data)) {
-    return `<span class='_string${nameClass}'>${converter.makeHtml(data)}</span>`
+    if (name === 'Versions Affected') {
+      return `<span class='_string${nameClass}'>${converter.makeHtml('`' + data + '`')}</span>`
+    } else {
+      return `<span class='_string${nameClass}'>${converter.makeHtml(data)}</span>`
+    }
   } else if (_.isBoolean(data)) {
     return `<span class='_boolean${nameClass}'>${data}</span>`
   } else if (_.isNull(data)) {
