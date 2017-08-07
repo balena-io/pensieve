@@ -201,5 +201,42 @@ describe('resin-filter', () => {
         expect(t.filter(collection, input)).to.have.all.keys('Bluetooth not working');
       });
     });
+
+    describe('semver types', () => {
+      it('should correctly test values using the "is" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Fixed in Version'];
+
+        input.operator = 'is';
+        input.value = 'Resin OS 2.0.0';
+
+        expect(t.filter(collection, input)).to.have.all.keys("Docker won't start");
+      });
+      it('should correctly test values using the "is greater than" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Fixed in Version'];
+
+        input.operator = 'is greater than';
+        input.value = 'Resin OS 1.16.0';
+
+        expect(t.filter(collection, input)).to.have.all.keys("Docker won't start");
+      });
+      it('should correctly test values using the "is less than" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Fixed in Version'];
+
+        input.operator = 'is less than';
+        input.value = 'Resin OS 2.0.5';
+
+        expect(t.filter(collection, input)).to.have.all.keys("Docker won't start");
+      });
+    });
+
   });
 });

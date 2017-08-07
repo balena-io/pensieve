@@ -35,6 +35,7 @@ Scratchpad:
     Pull Leech Logs: false
     Last Updated: 2017-01-27
     Versions Affected: '< 2.0.0'
+    Fixed in Version: '2.0.0'
 
   Issues with Line Endings:
     Signs and Symptoms: "Line endings differ between windows and the unix-y world (they used to be different again for mac but not for many years), which can result in issues. E.g. a user seeing something like: `/usr/src/app/run.sh: line 2: $'\r': command not found`"
@@ -54,4 +55,3 @@ Scratchpad:
     Pull Leech Logs: true
     Last Updated: 2017-05-02
     Versions Affected: '>= 2.0.0'
-

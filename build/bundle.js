@@ -47617,6 +47617,11 @@ const filterTests = {
   'semver-range': {
     'contains': (target, value) => semver.satisfies(value, target),
     'does not contain': (target, value) => !semver.satisfies(value, target)
+  },
+  semver: {
+    'is': (target, value) => target && semver.compare(target, value) === 0,
+    'is greater than': (target, value) => target && semver.gt(target, value),
+    'is less than': (target, value) => target && semver.lt(target, value),
   }
 };
 
@@ -47697,7 +47702,7 @@ class Tamis {
 module.exports = (tests) => new Tamis(tests);
 
 },{"lodash":31,"moment":32,"resin-semver":36}],40:[function(require,module,exports){
-module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <em>{{operator}}</em> <strong>{{value}}</strong> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string' || filterFormType === 'semver-range'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n      {{#if filterFormType === 'number'}}\n        <input type=\"number\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n\n      {{#if filterFormType === 'date'}}\n        <input type=\"date\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
+module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <strong>{{operator}}</strong> <em>{{value}}</em> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string' || filterFormType === 'semver-range' || filterFormType === 'semver'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n      {{#if filterFormType === 'number'}}\n        <input type=\"number\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n\n      {{#if filterFormType === 'date'}}\n        <input type=\"date\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
 
 },{}],41:[function(require,module,exports){
 const _ = require('lodash');
@@ -47845,6 +47850,9 @@ module.exports={
   },
   "Versions Affected": {
     "type": "semver-range"
+  },
+  "Fixed in Version": {
+    "type": "semver"
   }
 }
 
