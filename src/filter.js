@@ -43,6 +43,11 @@ const filterTests = {
   'semver-range': {
     'contains': (target, value) => semver.satisfies(value, target),
     'does not contain': (target, value) => !semver.satisfies(value, target)
+  },
+  semver: {
+    'is': (target, value) => target && semver.compare(target, value) === 0,
+    'is greater than': (target, value) => target && semver.gt(target, value),
+    'is less than': (target, value) => target && semver.lt(target, value),
   }
 };
 

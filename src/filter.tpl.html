@@ -6,7 +6,7 @@
     {{#if activeInputs.length}}
     currently filtering on:
     {{#each activeInputs}}
-      <br>{{name}} <em>{{operator}}</em> <strong>{{value}}</strong> <a href="#" on-click="['removeInput', this]">remove</a>
+      <br>{{name}} <strong>{{operator}}</strong> <em>{{value}}</em> <a href="#" on-click="['removeInput', this]">remove</a>
     {{/each}}
     {{/if}}
   </div>
@@ -30,7 +30,7 @@
       </select>
   </div>
   <div class="one-fourth column">
-      {{#if filterFormType === 'string' || filterFormType === 'semver-range'}}
+      {{#if filterFormType === 'string' || filterFormType === 'semver-range' || filterFormType === 'semver'}}
         <input type="text" value="{{currentFilter.value}}">
       {{/if}}
       {{#if filterFormType === 'number'}}

@@ -19,5 +19,8 @@
   },
   "Versions Affected": {
     "type": "semver-range"
+  },
+  "Fixed in Version": {
+    "type": "semver"
   }
 }
