@@ -4,9 +4,9 @@ const showdown = require('showdown');
 const Ractive = require('ractive');
 
 const schema = require('./schema');
-const FilterFactory = require('./filter');
+const Tamis = require('./filter');
 
-const filter = FilterFactory();
+const t = Tamis();
 
 let converter = new showdown.Converter()
 
@@ -57,7 +57,7 @@ const filterUI = new Ractive({
   target: '#filters',
   template: require('./filter.tpl.html'),
   data: {
-    inputs: filter.makeFilterInputs(schema),
+    inputs: t.makeFilterInputs(schema),
     activeInputs: [],
     currentFilter: {},
     filterFormOperators: [],
@@ -103,7 +103,7 @@ filterUI.on('removeInput', function(event, input) {
 const filterAndRender = (inputs) => {
   let src = _.cloneDeep(masterSource);
   inputs.forEach((input) => {
-    src = filter.testObject(src, input);
+    src = t.filter(src, input);
   });
 
   render(src);

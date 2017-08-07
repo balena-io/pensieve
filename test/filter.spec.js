@@ -8,77 +8,101 @@ const rawYaml = fs.readFileSync('./test/resources/test.yaml', 'utf8');
 const source = jsyaml.load(rawYaml);
 
 describe('resin-filter', () => {
-  describe('.filterObject()', () => {
+  describe('.filter()', () => {
+    describe('string types', () => {
+      it('should correctly test values using the "is" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['GitHub issue'];
 
-    it('should correctly test string values using the "contains" operator', () => {
-      const t = Tamis();
-      const collection = source;
-      const inputs = t.makeFilterInputs(schema)
-      const input = inputs['Signs and Symptoms'];
+        input.operator = 'is';
+        // Set a value
+        input.value = 'https://github.com/resin-io/hq/issues/784';
 
-      // Set the 'contains' operator
-      input.operator = 'contains';
-      // Set a value
-      input.value = 'windows';
+        expect(t.filter(collection, input)).to.have.all.keys("Docker won't start");
+      });
 
-      expect(t.filterObject(collection, input)).to.have.all.keys('Issues with Line Endings');
+      it('should correctly test values using the "contains" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Signs and Symptoms'];
+
+        // Set the 'contains' operator
+        input.operator = 'contains';
+        // Set a value
+        input.value = 'windows';
+
+        expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
+      });
+
+      it('should correctly test values using the "does not contain" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Signs and Symptoms'];
+
+        // Set the 'does not contain' operator
+        input.operator = 'does not contain';
+        // Set a value
+        input.value = 'windows';
+
+        expect(t.filter(collection, input)).to.not.have.all.keys('Issues with Line Endings');
+      });
     });
 
-    it('should correctly test string values using the "does not contain" operator', () => {
-      const t = Tamis();
-      const collection = source;
-      const inputs = t.makeFilterInputs(schema)
-      const input = inputs['Signs and Symptoms'];
+    describe('number types', () => {
+      it('should correctly test values using the "equals" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Fix Difficulty'];
 
-      // Set the 'does not contain' operator
-      input.operator = 'does not contain';
-      // Set a value
-      input.value = 'windows';
+        input.operator = 'equals';
+        // Set a value
+        input.value = 4;
 
-      expect(t.filterObject(collection, input)).to.not.have.all.keys('Issues with Line Endings');
-      expect(t.filterObject(collection, input)).to.have.all.keys(
-        "Docker won't start",
-        "Bluetooth not working"
-      );
-    });
-  });
+        expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
+        expect(t.filter(collection, input)).to.not.have.all.keys(
+          "Docker won't start",
+          "Bluetooth not working"
+        );
+      });
 
-  describe('.filterArray()', () => {
-    it('should correctly test string values using the "contains" operator', () => {
-      const t = Tamis();
-      const collection = _.map(source, (value, key) =>
-        _.assign(_.cloneDeep(value), { key }));
+      it('should correctly test values using the "more than" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Fix Difficulty'];
 
-      const inputs = t.makeFilterInputs(schema)
-      const input = inputs['Signs and Symptoms'];
+        input.operator = 'more than';
+        // Set a value
+        input.value = 3;
 
-      // Set the 'contains' operator
-      input.operator = 'contains';
-      // Set a value
-      input.value = 'windows';
+        expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
+        expect(t.filter(collection, input)).to.not.have.all.keys(
+          "Docker won't start",
+          "Bluetooth not working"
+        );
+      });
 
-      expect(t.filterArray(collection, input)).to.have.length(1);
-      expect(t.filterArray(collection, input)[0].key).to.equal('Issues with Line Endings');
-    });
+      it('should correctly test values using the "less than" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Fix Difficulty'];
 
-    it('should correctly test string values using the "does not contain" operator', () => {
-      const t = Tamis();
-      const collection = _.map(source, (value, key) =>
-        _.assign(_.cloneDeep(value), { key }));
+        input.operator = 'less than';
+        // Set a value
+        input.value = 3;
 
-      const inputs = t.makeFilterInputs(schema)
-      const input = inputs['Signs and Symptoms'];
-
-      // Set the 'does not contain' operator
-      input.operator = 'does not contain';
-      // Set a value
-      input.value = 'windows';
-
-      expect(t.filterArray(collection, input)).to.have.length(2);
-      expect(t.filterArray(collection, input).map(x => x.key)).to.eql([
-        "Docker won't start",
-        "Bluetooth not working"
-      ]);
+        expect(t.filter(collection, input)).to.have.all.keys('Bluetooth not working');
+        expect(t.filter(collection, input)).to.not.have.all.keys(
+          "Docker won't start",
+          "Issues with Line Endings"
+        );
+      });
     });
   });
 });

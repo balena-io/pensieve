@@ -2,9 +2,14 @@ const _ = require('lodash');
 
 const filterTests = {
   string: {
-    'is': (target, value) => target && target === value,
+    'is': (target, value) => target === value,
     'contains': (target, value) => target && target.includes(value),
     'does not contain': (target, value) => !target || !target.includes(value),
+  },
+  number: {
+    'equals': (target, value) => target === value,
+    'more than': (target, value) => target > value,
+    'less than': (target, value) => target < value,
   }
 };
 
@@ -29,6 +34,17 @@ class Tamis {
         throw new Error(`${operator} is not a valid operator for ${type} types`);
       }
       throw new Error(`There is no filter test for type ${type}`);
+  }
+
+  filter(collection, input) {
+    if (_.isObject(collection)) {
+      return this.filterObject(collection, input);
+    }
+    if (_.isArray(collection)) {
+      return this.filterArray(collection, input);
+    }
+
+    throw new Error(`collection argument must be either object or array.`);
   }
 
   filterArray(collection, input) {
