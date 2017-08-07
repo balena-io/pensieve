@@ -2,6 +2,10 @@ const _ = require('lodash');
 const jsyaml = require('js-yaml');
 const showdown = require('showdown');
 const Ractive = require('ractive');
+const createHistory = require('history').createBrowserHistory;
+const qs = require('qs');
+
+const history = createHistory();
 
 const schema = require('./schema');
 const Tamis = require('./filter');
@@ -131,7 +135,7 @@ filterUI.on('updateFilter', function(event) {
 
 filterUI.on('removeInput', function(event, input) {
   event.original.preventDefault();
-  this.set('activeInputs', this.get('activeInputs').filter((a) => a.name !== input.name));
+  this.set('activeInputs', this.get('activeInputs').filter((a) => a.hash !== input.hash));
 
   filterAndRender(this.get('activeInputs'));
 });
@@ -150,6 +154,16 @@ const filterAndRender = (inputs) => {
     src = t.filter(src, input);
   });
 
+  const { pathname } = history.location;
+  history.push({
+    pathname,
+    search: qs.stringify(inputs.map(({ name, operator, value }) => ({
+      n: name,
+      o: operator,
+      v: value,
+    }))),
+  });
+
   render(src);
 };
 
@@ -157,6 +171,27 @@ fetch('scratchpad.yaml').then(res => res.text()).then((rawYaml) => {
   const source = jsyaml.load(rawYaml).Scratchpad;
   masterSource = source;
   filterUI.set('source', source);
-  render(source);
-})
 
+  if (history.location.search) {
+    const parsed = qs.parse(history.location.search.replace(/^\?/, ''));
+    const inputs = _.map(parsed, (input) => {
+      const filter = {
+        name: input.n,
+        operator: input.o,
+        value: input.v
+      };
+
+      const srcFilter = filterUI.get('inputs')[filter.name];
+      const newInput = _.assign(_.cloneDeep(srcFilter), filter);
+
+      newInput.hash = randomString();
+
+      return newInput;
+    });
+
+    filterUI.set('activeInputs', inputs);
+    filterAndRender(inputs);
+  } else {
+    render(source);
+  }
+});
