@@ -1,12 +1,15 @@
 const _ = require('lodash');
 const moment = require('moment');
 const semver = require('resin-semver');
+const RegexParser = require('regex-parser');
 
 const filterTests = {
   string: {
-    'is': (target, value) => target === value,
-    'contains': (target, value) => target && target.includes(value),
-    'does not contain': (target, value) => !target || !target.includes(value),
+    'is': (target = '', value) => target === value,
+    'contains': (target = '', value) => target.includes(value),
+    'does not contain': (target = '', value) => !target.includes(value),
+    'matches RegEx': (target = '', value) => target.match(RegexParser(value)),
+    'does not match RegEx': (target = '', value) => !target.match(RegexParser(value)),
   },
   number: {
     'equals': (target, value) => _.isNumber(target) && target === value,

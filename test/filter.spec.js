@@ -50,6 +50,33 @@ describe('resin-filter', () => {
 
         expect(t.filter(collection, input)).to.not.have.all.keys('Issues with Line Endings');
       });
+
+      it('should correctly test values using the "matches RegEx" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Signs and Symptoms'];
+
+        input.operator = 'matches RegEx';
+        input.value = '/\((\w|\s)+\)/g';
+
+        expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
+      });
+
+      it('should correctly test values using the "does not match RegEx" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Signs and Symptoms'];
+
+        input.operator = 'does not match RegEx';
+        input.value = '/\((\w|\s)+\)/g';
+
+        expect(t.filter(collection, input)).to.have.all.keys(
+          "Docker won't start",
+          "Bluetooth not working"
+        );
+      });
     });
 
     describe('number types', () => {
