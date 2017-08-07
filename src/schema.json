@@ -16,5 +16,8 @@
   },
   "Last Updated": {
     "type": "date"
+  },
+  "Versions Affected": {
+    "type": "semver-range"
   }
 }

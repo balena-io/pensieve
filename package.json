@@ -23,6 +23,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "ractive": "^0.9.3",
+    "resin-semver": "^0.8.0",
     "showdown": "^1.7.1"
   },
   "devDependencies": {

@@ -25442,6 +25442,192 @@ return hooks;
 })));
 
 },{}],33:[function(require,module,exports){
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+},{}],34:[function(require,module,exports){
 (function (global){
 /*
 	Ractive.js v0.9.3
@@ -42209,7 +42395,2253 @@ return Ractive;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
+(function (global){
+/**
+ * lodash (Custom Build) <https://lodash.com/>
+ * Build: `lodash modularize exports="npm" -o ./`
+ * Copyright jQuery Foundation and other contributors <https://jquery.org/>
+ * Released under MIT license <https://lodash.com/license>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ */
+
+/** Used as the `TypeError` message for "Functions" methods. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** `Object#toString` result references. */
+var funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]';
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+/**
+ * Checks if `value` is a host object in IE < 9.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a host object, else `false`.
+ */
+function isHostObject(value) {
+  // Many host objects are `Object` objects that can coerce to strings
+  // despite having improperly defined `toString` methods.
+  var result = false;
+  if (value != null && typeof value.toString != 'function') {
+    try {
+      result = !!(value + '');
+    } catch (e) {}
+  }
+  return result;
+}
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype,
+    funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var objectToString = objectProto.toString;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map'),
+    nativeCreate = getNative(Object, 'create');
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+}
+
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  return this.has(key) && delete this.__data__[key];
+}
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+}
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+}
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  return true;
+}
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries ? entries.length : 0;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  return getMapData(this, key)['delete'](key);
+}
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  getMapData(this, key).set(key, value);
+  return this;
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = (isFunction(value) || isHostObject(value)) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to process.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result);
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Assign cache to `_.memoize`.
+memoize.Cache = MapCache;
+
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 8-9 which returns 'object' for typed array and other constructors.
+  var tag = isObject(value) ? objectToString.call(value) : '';
+  return tag == funcTag || tag == genTag;
+}
+
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
+
+module.exports = memoize;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],36:[function(require,module,exports){
+"use strict";
+exports.__esModule = true;
+var semver = require("semver");
+var memoize = require("lodash.memoize");
+var trimOsText = function (version) {
+    // Remove "Resin OS" text
+    return version.replace(/^resin\sos\s+/gi, '')
+        .replace(/\s+\(\w+\)$/, '')
+        .replace(/^v/, '');
+};
+var safeSemver = function (version) {
+    return version.replace(/(\.[0-9]+)\.rev/, '$1+rev');
+};
+var normalize = function (version) { return trimOsText(safeSemver(version)); };
+var getRev = function (osVersion) {
+    var rev = semver.parse(osVersion).build.map(function (metadataPart) {
+        var matches = /rev(\d+)/.exec(metadataPart);
+        return matches && matches[1] || null;
+    })
+        .filter(function (x) { return x != null; })[0];
+    if (rev != null) {
+        return parseInt(rev, 10);
+    }
+    else {
+        return 0;
+    }
+};
+var isDevelopmentVersion = function (version) {
+    return /(\.|\+|-)dev/.test(version);
+};
+/**
+ * @summary Compare order of versions
+ * @name compare
+ * @public
+ * @function
+ *
+ * @description Accepts string or null values and compares them, returning a number
+ * indicating sort order. Values are parsed for valid semver strings. Sorts an array
+ * of versions in ascending order if passed to `Array.sort()`.
+ *
+ *
+ * @param {string|null} versionA - The first version to compare
+ * @param {string|null} versionB - The second version to compare
+ *
+ * @returns {number} Returns `0` if `versionA == versionB`,
+ * or `1` if `versionA` is greater, or `-1` if `versionB` is greater.
+ * Null values are sorted before invalid semver values, and invalid semver values
+ * are sorted before valid semver values
+ * If both values are invalid semver values, then the values are compared alphabetically.
+ */
+exports.compare = memoize(function (versionA, versionB) {
+    if (versionA === null) {
+        return versionB === null ? 0 : -1;
+    }
+    if (versionB === null) {
+        return 1;
+    }
+    versionA = normalize(versionA);
+    versionB = normalize(versionB);
+    var isAValid = semver.valid(versionA);
+    var isBValid = semver.valid(versionB);
+    if (isAValid && !isBValid) {
+        return 1;
+    }
+    if (!isAValid && isBValid) {
+        return -1;
+    }
+    if (!isAValid && !isBValid) {
+        if (versionA > versionB) {
+            return 1;
+        }
+        if (versionA < versionB) {
+            return -1;
+        }
+        return 0;
+    }
+    var semverResult = semver.compare(versionA, versionB);
+    if (semverResult !== 0) {
+        return semverResult;
+    }
+    var revA = getRev(versionA);
+    var revB = getRev(versionB);
+    if (revA !== revB) {
+        return revA > revB ? 1 : -1;
+    }
+    var devA = Number(isDevelopmentVersion(versionA));
+    var devB = Number(isDevelopmentVersion(versionB));
+    if (devA !== devB) {
+        return devA > devB ? -1 : 1;
+    }
+    return versionA.localeCompare(versionB);
+}, function (a, b) { return a + " && " + b; });
+/**
+ * @summary Compare order of versions in reverse
+ * @name rcompare
+ * @public
+ * @function
+ *
+ * @description The reverse of `.compare()`. Accepts string or null values and compares
+ * them, returning a number indicating sort order. Values are parsed for valid semver
+ * strings. Sorts an array of versions in descending order when passed to `Array.sort()`.
+ *
+ * @param {string|null} versionA - The first version to compare
+ * @param {string|null} versionB - The second version to compare
+ *
+ * @returns {number} Returns `0` if `versionA == versionB`,
+ * or `-1` if `versionA` is greater, or `1` if `versionB` is greater.
+ * Valid semver values are sorted before invalid semver values, and invalid semver values are
+ * sorted before null values.
+ * If both values are non-null invalid semver values, then the values are compared alphabetically.
+ */
+exports.rcompare = function (versionA, versionB) {
+    return 0 - exports.compare(versionA, versionB);
+};
+/**
+ * @summary Return the major version number
+ * @name major
+ * @public
+ * @function
+ *
+ * @description Returns the major version number in a semver string.
+ * If the version is not a valid semver string, or a valid semver string cannot be
+ * found, it returns null.
+ *
+ * @param {string|null} version - The version string to evaluate
+ *
+ * @returns {number|null} - The major version number
+ */
+exports.major = function (version) {
+    if (!version) {
+        return null;
+    }
+    version = trimOsText(safeSemver(version));
+    if (semver.valid(version)) {
+        return semver.major(version);
+    }
+    return null;
+};
+/**
+ * @summary Return prerelease components
+ * @name prerelease
+ * @public
+ * @function
+ *
+ * @description Returns an array of prerelease components, or null if none exist
+ *
+ * @param {string|null} version - The version string to evaluate
+ *
+ * @returns {Array.<string|number>|null} - An array of prerelease component, or null if none exist
+ */
+exports.prerelease = function (version) {
+    if (!version) {
+        return null;
+    }
+    version = trimOsText(safeSemver(version));
+    return semver.prerelease(version);
+};
+/**
+ * @summary Check if a version is greater than or equal to another
+ * @name gte
+ * @public
+ * @function
+ *
+ * @description Returns true if versionA is greater than or equal to versionB.
+ * Valid semver versions are always weighted above non semver strings.
+ * Non-semver strings are compared alphabetically.
+ *
+ * @param {string|null} versionA - The version string to compare against
+ * @param {string|null} versionB - The version string to compare to versionA
+ *
+ * @returns {boolean} - true if versionA is greater than or equal to versionB, otherwise false.
+ */
+exports.gte = function (versionA, versionB) {
+    return exports.compare(versionA, versionB) >= 0;
+};
+/**
+ * @summary Check if a version is greater than another
+ * @name gt
+ * @public
+ * @function
+ *
+ * @description Returns true if versionA is greater than versionB.
+ * Valid semver versions are always weighted above non semver strings.
+ * Non-semver strings are compared alphabetically.
+ *
+ * @param {string|null} versionA - The version string to compare against
+ * @param {string|null} versionB - The version string to compare to versionA
+ *
+ *
+ * @returns {boolean} - true if versionA is greater than versionB, otherwise false.
+ */
+exports.gt = function (versionA, versionB) {
+    return exports.compare(versionA, versionB) > 0;
+};
+/**
+ * @summary Check if a version is less than another
+ * @name lt
+ * @public
+ * @function
+ *
+ * @description Returns true if versionA is less than versionB.
+ * Valid semver versions are always weighted above non semver strings.
+ * Non-semver strings are compared alphabetically.
+ *
+ * @param {string|null} versionA - The version string to compare against
+ * @param {string|null} versionB - The version string to compare to versionA
+ *
+ * @returns {boolean} - true if versionA is less than versionB, otherwise false.
+ */
+exports.lt = function (versionA, versionB) {
+    return exports.compare(versionA, versionB) < 0;
+};
+/**
+ * @summary Check if a version satisfies a range
+ * @name satisfies
+ * @public
+ * @function
+ *
+ * @description Return true if the parsed version satisfies the range.
+ * This method will always return false if the provided version doesn't contain a valid semver string.
+ *
+ * @param {string|null} version - The version to evaluate
+ * @param {string} range - A semver range string, see the [node-semver](https://github.com/npm/node-semver#ranges)
+ * docs for details
+ *
+ * @returns {boolean} - True if the parsed version satisfies the range, false otherwise
+ *
+ */
+exports.satisfies = function (version, range) {
+    if (version === null) {
+        return false;
+    }
+    version = normalize(version);
+    if (!semver.valid(version)) {
+        return false;
+    }
+    return semver.satisfies(version, range);
+};
+/**
+ * @summary Return the highest version in the list that satisfies the range
+ * @name maxSatisfying
+ * @public
+ * @function
+ *
+ * @description Return the highest version in the list that satisfies the range, or null if none of them do.
+ * If multiple versions are found that have equally high values, the last one in the array is returned.
+ * Note that only version that contain a valid semver string can satisfy a range.
+ *
+ * @param {Array.<string|null>} versions - An array of versions to evaluate
+ * @param {string} range - A semver range string, see the [node-semver](https://github.com/npm/node-semver#ranges)
+ * docs for details
+ *
+ * @returns {string|null} - The highest matching version string, or null.
+ *
+ */
+exports.maxSatisfying = function (versions, range) {
+    var max = null;
+    versions.forEach(function (version) {
+        if (exports.satisfies(version, range) && exports.gt(version, max)) {
+            max = version;
+        }
+    });
+    return max;
+};
+
+},{"lodash.memoize":35,"semver":37}],37:[function(require,module,exports){
+(function (process){
+exports = module.exports = SemVer;
+
+// The debug function is excluded entirely from the minified version.
+/* nomin */ var debug;
+/* nomin */ if (typeof process === 'object' &&
+    /* nomin */ process.env &&
+    /* nomin */ process.env.NODE_DEBUG &&
+    /* nomin */ /\bsemver\b/i.test(process.env.NODE_DEBUG))
+  /* nomin */ debug = function() {
+    /* nomin */ var args = Array.prototype.slice.call(arguments, 0);
+    /* nomin */ args.unshift('SEMVER');
+    /* nomin */ console.log.apply(console, args);
+    /* nomin */ };
+/* nomin */ else
+  /* nomin */ debug = function() {};
+
+// Note: this is the semver.org version of the spec that it implements
+// Not necessarily the package version of this code.
+exports.SEMVER_SPEC_VERSION = '2.0.0';
+
+var MAX_LENGTH = 256;
+var MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+
+// The actual regexps go on exports.re
+var re = exports.re = [];
+var src = exports.src = [];
+var R = 0;
+
+// The following Regular Expressions can be used for tokenizing,
+// validating, and parsing SemVer version strings.
+
+// ## Numeric Identifier
+// A single `0`, or a non-zero digit followed by zero or more digits.
+
+var NUMERICIDENTIFIER = R++;
+src[NUMERICIDENTIFIER] = '0|[1-9]\\d*';
+var NUMERICIDENTIFIERLOOSE = R++;
+src[NUMERICIDENTIFIERLOOSE] = '[0-9]+';
+
+
+// ## Non-numeric Identifier
+// Zero or more digits, followed by a letter or hyphen, and then zero or
+// more letters, digits, or hyphens.
+
+var NONNUMERICIDENTIFIER = R++;
+src[NONNUMERICIDENTIFIER] = '\\d*[a-zA-Z-][a-zA-Z0-9-]*';
+
+
+// ## Main Version
+// Three dot-separated numeric identifiers.
+
+var MAINVERSION = R++;
+src[MAINVERSION] = '(' + src[NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[NUMERICIDENTIFIER] + ')\\.' +
+                   '(' + src[NUMERICIDENTIFIER] + ')';
+
+var MAINVERSIONLOOSE = R++;
+src[MAINVERSIONLOOSE] = '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')\\.' +
+                        '(' + src[NUMERICIDENTIFIERLOOSE] + ')';
+
+// ## Pre-release Version Identifier
+// A numeric identifier, or a non-numeric identifier.
+
+var PRERELEASEIDENTIFIER = R++;
+src[PRERELEASEIDENTIFIER] = '(?:' + src[NUMERICIDENTIFIER] +
+                            '|' + src[NONNUMERICIDENTIFIER] + ')';
+
+var PRERELEASEIDENTIFIERLOOSE = R++;
+src[PRERELEASEIDENTIFIERLOOSE] = '(?:' + src[NUMERICIDENTIFIERLOOSE] +
+                                 '|' + src[NONNUMERICIDENTIFIER] + ')';
+
+
+// ## Pre-release Version
+// Hyphen, followed by one or more dot-separated pre-release version
+// identifiers.
+
+var PRERELEASE = R++;
+src[PRERELEASE] = '(?:-(' + src[PRERELEASEIDENTIFIER] +
+                  '(?:\\.' + src[PRERELEASEIDENTIFIER] + ')*))';
+
+var PRERELEASELOOSE = R++;
+src[PRERELEASELOOSE] = '(?:-?(' + src[PRERELEASEIDENTIFIERLOOSE] +
+                       '(?:\\.' + src[PRERELEASEIDENTIFIERLOOSE] + ')*))';
+
+// ## Build Metadata Identifier
+// Any combination of digits, letters, or hyphens.
+
+var BUILDIDENTIFIER = R++;
+src[BUILDIDENTIFIER] = '[0-9A-Za-z-]+';
+
+// ## Build Metadata
+// Plus sign, followed by one or more period-separated build metadata
+// identifiers.
+
+var BUILD = R++;
+src[BUILD] = '(?:\\+(' + src[BUILDIDENTIFIER] +
+             '(?:\\.' + src[BUILDIDENTIFIER] + ')*))';
+
+
+// ## Full Version String
+// A main version, followed optionally by a pre-release version and
+// build metadata.
+
+// Note that the only major, minor, patch, and pre-release sections of
+// the version string are capturing groups.  The build metadata is not a
+// capturing group, because it should not ever be used in version
+// comparison.
+
+var FULL = R++;
+var FULLPLAIN = 'v?' + src[MAINVERSION] +
+                src[PRERELEASE] + '?' +
+                src[BUILD] + '?';
+
+src[FULL] = '^' + FULLPLAIN + '$';
+
+// like full, but allows v1.2.3 and =1.2.3, which people do sometimes.
+// also, 1.0.0alpha1 (prerelease without the hyphen) which is pretty
+// common in the npm registry.
+var LOOSEPLAIN = '[v=\\s]*' + src[MAINVERSIONLOOSE] +
+                 src[PRERELEASELOOSE] + '?' +
+                 src[BUILD] + '?';
+
+var LOOSE = R++;
+src[LOOSE] = '^' + LOOSEPLAIN + '$';
+
+var GTLT = R++;
+src[GTLT] = '((?:<|>)?=?)';
+
+// Something like "2.*" or "1.2.x".
+// Note that "x.x" is a valid xRange identifer, meaning "any version"
+// Only the first item is strictly required.
+var XRANGEIDENTIFIERLOOSE = R++;
+src[XRANGEIDENTIFIERLOOSE] = src[NUMERICIDENTIFIERLOOSE] + '|x|X|\\*';
+var XRANGEIDENTIFIER = R++;
+src[XRANGEIDENTIFIER] = src[NUMERICIDENTIFIER] + '|x|X|\\*';
+
+var XRANGEPLAIN = R++;
+src[XRANGEPLAIN] = '[v=\\s]*(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:\\.(' + src[XRANGEIDENTIFIER] + ')' +
+                   '(?:' + src[PRERELEASE] + ')?' +
+                   src[BUILD] + '?' +
+                   ')?)?';
+
+var XRANGEPLAINLOOSE = R++;
+src[XRANGEPLAINLOOSE] = '[v=\\s]*(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:\\.(' + src[XRANGEIDENTIFIERLOOSE] + ')' +
+                        '(?:' + src[PRERELEASELOOSE] + ')?' +
+                        src[BUILD] + '?' +
+                        ')?)?';
+
+var XRANGE = R++;
+src[XRANGE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAIN] + '$';
+var XRANGELOOSE = R++;
+src[XRANGELOOSE] = '^' + src[GTLT] + '\\s*' + src[XRANGEPLAINLOOSE] + '$';
+
+// Tilde ranges.
+// Meaning is "reasonably at or greater than"
+var LONETILDE = R++;
+src[LONETILDE] = '(?:~>?)';
+
+var TILDETRIM = R++;
+src[TILDETRIM] = '(\\s*)' + src[LONETILDE] + '\\s+';
+re[TILDETRIM] = new RegExp(src[TILDETRIM], 'g');
+var tildeTrimReplace = '$1~';
+
+var TILDE = R++;
+src[TILDE] = '^' + src[LONETILDE] + src[XRANGEPLAIN] + '$';
+var TILDELOOSE = R++;
+src[TILDELOOSE] = '^' + src[LONETILDE] + src[XRANGEPLAINLOOSE] + '$';
+
+// Caret ranges.
+// Meaning is "at least and backwards compatible with"
+var LONECARET = R++;
+src[LONECARET] = '(?:\\^)';
+
+var CARETTRIM = R++;
+src[CARETTRIM] = '(\\s*)' + src[LONECARET] + '\\s+';
+re[CARETTRIM] = new RegExp(src[CARETTRIM], 'g');
+var caretTrimReplace = '$1^';
+
+var CARET = R++;
+src[CARET] = '^' + src[LONECARET] + src[XRANGEPLAIN] + '$';
+var CARETLOOSE = R++;
+src[CARETLOOSE] = '^' + src[LONECARET] + src[XRANGEPLAINLOOSE] + '$';
+
+// A simple gt/lt/eq thing, or just "" to indicate "any version"
+var COMPARATORLOOSE = R++;
+src[COMPARATORLOOSE] = '^' + src[GTLT] + '\\s*(' + LOOSEPLAIN + ')$|^$';
+var COMPARATOR = R++;
+src[COMPARATOR] = '^' + src[GTLT] + '\\s*(' + FULLPLAIN + ')$|^$';
+
+
+// An expression to strip any whitespace between the gtlt and the thing
+// it modifies, so that `> 1.2.3` ==> `>1.2.3`
+var COMPARATORTRIM = R++;
+src[COMPARATORTRIM] = '(\\s*)' + src[GTLT] +
+                      '\\s*(' + LOOSEPLAIN + '|' + src[XRANGEPLAIN] + ')';
+
+// this one has to use the /g flag
+re[COMPARATORTRIM] = new RegExp(src[COMPARATORTRIM], 'g');
+var comparatorTrimReplace = '$1$2$3';
+
+
+// Something like `1.2.3 - 1.2.4`
+// Note that these all use the loose form, because they'll be
+// checked against either the strict or loose comparator form
+// later.
+var HYPHENRANGE = R++;
+src[HYPHENRANGE] = '^\\s*(' + src[XRANGEPLAIN] + ')' +
+                   '\\s+-\\s+' +
+                   '(' + src[XRANGEPLAIN] + ')' +
+                   '\\s*$';
+
+var HYPHENRANGELOOSE = R++;
+src[HYPHENRANGELOOSE] = '^\\s*(' + src[XRANGEPLAINLOOSE] + ')' +
+                        '\\s+-\\s+' +
+                        '(' + src[XRANGEPLAINLOOSE] + ')' +
+                        '\\s*$';
+
+// Star ranges basically just allow anything at all.
+var STAR = R++;
+src[STAR] = '(<|>)?=?\\s*\\*';
+
+// Compile to actual regexp objects.
+// All are flag-free, unless they were created above with a flag.
+for (var i = 0; i < R; i++) {
+  debug(i, src[i]);
+  if (!re[i])
+    re[i] = new RegExp(src[i]);
+}
+
+exports.parse = parse;
+function parse(version, loose) {
+  if (version instanceof SemVer)
+    return version;
+
+  if (typeof version !== 'string')
+    return null;
+
+  if (version.length > MAX_LENGTH)
+    return null;
+
+  var r = loose ? re[LOOSE] : re[FULL];
+  if (!r.test(version))
+    return null;
+
+  try {
+    return new SemVer(version, loose);
+  } catch (er) {
+    return null;
+  }
+}
+
+exports.valid = valid;
+function valid(version, loose) {
+  var v = parse(version, loose);
+  return v ? v.version : null;
+}
+
+
+exports.clean = clean;
+function clean(version, loose) {
+  var s = parse(version.trim().replace(/^[=v]+/, ''), loose);
+  return s ? s.version : null;
+}
+
+exports.SemVer = SemVer;
+
+function SemVer(version, loose) {
+  if (version instanceof SemVer) {
+    if (version.loose === loose)
+      return version;
+    else
+      version = version.version;
+  } else if (typeof version !== 'string') {
+    throw new TypeError('Invalid Version: ' + version);
+  }
+
+  if (version.length > MAX_LENGTH)
+    throw new TypeError('version is longer than ' + MAX_LENGTH + ' characters')
+
+  if (!(this instanceof SemVer))
+    return new SemVer(version, loose);
+
+  debug('SemVer', version, loose);
+  this.loose = loose;
+  var m = version.trim().match(loose ? re[LOOSE] : re[FULL]);
+
+  if (!m)
+    throw new TypeError('Invalid Version: ' + version);
+
+  this.raw = version;
+
+  // these are actually numbers
+  this.major = +m[1];
+  this.minor = +m[2];
+  this.patch = +m[3];
+
+  if (this.major > MAX_SAFE_INTEGER || this.major < 0)
+    throw new TypeError('Invalid major version')
+
+  if (this.minor > MAX_SAFE_INTEGER || this.minor < 0)
+    throw new TypeError('Invalid minor version')
+
+  if (this.patch > MAX_SAFE_INTEGER || this.patch < 0)
+    throw new TypeError('Invalid patch version')
+
+  // numberify any prerelease numeric ids
+  if (!m[4])
+    this.prerelease = [];
+  else
+    this.prerelease = m[4].split('.').map(function(id) {
+      if (/^[0-9]+$/.test(id)) {
+        var num = +id;
+        if (num >= 0 && num < MAX_SAFE_INTEGER)
+          return num;
+      }
+      return id;
+    });
+
+  this.build = m[5] ? m[5].split('.') : [];
+  this.format();
+}
+
+SemVer.prototype.format = function() {
+  this.version = this.major + '.' + this.minor + '.' + this.patch;
+  if (this.prerelease.length)
+    this.version += '-' + this.prerelease.join('.');
+  return this.version;
+};
+
+SemVer.prototype.toString = function() {
+  return this.version;
+};
+
+SemVer.prototype.compare = function(other) {
+  debug('SemVer.compare', this.version, this.loose, other);
+  if (!(other instanceof SemVer))
+    other = new SemVer(other, this.loose);
+
+  return this.compareMain(other) || this.comparePre(other);
+};
+
+SemVer.prototype.compareMain = function(other) {
+  if (!(other instanceof SemVer))
+    other = new SemVer(other, this.loose);
+
+  return compareIdentifiers(this.major, other.major) ||
+         compareIdentifiers(this.minor, other.minor) ||
+         compareIdentifiers(this.patch, other.patch);
+};
+
+SemVer.prototype.comparePre = function(other) {
+  if (!(other instanceof SemVer))
+    other = new SemVer(other, this.loose);
+
+  // NOT having a prerelease is > having one
+  if (this.prerelease.length && !other.prerelease.length)
+    return -1;
+  else if (!this.prerelease.length && other.prerelease.length)
+    return 1;
+  else if (!this.prerelease.length && !other.prerelease.length)
+    return 0;
+
+  var i = 0;
+  do {
+    var a = this.prerelease[i];
+    var b = other.prerelease[i];
+    debug('prerelease compare', i, a, b);
+    if (a === undefined && b === undefined)
+      return 0;
+    else if (b === undefined)
+      return 1;
+    else if (a === undefined)
+      return -1;
+    else if (a === b)
+      continue;
+    else
+      return compareIdentifiers(a, b);
+  } while (++i);
+};
+
+// preminor will bump the version up to the next minor release, and immediately
+// down to pre-release. premajor and prepatch work the same way.
+SemVer.prototype.inc = function(release, identifier) {
+  switch (release) {
+    case 'premajor':
+      this.prerelease.length = 0;
+      this.patch = 0;
+      this.minor = 0;
+      this.major++;
+      this.inc('pre', identifier);
+      break;
+    case 'preminor':
+      this.prerelease.length = 0;
+      this.patch = 0;
+      this.minor++;
+      this.inc('pre', identifier);
+      break;
+    case 'prepatch':
+      // If this is already a prerelease, it will bump to the next version
+      // drop any prereleases that might already exist, since they are not
+      // relevant at this point.
+      this.prerelease.length = 0;
+      this.inc('patch', identifier);
+      this.inc('pre', identifier);
+      break;
+    // If the input is a non-prerelease version, this acts the same as
+    // prepatch.
+    case 'prerelease':
+      if (this.prerelease.length === 0)
+        this.inc('patch', identifier);
+      this.inc('pre', identifier);
+      break;
+
+    case 'major':
+      // If this is a pre-major version, bump up to the same major version.
+      // Otherwise increment major.
+      // 1.0.0-5 bumps to 1.0.0
+      // 1.1.0 bumps to 2.0.0
+      if (this.minor !== 0 || this.patch !== 0 || this.prerelease.length === 0)
+        this.major++;
+      this.minor = 0;
+      this.patch = 0;
+      this.prerelease = [];
+      break;
+    case 'minor':
+      // If this is a pre-minor version, bump up to the same minor version.
+      // Otherwise increment minor.
+      // 1.2.0-5 bumps to 1.2.0
+      // 1.2.1 bumps to 1.3.0
+      if (this.patch !== 0 || this.prerelease.length === 0)
+        this.minor++;
+      this.patch = 0;
+      this.prerelease = [];
+      break;
+    case 'patch':
+      // If this is not a pre-release version, it will increment the patch.
+      // If it is a pre-release it will bump up to the same patch version.
+      // 1.2.0-5 patches to 1.2.0
+      // 1.2.0 patches to 1.2.1
+      if (this.prerelease.length === 0)
+        this.patch++;
+      this.prerelease = [];
+      break;
+    // This probably shouldn't be used publicly.
+    // 1.0.0 "pre" would become 1.0.0-0 which is the wrong direction.
+    case 'pre':
+      if (this.prerelease.length === 0)
+        this.prerelease = [0];
+      else {
+        var i = this.prerelease.length;
+        while (--i >= 0) {
+          if (typeof this.prerelease[i] === 'number') {
+            this.prerelease[i]++;
+            i = -2;
+          }
+        }
+        if (i === -1) // didn't increment anything
+          this.prerelease.push(0);
+      }
+      if (identifier) {
+        // 1.2.0-beta.1 bumps to 1.2.0-beta.2,
+        // 1.2.0-beta.fooblz or 1.2.0-beta bumps to 1.2.0-beta.0
+        if (this.prerelease[0] === identifier) {
+          if (isNaN(this.prerelease[1]))
+            this.prerelease = [identifier, 0];
+        } else
+          this.prerelease = [identifier, 0];
+      }
+      break;
+
+    default:
+      throw new Error('invalid increment argument: ' + release);
+  }
+  this.format();
+  this.raw = this.version;
+  return this;
+};
+
+exports.inc = inc;
+function inc(version, release, loose, identifier) {
+  if (typeof(loose) === 'string') {
+    identifier = loose;
+    loose = undefined;
+  }
+
+  try {
+    return new SemVer(version, loose).inc(release, identifier).version;
+  } catch (er) {
+    return null;
+  }
+}
+
+exports.diff = diff;
+function diff(version1, version2) {
+  if (eq(version1, version2)) {
+    return null;
+  } else {
+    var v1 = parse(version1);
+    var v2 = parse(version2);
+    if (v1.prerelease.length || v2.prerelease.length) {
+      for (var key in v1) {
+        if (key === 'major' || key === 'minor' || key === 'patch') {
+          if (v1[key] !== v2[key]) {
+            return 'pre'+key;
+          }
+        }
+      }
+      return 'prerelease';
+    }
+    for (var key in v1) {
+      if (key === 'major' || key === 'minor' || key === 'patch') {
+        if (v1[key] !== v2[key]) {
+          return key;
+        }
+      }
+    }
+  }
+}
+
+exports.compareIdentifiers = compareIdentifiers;
+
+var numeric = /^[0-9]+$/;
+function compareIdentifiers(a, b) {
+  var anum = numeric.test(a);
+  var bnum = numeric.test(b);
+
+  if (anum && bnum) {
+    a = +a;
+    b = +b;
+  }
+
+  return (anum && !bnum) ? -1 :
+         (bnum && !anum) ? 1 :
+         a < b ? -1 :
+         a > b ? 1 :
+         0;
+}
+
+exports.rcompareIdentifiers = rcompareIdentifiers;
+function rcompareIdentifiers(a, b) {
+  return compareIdentifiers(b, a);
+}
+
+exports.major = major;
+function major(a, loose) {
+  return new SemVer(a, loose).major;
+}
+
+exports.minor = minor;
+function minor(a, loose) {
+  return new SemVer(a, loose).minor;
+}
+
+exports.patch = patch;
+function patch(a, loose) {
+  return new SemVer(a, loose).patch;
+}
+
+exports.compare = compare;
+function compare(a, b, loose) {
+  return new SemVer(a, loose).compare(new SemVer(b, loose));
+}
+
+exports.compareLoose = compareLoose;
+function compareLoose(a, b) {
+  return compare(a, b, true);
+}
+
+exports.rcompare = rcompare;
+function rcompare(a, b, loose) {
+  return compare(b, a, loose);
+}
+
+exports.sort = sort;
+function sort(list, loose) {
+  return list.sort(function(a, b) {
+    return exports.compare(a, b, loose);
+  });
+}
+
+exports.rsort = rsort;
+function rsort(list, loose) {
+  return list.sort(function(a, b) {
+    return exports.rcompare(a, b, loose);
+  });
+}
+
+exports.gt = gt;
+function gt(a, b, loose) {
+  return compare(a, b, loose) > 0;
+}
+
+exports.lt = lt;
+function lt(a, b, loose) {
+  return compare(a, b, loose) < 0;
+}
+
+exports.eq = eq;
+function eq(a, b, loose) {
+  return compare(a, b, loose) === 0;
+}
+
+exports.neq = neq;
+function neq(a, b, loose) {
+  return compare(a, b, loose) !== 0;
+}
+
+exports.gte = gte;
+function gte(a, b, loose) {
+  return compare(a, b, loose) >= 0;
+}
+
+exports.lte = lte;
+function lte(a, b, loose) {
+  return compare(a, b, loose) <= 0;
+}
+
+exports.cmp = cmp;
+function cmp(a, op, b, loose) {
+  var ret;
+  switch (op) {
+    case '===':
+      if (typeof a === 'object') a = a.version;
+      if (typeof b === 'object') b = b.version;
+      ret = a === b;
+      break;
+    case '!==':
+      if (typeof a === 'object') a = a.version;
+      if (typeof b === 'object') b = b.version;
+      ret = a !== b;
+      break;
+    case '': case '=': case '==': ret = eq(a, b, loose); break;
+    case '!=': ret = neq(a, b, loose); break;
+    case '>': ret = gt(a, b, loose); break;
+    case '>=': ret = gte(a, b, loose); break;
+    case '<': ret = lt(a, b, loose); break;
+    case '<=': ret = lte(a, b, loose); break;
+    default: throw new TypeError('Invalid operator: ' + op);
+  }
+  return ret;
+}
+
+exports.Comparator = Comparator;
+function Comparator(comp, loose) {
+  if (comp instanceof Comparator) {
+    if (comp.loose === loose)
+      return comp;
+    else
+      comp = comp.value;
+  }
+
+  if (!(this instanceof Comparator))
+    return new Comparator(comp, loose);
+
+  debug('comparator', comp, loose);
+  this.loose = loose;
+  this.parse(comp);
+
+  if (this.semver === ANY)
+    this.value = '';
+  else
+    this.value = this.operator + this.semver.version;
+
+  debug('comp', this);
+}
+
+var ANY = {};
+Comparator.prototype.parse = function(comp) {
+  var r = this.loose ? re[COMPARATORLOOSE] : re[COMPARATOR];
+  var m = comp.match(r);
+
+  if (!m)
+    throw new TypeError('Invalid comparator: ' + comp);
+
+  this.operator = m[1];
+  if (this.operator === '=')
+    this.operator = '';
+
+  // if it literally is just '>' or '' then allow anything.
+  if (!m[2])
+    this.semver = ANY;
+  else
+    this.semver = new SemVer(m[2], this.loose);
+};
+
+Comparator.prototype.toString = function() {
+  return this.value;
+};
+
+Comparator.prototype.test = function(version) {
+  debug('Comparator.test', version, this.loose);
+
+  if (this.semver === ANY)
+    return true;
+
+  if (typeof version === 'string')
+    version = new SemVer(version, this.loose);
+
+  return cmp(version, this.operator, this.semver, this.loose);
+};
+
+Comparator.prototype.intersects = function(comp, loose) {
+  if (!(comp instanceof Comparator)) {
+    throw new TypeError('a Comparator is required');
+  }
+
+  var rangeTmp;
+
+  if (this.operator === '') {
+    rangeTmp = new Range(comp.value, loose);
+    return satisfies(this.value, rangeTmp, loose);
+  } else if (comp.operator === '') {
+    rangeTmp = new Range(this.value, loose);
+    return satisfies(comp.semver, rangeTmp, loose);
+  }
+
+  var sameDirectionIncreasing =
+    (this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '>=' || comp.operator === '>');
+  var sameDirectionDecreasing =
+    (this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '<=' || comp.operator === '<');
+  var sameSemVer = this.semver.version === comp.semver.version;
+  var differentDirectionsInclusive =
+    (this.operator === '>=' || this.operator === '<=') &&
+    (comp.operator === '>=' || comp.operator === '<=');
+  var oppositeDirectionsLessThan =
+    cmp(this.semver, '<', comp.semver, loose) &&
+    ((this.operator === '>=' || this.operator === '>') &&
+    (comp.operator === '<=' || comp.operator === '<'));
+  var oppositeDirectionsGreaterThan =
+    cmp(this.semver, '>', comp.semver, loose) &&
+    ((this.operator === '<=' || this.operator === '<') &&
+    (comp.operator === '>=' || comp.operator === '>'));
+
+  return sameDirectionIncreasing || sameDirectionDecreasing ||
+    (sameSemVer && differentDirectionsInclusive) ||
+    oppositeDirectionsLessThan || oppositeDirectionsGreaterThan;
+};
+
+
+exports.Range = Range;
+function Range(range, loose) {
+  if (range instanceof Range) {
+    if (range.loose === loose) {
+      return range;
+    } else {
+      return new Range(range.raw, loose);
+    }
+  }
+
+  if (range instanceof Comparator) {
+    return new Range(range.value, loose);
+  }
+
+  if (!(this instanceof Range))
+    return new Range(range, loose);
+
+  this.loose = loose;
+
+  // First, split based on boolean or ||
+  this.raw = range;
+  this.set = range.split(/\s*\|\|\s*/).map(function(range) {
+    return this.parseRange(range.trim());
+  }, this).filter(function(c) {
+    // throw out any that are not relevant for whatever reason
+    return c.length;
+  });
+
+  if (!this.set.length) {
+    throw new TypeError('Invalid SemVer Range: ' + range);
+  }
+
+  this.format();
+}
+
+Range.prototype.format = function() {
+  this.range = this.set.map(function(comps) {
+    return comps.join(' ').trim();
+  }).join('||').trim();
+  return this.range;
+};
+
+Range.prototype.toString = function() {
+  return this.range;
+};
+
+Range.prototype.parseRange = function(range) {
+  var loose = this.loose;
+  range = range.trim();
+  debug('range', range, loose);
+  // `1.2.3 - 1.2.4` => `>=1.2.3 <=1.2.4`
+  var hr = loose ? re[HYPHENRANGELOOSE] : re[HYPHENRANGE];
+  range = range.replace(hr, hyphenReplace);
+  debug('hyphen replace', range);
+  // `> 1.2.3 < 1.2.5` => `>1.2.3 <1.2.5`
+  range = range.replace(re[COMPARATORTRIM], comparatorTrimReplace);
+  debug('comparator trim', range, re[COMPARATORTRIM]);
+
+  // `~ 1.2.3` => `~1.2.3`
+  range = range.replace(re[TILDETRIM], tildeTrimReplace);
+
+  // `^ 1.2.3` => `^1.2.3`
+  range = range.replace(re[CARETTRIM], caretTrimReplace);
+
+  // normalize spaces
+  range = range.split(/\s+/).join(' ');
+
+  // At this point, the range is completely trimmed and
+  // ready to be split into comparators.
+
+  var compRe = loose ? re[COMPARATORLOOSE] : re[COMPARATOR];
+  var set = range.split(' ').map(function(comp) {
+    return parseComparator(comp, loose);
+  }).join(' ').split(/\s+/);
+  if (this.loose) {
+    // in loose mode, throw out any that are not valid comparators
+    set = set.filter(function(comp) {
+      return !!comp.match(compRe);
+    });
+  }
+  set = set.map(function(comp) {
+    return new Comparator(comp, loose);
+  });
+
+  return set;
+};
+
+Range.prototype.intersects = function(range, loose) {
+  if (!(range instanceof Range)) {
+    throw new TypeError('a Range is required');
+  }
+
+  return this.set.some(function(thisComparators) {
+    return thisComparators.every(function(thisComparator) {
+      return range.set.some(function(rangeComparators) {
+        return rangeComparators.every(function(rangeComparator) {
+          return thisComparator.intersects(rangeComparator, loose);
+        });
+      });
+    });
+  });
+};
+
+// Mostly just for testing and legacy API reasons
+exports.toComparators = toComparators;
+function toComparators(range, loose) {
+  return new Range(range, loose).set.map(function(comp) {
+    return comp.map(function(c) {
+      return c.value;
+    }).join(' ').trim().split(' ');
+  });
+}
+
+// comprised of xranges, tildes, stars, and gtlt's at this point.
+// already replaced the hyphen ranges
+// turn into a set of JUST comparators.
+function parseComparator(comp, loose) {
+  debug('comp', comp);
+  comp = replaceCarets(comp, loose);
+  debug('caret', comp);
+  comp = replaceTildes(comp, loose);
+  debug('tildes', comp);
+  comp = replaceXRanges(comp, loose);
+  debug('xrange', comp);
+  comp = replaceStars(comp, loose);
+  debug('stars', comp);
+  return comp;
+}
+
+function isX(id) {
+  return !id || id.toLowerCase() === 'x' || id === '*';
+}
+
+// ~, ~> --> * (any, kinda silly)
+// ~2, ~2.x, ~2.x.x, ~>2, ~>2.x ~>2.x.x --> >=2.0.0 <3.0.0
+// ~2.0, ~2.0.x, ~>2.0, ~>2.0.x --> >=2.0.0 <2.1.0
+// ~1.2, ~1.2.x, ~>1.2, ~>1.2.x --> >=1.2.0 <1.3.0
+// ~1.2.3, ~>1.2.3 --> >=1.2.3 <1.3.0
+// ~1.2.0, ~>1.2.0 --> >=1.2.0 <1.3.0
+function replaceTildes(comp, loose) {
+  return comp.trim().split(/\s+/).map(function(comp) {
+    return replaceTilde(comp, loose);
+  }).join(' ');
+}
+
+function replaceTilde(comp, loose) {
+  var r = loose ? re[TILDELOOSE] : re[TILDE];
+  return comp.replace(r, function(_, M, m, p, pr) {
+    debug('tilde', comp, _, M, m, p, pr);
+    var ret;
+
+    if (isX(M))
+      ret = '';
+    else if (isX(m))
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0';
+    else if (isX(p))
+      // ~1.2 == >=1.2.0 <1.3.0
+      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0';
+    else if (pr) {
+      debug('replaceTilde pr', pr);
+      if (pr.charAt(0) !== '-')
+        pr = '-' + pr;
+      ret = '>=' + M + '.' + m + '.' + p + pr +
+            ' <' + M + '.' + (+m + 1) + '.0';
+    } else
+      // ~1.2.3 == >=1.2.3 <1.3.0
+      ret = '>=' + M + '.' + m + '.' + p +
+            ' <' + M + '.' + (+m + 1) + '.0';
+
+    debug('tilde return', ret);
+    return ret;
+  });
+}
+
+// ^ --> * (any, kinda silly)
+// ^2, ^2.x, ^2.x.x --> >=2.0.0 <3.0.0
+// ^2.0, ^2.0.x --> >=2.0.0 <3.0.0
+// ^1.2, ^1.2.x --> >=1.2.0 <2.0.0
+// ^1.2.3 --> >=1.2.3 <2.0.0
+// ^1.2.0 --> >=1.2.0 <2.0.0
+function replaceCarets(comp, loose) {
+  return comp.trim().split(/\s+/).map(function(comp) {
+    return replaceCaret(comp, loose);
+  }).join(' ');
+}
+
+function replaceCaret(comp, loose) {
+  debug('caret', comp, loose);
+  var r = loose ? re[CARETLOOSE] : re[CARET];
+  return comp.replace(r, function(_, M, m, p, pr) {
+    debug('caret', comp, _, M, m, p, pr);
+    var ret;
+
+    if (isX(M))
+      ret = '';
+    else if (isX(m))
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0';
+    else if (isX(p)) {
+      if (M === '0')
+        ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0';
+      else
+        ret = '>=' + M + '.' + m + '.0 <' + (+M + 1) + '.0.0';
+    } else if (pr) {
+      debug('replaceCaret pr', pr);
+      if (pr.charAt(0) !== '-')
+        pr = '-' + pr;
+      if (M === '0') {
+        if (m === '0')
+          ret = '>=' + M + '.' + m + '.' + p + pr +
+                ' <' + M + '.' + m + '.' + (+p + 1);
+        else
+          ret = '>=' + M + '.' + m + '.' + p + pr +
+                ' <' + M + '.' + (+m + 1) + '.0';
+      } else
+        ret = '>=' + M + '.' + m + '.' + p + pr +
+              ' <' + (+M + 1) + '.0.0';
+    } else {
+      debug('no pr');
+      if (M === '0') {
+        if (m === '0')
+          ret = '>=' + M + '.' + m + '.' + p +
+                ' <' + M + '.' + m + '.' + (+p + 1);
+        else
+          ret = '>=' + M + '.' + m + '.' + p +
+                ' <' + M + '.' + (+m + 1) + '.0';
+      } else
+        ret = '>=' + M + '.' + m + '.' + p +
+              ' <' + (+M + 1) + '.0.0';
+    }
+
+    debug('caret return', ret);
+    return ret;
+  });
+}
+
+function replaceXRanges(comp, loose) {
+  debug('replaceXRanges', comp, loose);
+  return comp.split(/\s+/).map(function(comp) {
+    return replaceXRange(comp, loose);
+  }).join(' ');
+}
+
+function replaceXRange(comp, loose) {
+  comp = comp.trim();
+  var r = loose ? re[XRANGELOOSE] : re[XRANGE];
+  return comp.replace(r, function(ret, gtlt, M, m, p, pr) {
+    debug('xRange', comp, ret, gtlt, M, m, p, pr);
+    var xM = isX(M);
+    var xm = xM || isX(m);
+    var xp = xm || isX(p);
+    var anyX = xp;
+
+    if (gtlt === '=' && anyX)
+      gtlt = '';
+
+    if (xM) {
+      if (gtlt === '>' || gtlt === '<') {
+        // nothing is allowed
+        ret = '<0.0.0';
+      } else {
+        // nothing is forbidden
+        ret = '*';
+      }
+    } else if (gtlt && anyX) {
+      // replace X with 0
+      if (xm)
+        m = 0;
+      if (xp)
+        p = 0;
+
+      if (gtlt === '>') {
+        // >1 => >=2.0.0
+        // >1.2 => >=1.3.0
+        // >1.2.3 => >= 1.2.4
+        gtlt = '>=';
+        if (xm) {
+          M = +M + 1;
+          m = 0;
+          p = 0;
+        } else if (xp) {
+          m = +m + 1;
+          p = 0;
+        }
+      } else if (gtlt === '<=') {
+        // <=0.7.x is actually <0.8.0, since any 0.7.x should
+        // pass.  Similarly, <=7.x is actually <8.0.0, etc.
+        gtlt = '<';
+        if (xm)
+          M = +M + 1;
+        else
+          m = +m + 1;
+      }
+
+      ret = gtlt + M + '.' + m + '.' + p;
+    } else if (xm) {
+      ret = '>=' + M + '.0.0 <' + (+M + 1) + '.0.0';
+    } else if (xp) {
+      ret = '>=' + M + '.' + m + '.0 <' + M + '.' + (+m + 1) + '.0';
+    }
+
+    debug('xRange return', ret);
+
+    return ret;
+  });
+}
+
+// Because * is AND-ed with everything else in the comparator,
+// and '' means "any version", just remove the *s entirely.
+function replaceStars(comp, loose) {
+  debug('replaceStars', comp, loose);
+  // Looseness is ignored here.  star is always as loose as it gets!
+  return comp.trim().replace(re[STAR], '');
+}
+
+// This function is passed to string.replace(re[HYPHENRANGE])
+// M, m, patch, prerelease, build
+// 1.2 - 3.4.5 => >=1.2.0 <=3.4.5
+// 1.2.3 - 3.4 => >=1.2.0 <3.5.0 Any 3.4.x will do
+// 1.2 - 3.4 => >=1.2.0 <3.5.0
+function hyphenReplace($0,
+                       from, fM, fm, fp, fpr, fb,
+                       to, tM, tm, tp, tpr, tb) {
+
+  if (isX(fM))
+    from = '';
+  else if (isX(fm))
+    from = '>=' + fM + '.0.0';
+  else if (isX(fp))
+    from = '>=' + fM + '.' + fm + '.0';
+  else
+    from = '>=' + from;
+
+  if (isX(tM))
+    to = '';
+  else if (isX(tm))
+    to = '<' + (+tM + 1) + '.0.0';
+  else if (isX(tp))
+    to = '<' + tM + '.' + (+tm + 1) + '.0';
+  else if (tpr)
+    to = '<=' + tM + '.' + tm + '.' + tp + '-' + tpr;
+  else
+    to = '<=' + to;
+
+  return (from + ' ' + to).trim();
+}
+
+
+// if ANY of the sets match ALL of its comparators, then pass
+Range.prototype.test = function(version) {
+  if (!version)
+    return false;
+
+  if (typeof version === 'string')
+    version = new SemVer(version, this.loose);
+
+  for (var i = 0; i < this.set.length; i++) {
+    if (testSet(this.set[i], version))
+      return true;
+  }
+  return false;
+};
+
+function testSet(set, version) {
+  for (var i = 0; i < set.length; i++) {
+    if (!set[i].test(version))
+      return false;
+  }
+
+  if (version.prerelease.length) {
+    // Find the set of versions that are allowed to have prereleases
+    // For example, ^1.2.3-pr.1 desugars to >=1.2.3-pr.1 <2.0.0
+    // That should allow `1.2.3-pr.2` to pass.
+    // However, `1.2.4-alpha.notready` should NOT be allowed,
+    // even though it's within the range set by the comparators.
+    for (var i = 0; i < set.length; i++) {
+      debug(set[i].semver);
+      if (set[i].semver === ANY)
+        continue;
+
+      if (set[i].semver.prerelease.length > 0) {
+        var allowed = set[i].semver;
+        if (allowed.major === version.major &&
+            allowed.minor === version.minor &&
+            allowed.patch === version.patch)
+          return true;
+      }
+    }
+
+    // Version has a -pre, but it's not one of the ones we like.
+    return false;
+  }
+
+  return true;
+}
+
+exports.satisfies = satisfies;
+function satisfies(version, range, loose) {
+  try {
+    range = new Range(range, loose);
+  } catch (er) {
+    return false;
+  }
+  return range.test(version);
+}
+
+exports.maxSatisfying = maxSatisfying;
+function maxSatisfying(versions, range, loose) {
+  var max = null;
+  var maxSV = null;
+  try {
+    var rangeObj = new Range(range, loose);
+  } catch (er) {
+    return null;
+  }
+  versions.forEach(function (v) {
+    if (rangeObj.test(v)) { // satisfies(v, range, loose)
+      if (!max || maxSV.compare(v) === -1) { // compare(max, v, true)
+        max = v;
+        maxSV = new SemVer(max, loose);
+      }
+    }
+  })
+  return max;
+}
+
+exports.minSatisfying = minSatisfying;
+function minSatisfying(versions, range, loose) {
+  var min = null;
+  var minSV = null;
+  try {
+    var rangeObj = new Range(range, loose);
+  } catch (er) {
+    return null;
+  }
+  versions.forEach(function (v) {
+    if (rangeObj.test(v)) { // satisfies(v, range, loose)
+      if (!min || minSV.compare(v) === 1) { // compare(min, v, true)
+        min = v;
+        minSV = new SemVer(min, loose);
+      }
+    }
+  })
+  return min;
+}
+
+exports.validRange = validRange;
+function validRange(range, loose) {
+  try {
+    // Return '*' instead of '' so that truthiness works.
+    // This will throw if it's invalid anyway
+    return new Range(range, loose).range || '*';
+  } catch (er) {
+    return null;
+  }
+}
+
+// Determine if version is less than all the versions possible in the range
+exports.ltr = ltr;
+function ltr(version, range, loose) {
+  return outside(version, range, '<', loose);
+}
+
+// Determine if version is greater than all the versions possible in the range.
+exports.gtr = gtr;
+function gtr(version, range, loose) {
+  return outside(version, range, '>', loose);
+}
+
+exports.outside = outside;
+function outside(version, range, hilo, loose) {
+  version = new SemVer(version, loose);
+  range = new Range(range, loose);
+
+  var gtfn, ltefn, ltfn, comp, ecomp;
+  switch (hilo) {
+    case '>':
+      gtfn = gt;
+      ltefn = lte;
+      ltfn = lt;
+      comp = '>';
+      ecomp = '>=';
+      break;
+    case '<':
+      gtfn = lt;
+      ltefn = gte;
+      ltfn = gt;
+      comp = '<';
+      ecomp = '<=';
+      break;
+    default:
+      throw new TypeError('Must provide a hilo val of "<" or ">"');
+  }
+
+  // If it satisifes the range it is not outside
+  if (satisfies(version, range, loose)) {
+    return false;
+  }
+
+  // From now on, variable terms are as if we're in "gtr" mode.
+  // but note that everything is flipped for the "ltr" function.
+
+  for (var i = 0; i < range.set.length; ++i) {
+    var comparators = range.set[i];
+
+    var high = null;
+    var low = null;
+
+    comparators.forEach(function(comparator) {
+      if (comparator.semver === ANY) {
+        comparator = new Comparator('>=0.0.0')
+      }
+      high = high || comparator;
+      low = low || comparator;
+      if (gtfn(comparator.semver, high.semver, loose)) {
+        high = comparator;
+      } else if (ltfn(comparator.semver, low.semver, loose)) {
+        low = comparator;
+      }
+    });
+
+    // If the edge version comparator has a operator then our version
+    // isn't outside it
+    if (high.operator === comp || high.operator === ecomp) {
+      return false;
+    }
+
+    // If the lowest version comparator has an operator and our version
+    // is less than it then it isn't higher than the range
+    if ((!low.operator || low.operator === comp) &&
+        ltefn(version, low.semver)) {
+      return false;
+    } else if (low.operator === ecomp && ltfn(version, low.semver)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+exports.prerelease = prerelease;
+function prerelease(version, loose) {
+  var parsed = parse(version, loose);
+  return (parsed && parsed.prerelease.length) ? parsed.prerelease : null;
+}
+
+exports.intersects = intersects;
+function intersects(r1, r2, loose) {
+  r1 = new Range(r1, loose)
+  r2 = new Range(r2, loose)
+  return r1.intersects(r2)
+}
+
+}).call(this,require('_process'))
+},{"_process":33}],38:[function(require,module,exports){
 ;/*! showdown 02-06-2017 */
 (function(){
 /**
@@ -45139,9 +47571,10 @@ if (typeof module !== 'undefined' && module.exports) {
 
 
 
-},{}],35:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 const _ = require('lodash');
 const moment = require('moment');
+const semver = require('resin-semver');
 
 const filterTests = {
   string: {
@@ -45176,6 +47609,14 @@ const filterTests = {
     'is after': (target, value) => {
       return target && moment(target).isAfter(value);
     },
+  },
+  /**
+   * See the node-semver docs for more information on semver ranges
+   * https://github.com/npm/node-semver#ranges
+   */
+  'semver-range': {
+    'contains': (target, value) => semver.satisfies(value, target),
+    'does not contain': (target, value) => !semver.satisfies(value, target)
   }
 };
 
@@ -45255,10 +47696,10 @@ class Tamis {
 
 module.exports = (tests) => new Tamis(tests);
 
-},{"lodash":31,"moment":32}],36:[function(require,module,exports){
-module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <em>{{operator}}</em> <strong>{{value}}</strong> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n      {{#if filterFormType === 'number'}}\n        <input type=\"number\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n\n      {{#if filterFormType === 'date'}}\n        <input type=\"date\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
+},{"lodash":31,"moment":32,"resin-semver":36}],40:[function(require,module,exports){
+module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <em>{{operator}}</em> <strong>{{value}}</strong> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string' || filterFormType === 'semver-range'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n      {{#if filterFormType === 'number'}}\n        <input type=\"number\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n\n      {{#if filterFormType === 'date'}}\n        <input type=\"date\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
 
-},{}],37:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 const _ = require('lodash');
 const jsyaml = require('js-yaml');
 const showdown = require('showdown');
@@ -45299,7 +47740,11 @@ let json2html = (data, name) => {
   } else if (_.isNumber(data)) {
     return `<span class='_number${nameClass}'>${data}</span>`
   } else if (_.isString(data)) {
-    return `<span class='_string${nameClass}'>${converter.makeHtml(data)}</span>`
+    if (name === 'Versions Affected') {
+      return `<span class='_string${nameClass}'>${converter.makeHtml('`' + data + '`')}</span>`
+    } else {
+      return `<span class='_string${nameClass}'>${converter.makeHtml(data)}</span>`
+    }
   } else if (_.isBoolean(data)) {
     return `<span class='_boolean${nameClass}'>${data}</span>`
   } else if (_.isNull(data)) {
@@ -45378,7 +47823,7 @@ fetch('scratchpad.yaml').then(res => res.text()).then((rawYaml) => {
 })
 
 
-},{"./filter":35,"./filter.tpl.html":36,"./schema":38,"js-yaml":1,"lodash":31,"ractive":33,"showdown":34}],38:[function(require,module,exports){
+},{"./filter":39,"./filter.tpl.html":40,"./schema":42,"js-yaml":1,"lodash":31,"ractive":34,"showdown":38}],42:[function(require,module,exports){
 module.exports={
   "GitHub issue": {
     "type": "string"
@@ -45397,7 +47842,10 @@ module.exports={
   },
   "Last Updated": {
     "type": "date"
+  },
+  "Versions Affected": {
+    "type": "semver-range"
   }
 }
 
-},{}]},{},[37]);
+},{}]},{},[41]);

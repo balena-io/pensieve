@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const moment = require('moment');
+const semver = require('resin-semver');
 
 const filterTests = {
   string: {
@@ -34,6 +35,14 @@ const filterTests = {
     'is after': (target, value) => {
       return target && moment(target).isAfter(value);
     },
+  },
+  /**
+   * See the node-semver docs for more information on semver ranges
+   * https://github.com/npm/node-semver#ranges
+   */
+  'semver-range': {
+    'contains': (target, value) => semver.satisfies(value, target),
+    'does not contain': (target, value) => !semver.satisfies(value, target)
   }
 };
 

@@ -172,5 +172,34 @@ describe('resin-filter', () => {
         );
       });
     });
+
+    describe('semver-range types', () => {
+      it('should correctly test values using the "contains" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Versions Affected'];
+
+        input.operator = 'contains';
+        input.value = 'Resin OS 2.0.5';
+
+        expect(t.filter(collection, input)).to.have.all.keys(
+          'Bluetooth not working',
+          'Issues with Line Endings'
+        );
+      });
+
+      it('should correctly test values using the "does not contain" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Versions Affected'];
+
+        input.operator = 'does not contain';
+        input.value = 'Resin OS 1.24.0';
+
+        expect(t.filter(collection, input)).to.have.all.keys('Bluetooth not working');
+      });
+    });
   });
 });
