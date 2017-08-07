@@ -1,28 +1,14 @@
 const _ = require('lodash');
 
-const stringTest = (item, input) => {
-  const { name, operator, value } = input;
-  const target = item[name];
-
-  if (operator === 'is') {
-    return target && target === value;
-  }
-
-  if (operator === 'contains') {
-    return target && target.includes(value);
-  }
-  if (operator === 'does not contain') {
-    return !target || !target.includes(value);
-  }
-
-  throw new Error(`${operator} is not a valid operator for string types`);
-}
-
 const filterTests = {
-  string: stringTest
+  string: {
+    'is': (target, value) => target && target === value,
+    'contains': (target, value) => target && target.includes(value),
+    'does not contain': (target, value) => !target || !target.includes(value),
+  }
 };
 
-class Filter {
+class Tamis {
   constructor(tests = {}) {
     this.tests = _.assign(
       _.cloneDeep(filterTests),
@@ -33,29 +19,35 @@ class Filter {
   baseTest(item, input) {
       const { type } = input;
       if (type in filterTests) {
-        return filterTests[type](item, input);
+        const { name, operator, value } = input;
+        const target = item[name];
+
+        if (operator in filterTests[type]) {
+          return filterTests[type][operator](target, value);
+        }
+
+        throw new Error(`${operator} is not a valid operator for ${type} types`);
       }
       throw new Error(`There is no filter test for type ${type}`);
   }
 
-  testArray(collection, input) {
-
+  filterArray(collection, input) {
     return collection.filter((item) => {
       return this.baseTest(item, input);
     });
   }
 
-  testObject(collection, input) {
-    const result = _.pickBy(collection, (value) => {
+  filterObject(collection, input) {
+    return _.pickBy(collection, (value) => {
       return this.baseTest(value, input);
     });
-
-    return result;
   }
 
   getOperators(type) {
-    if (type === 'string') {
-      return ['contains', 'does not contain', 'is']
+    if (type in filterTests) {
+      return Object.keys(filterTests[type]);
+    } else {
+      return [];
     }
   }
 
@@ -79,4 +71,4 @@ class Filter {
 
 }
 
-module.exports = (tests) => new Filter(tests);
+module.exports = (tests) => new Tamis(tests);
