@@ -40679,9 +40679,14 @@ const _ = require('lodash');
 
 const filterTests = {
   string: {
-    'is': (target, value) => target && target === value,
+    'is': (target, value) => target === value,
     'contains': (target, value) => target && target.includes(value),
     'does not contain': (target, value) => !target || !target.includes(value),
+  },
+  number: {
+    'equals': (target, value) => target === value,
+    'more than': (target, value) => target > value,
+    'less than': (target, value) => target < value,
   }
 };
 
@@ -40706,6 +40711,17 @@ class Tamis {
         throw new Error(`${operator} is not a valid operator for ${type} types`);
       }
       throw new Error(`There is no filter test for type ${type}`);
+  }
+
+  filter(collection, input) {
+    if (_.isObject(collection)) {
+      return this.filterObject(collection, input);
+    }
+    if (_.isArray(collection)) {
+      return this.filterArray(collection, input);
+    }
+
+    throw new Error(`collection argument must be either object or array.`);
   }
 
   filterArray(collection, input) {
@@ -40751,7 +40767,7 @@ class Tamis {
 module.exports = (tests) => new Tamis(tests);
 
 },{"lodash":31}],35:[function(require,module,exports){
-module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <em>{{operator}}</em> <strong>{{value}}</strong> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
+module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <em>{{operator}}</em> <strong>{{value}}</strong> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n      {{#if filterFormType === 'number'}}\n        <input type=\"number\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
 
 },{}],36:[function(require,module,exports){
 const _ = require('lodash');
@@ -40760,9 +40776,9 @@ const showdown = require('showdown');
 const Ractive = require('ractive');
 
 const schema = require('./schema');
-const FilterFactory = require('./filter');
+const Tamis = require('./filter');
 
-const filter = FilterFactory();
+const t = Tamis();
 
 let converter = new showdown.Converter()
 
@@ -40813,7 +40829,7 @@ const filterUI = new Ractive({
   target: '#filters',
   template: require('./filter.tpl.html'),
   data: {
-    inputs: filter.makeFilterInputs(schema),
+    inputs: t.makeFilterInputs(schema),
     activeInputs: [],
     currentFilter: {},
     filterFormOperators: [],
@@ -40859,7 +40875,7 @@ filterUI.on('removeInput', function(event, input) {
 const filterAndRender = (inputs) => {
   let src = _.cloneDeep(masterSource);
   inputs.forEach((input) => {
-    src = filter.testObject(src, input);
+    src = t.filter(src, input);
   });
 
   render(src);
@@ -40883,6 +40899,9 @@ module.exports={
   },
   "Treatments": {
     "type": "string"
+  },
+  "Fix Difficulty": {
+    "type": "number"
   }
 }
 
