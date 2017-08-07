@@ -47736,7 +47736,7 @@ class Tamis {
 module.exports = (tests) => new Tamis(tests);
 
 },{"lodash":31,"moment":32,"regex-parser":35,"resin-semver":37}],41:[function(require,module,exports){
-module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <strong>{{operator}}</strong> <em>{{value}}</em> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string' || filterFormType === 'semver-range' || filterFormType === 'semver'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n      {{#if filterFormType === 'number'}}\n        <input type=\"number\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n\n      {{#if filterFormType === 'date'}}\n        <input type=\"date\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
+module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <strong>{{operator}}</strong> <em>{{value}}</em>\n      <a href=\"#\" on-click=\"['editInput', this]\">edit</a>\n      <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<div class=\"filter-modal-mask\" on-click=\"@this.set('showFilterForm', false)\">\n</div>\n\n<div class=\"filter-modal\">\n  <div class=\"filter-modal-header clearfix\">\n    {{#if currentFilter.hash}}\n      <h3>Edit filter</h3>\n    {{else}}\n      <h3>Add filter</h3>\n    {{/if}}\n    <button type=\"button\" class=\"close\">×</button>\n  </div>\n  <hr>\n\n  <select class=\"form-select\" value=\"{{currentFilter.name}}\">\n    {{#each inputs}}\n      <option>{{name}}</option>\n    {{/each}}\n  </select>\n\n  <select class=\"form-select\" value=\"{{currentFilter.operator}}\">\n    {{#each filterFormOperators}}\n      <option>{{.}}</option>\n    {{/each}}\n  </select>\n  {{#if filterFormType === 'string' || filterFormType === 'semver-range' || filterFormType === 'semver'}}\n    <input class=\"form-control\" type=\"text\" value=\"{{currentFilter.value}}\">\n  {{/if}}\n  {{#if filterFormType === 'number'}}\n    <input class=\"form-control\" type=\"number\" value=\"{{currentFilter.value}}\">\n  {{/if}}\n\n  {{#if filterFormType === 'date'}}\n    <input class=\"form-control\" type=\"date\" value=\"{{currentFilter.value}}\">\n  {{/if}}\n\n  <div class=\"form-actions\">\n    {{#if currentFilter.hash}}\n      <button class=\"btn btn-primary\" type=\"button\" on-click=\"updateFilter\">Update</button>\n    {{else}}\n      <button class=\"btn btn-primary\" type=\"button\" on-click=\"addFilter\">Add</button>\n    {{/if}}\n  </div>\n</div>\n{{/if}}\n";
 
 },{}],42:[function(require,module,exports){
 const _ = require('lodash');
@@ -47753,7 +47753,16 @@ let converter = new showdown.Converter()
 
 let masterSource;
 
-let makeNameClass = (name) =>
+const randomString = (length = 16) => {
+  var text = '';
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+const makeNameClass = (name) =>
   name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : ``;
 
 let json2html = (data, name) => {
@@ -47825,7 +47834,6 @@ filterUI.on('addFilter', function(event) {
 
   const currentFilter = this.get('currentFilter');
   const srcFilter = this.get('inputs')[currentFilter.name];
-
   const newInput = _.assign(_.cloneDeep(srcFilter), currentFilter);
 
   this.set({
@@ -47833,9 +47841,33 @@ filterUI.on('addFilter', function(event) {
     'currentFilter': {},
   });
 
+  newInput.hash = randomString();
+
   this.push('activeInputs', newInput);
 
   filterAndRender(this.get('activeInputs'));
+});
+
+filterUI.on('updateFilter', function(event) {
+  event.original.preventDefault();
+
+  const currentFilter = this.get('currentFilter');
+
+  const inputs = this.get('activeInputs').map((item) => {
+    if (item.hash === currentFilter.hash) {
+      return currentFilter;
+    } else {
+      return item;
+    }
+  });
+
+  this.set({
+    'activeInputs': inputs,
+    'showFilterForm': false,
+    'currentFilter': {},
+  });
+
+  filterAndRender(inputs);
 });
 
 filterUI.on('removeInput', function(event, input) {
@@ -47843,6 +47875,14 @@ filterUI.on('removeInput', function(event, input) {
   this.set('activeInputs', this.get('activeInputs').filter((a) => a.name !== input.name));
 
   filterAndRender(this.get('activeInputs'));
+});
+
+filterUI.on('editInput', function(event, input) {
+  event.original.preventDefault();
+  this.set({
+    'showFilterForm': true,
+    'currentFilter': input
+  });
 });
 
 const filterAndRender = (inputs) => {

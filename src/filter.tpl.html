@@ -6,45 +6,57 @@
     {{#if activeInputs.length}}
     currently filtering on:
     {{#each activeInputs}}
-      <br>{{name}} <strong>{{operator}}</strong> <em>{{value}}</em> <a href="#" on-click="['removeInput', this]">remove</a>
+      <br>{{name}} <strong>{{operator}}</strong> <em>{{value}}</em>
+      <a href="#" on-click="['editInput', this]">edit</a>
+      <a href="#" on-click="['removeInput', this]">remove</a>
     {{/each}}
     {{/if}}
   </div>
 </div>
 
 {{#if showFilterForm}}
-<hr>
-<div class="columns">
-  <div class="one-fourth column">
-    <select value="{{currentFilter.name}}">
-      {{#each inputs}}
-        <option>{{name}}</option>
-      {{/each}}
-    </select>
-  </div>
-  <div class="one-fourth column">
-      <select value="{{currentFilter.operator}}">
-        {{#each filterFormOperators}}
-          <option>{{.}}</option>
-        {{/each}}
-      </select>
-  </div>
-  <div class="one-fourth column">
-      {{#if filterFormType === 'string' || filterFormType === 'semver-range' || filterFormType === 'semver'}}
-        <input type="text" value="{{currentFilter.value}}">
-      {{/if}}
-      {{#if filterFormType === 'number'}}
-        <input type="number" value="{{currentFilter.value}}">
-      {{/if}}
+<div class="filter-modal-mask" on-click="@this.set('showFilterForm', false)">
+</div>
 
-      {{#if filterFormType === 'date'}}
-        <input type="date" value="{{currentFilter.value}}">
-      {{/if}}
+<div class="filter-modal">
+  <div class="filter-modal-header clearfix">
+    {{#if currentFilter.hash}}
+      <h3>Edit filter</h3>
+    {{else}}
+      <h3>Add filter</h3>
+    {{/if}}
+    <button type="button" class="close">×</button>
   </div>
-  <div class="one-fourth column">
-    <button class="btn" type="button" on-click="addFilter">Add</button>
+  <hr>
+
+  <select class="form-select" value="{{currentFilter.name}}">
+    {{#each inputs}}
+      <option>{{name}}</option>
+    {{/each}}
+  </select>
+
+  <select class="form-select" value="{{currentFilter.operator}}">
+    {{#each filterFormOperators}}
+      <option>{{.}}</option>
+    {{/each}}
+  </select>
+  {{#if filterFormType === 'string' || filterFormType === 'semver-range' || filterFormType === 'semver'}}
+    <input class="form-control" type="text" value="{{currentFilter.value}}">
+  {{/if}}
+  {{#if filterFormType === 'number'}}
+    <input class="form-control" type="number" value="{{currentFilter.value}}">
+  {{/if}}
+
+  {{#if filterFormType === 'date'}}
+    <input class="form-control" type="date" value="{{currentFilter.value}}">
+  {{/if}}
+
+  <div class="form-actions">
+    {{#if currentFilter.hash}}
+      <button class="btn btn-primary" type="button" on-click="updateFilter">Update</button>
+    {{else}}
+      <button class="btn btn-primary" type="button" on-click="addFilter">Add</button>
+    {{/if}}
   </div>
 </div>
 {{/if}}
-
-<hr>

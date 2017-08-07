@@ -12,7 +12,16 @@ let converter = new showdown.Converter()
 
 let masterSource;
 
-let makeNameClass = (name) =>
+const randomString = (length = 16) => {
+  var text = '';
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
+const makeNameClass = (name) =>
   name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : ``;
 
 let json2html = (data, name) => {
@@ -84,7 +93,6 @@ filterUI.on('addFilter', function(event) {
 
   const currentFilter = this.get('currentFilter');
   const srcFilter = this.get('inputs')[currentFilter.name];
-
   const newInput = _.assign(_.cloneDeep(srcFilter), currentFilter);
 
   this.set({
@@ -92,9 +100,33 @@ filterUI.on('addFilter', function(event) {
     'currentFilter': {},
   });
 
+  newInput.hash = randomString();
+
   this.push('activeInputs', newInput);
 
   filterAndRender(this.get('activeInputs'));
+});
+
+filterUI.on('updateFilter', function(event) {
+  event.original.preventDefault();
+
+  const currentFilter = this.get('currentFilter');
+
+  const inputs = this.get('activeInputs').map((item) => {
+    if (item.hash === currentFilter.hash) {
+      return currentFilter;
+    } else {
+      return item;
+    }
+  });
+
+  this.set({
+    'activeInputs': inputs,
+    'showFilterForm': false,
+    'currentFilter': {},
+  });
+
+  filterAndRender(inputs);
 });
 
 filterUI.on('removeInput', function(event, input) {
@@ -102,6 +134,14 @@ filterUI.on('removeInput', function(event, input) {
   this.set('activeInputs', this.get('activeInputs').filter((a) => a.name !== input.name));
 
   filterAndRender(this.get('activeInputs'));
+});
+
+filterUI.on('editInput', function(event, input) {
+  event.original.preventDefault();
+  this.set({
+    'showFilterForm': true,
+    'currentFilter': input
+  });
 });
 
 const filterAndRender = (inputs) => {
