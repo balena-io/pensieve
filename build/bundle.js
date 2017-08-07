@@ -42396,6 +42396,37 @@ return Ractive;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],35:[function(require,module,exports){
+"use strict";
+
+/**
+ * RegexParser
+ * Parses a string input.
+ *
+ * @name RegexParser
+ * @function
+ * @param {String} input The string input that should be parsed as regular
+ * expression.
+ * @return {RegExp} The parsed regular expression.
+ */
+var RegexParser = module.exports = function (input) {
+
+    // Validate input
+    if (typeof input !== "string") {
+        throw new Error("Invalid input. Input must be a string");
+    }
+
+    // Parse input
+    var m = input.match(/(\/?)(.+)\1([a-z]*)/i);
+
+    // Invalid flags
+    if (m[3] && !/^(?!.*?(.).*?\1)[gmixXsuUAJ]+$/.test(m[3])) {
+        return RegExp(input);
+    }
+
+    // Create the regular expression
+    return new RegExp(m[2], m[3]);
+};
+},{}],36:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -43075,7 +43106,7 @@ function isObject(value) {
 module.exports = memoize;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 exports.__esModule = true;
 var semver = require("semver");
@@ -43341,7 +43372,7 @@ exports.maxSatisfying = function (versions, range) {
     return max;
 };
 
-},{"lodash.memoize":35,"semver":37}],37:[function(require,module,exports){
+},{"lodash.memoize":36,"semver":38}],38:[function(require,module,exports){
 (function (process){
 exports = module.exports = SemVer;
 
@@ -44641,7 +44672,7 @@ function intersects(r1, r2, loose) {
 }
 
 }).call(this,require('_process'))
-},{"_process":33}],38:[function(require,module,exports){
+},{"_process":33}],39:[function(require,module,exports){
 ;/*! showdown 02-06-2017 */
 (function(){
 /**
@@ -47571,16 +47602,19 @@ if (typeof module !== 'undefined' && module.exports) {
 
 
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 const _ = require('lodash');
 const moment = require('moment');
 const semver = require('resin-semver');
+const RegexParser = require('regex-parser');
 
 const filterTests = {
   string: {
-    'is': (target, value) => target === value,
-    'contains': (target, value) => target && target.includes(value),
-    'does not contain': (target, value) => !target || !target.includes(value),
+    'is': (target = '', value) => target === value,
+    'contains': (target = '', value) => target.includes(value),
+    'does not contain': (target = '', value) => !target.includes(value),
+    'matches RegEx': (target = '', value) => target.match(RegexParser(value)),
+    'does not match RegEx': (target = '', value) => !target.match(RegexParser(value)),
   },
   number: {
     'equals': (target, value) => _.isNumber(target) && target === value,
@@ -47701,10 +47735,10 @@ class Tamis {
 
 module.exports = (tests) => new Tamis(tests);
 
-},{"lodash":31,"moment":32,"resin-semver":36}],40:[function(require,module,exports){
+},{"lodash":31,"moment":32,"regex-parser":35,"resin-semver":37}],41:[function(require,module,exports){
 module.exports = "<div class=\"columns\">\n  <div class=\"on-half column\">\n    <button class=\"btn\" type=\"button\" on-click=\"@this.set('showFilterForm', true)\">Add filter</button>\n  </div>\n  <div class=\"on-half column\">\n    {{#if activeInputs.length}}\n    currently filtering on:\n    {{#each activeInputs}}\n      <br>{{name}} <strong>{{operator}}</strong> <em>{{value}}</em> <a href=\"#\" on-click=\"['removeInput', this]\">remove</a>\n    {{/each}}\n    {{/if}}\n  </div>\n</div>\n\n{{#if showFilterForm}}\n<hr>\n<div class=\"columns\">\n  <div class=\"one-fourth column\">\n    <select value=\"{{currentFilter.name}}\">\n      {{#each inputs}}\n        <option>{{name}}</option>\n      {{/each}}\n    </select>\n  </div>\n  <div class=\"one-fourth column\">\n      <select value=\"{{currentFilter.operator}}\">\n        {{#each filterFormOperators}}\n          <option>{{.}}</option>\n        {{/each}}\n      </select>\n  </div>\n  <div class=\"one-fourth column\">\n      {{#if filterFormType === 'string' || filterFormType === 'semver-range' || filterFormType === 'semver'}}\n        <input type=\"text\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n      {{#if filterFormType === 'number'}}\n        <input type=\"number\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n\n      {{#if filterFormType === 'date'}}\n        <input type=\"date\" value=\"{{currentFilter.value}}\">\n      {{/if}}\n  </div>\n  <div class=\"one-fourth column\">\n    <button class=\"btn\" type=\"button\" on-click=\"addFilter\">Add</button>\n  </div>\n</div>\n{{/if}}\n\n<hr>\n";
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 const _ = require('lodash');
 const jsyaml = require('js-yaml');
 const showdown = require('showdown');
@@ -47828,7 +47862,7 @@ fetch('scratchpad.yaml').then(res => res.text()).then((rawYaml) => {
 })
 
 
-},{"./filter":39,"./filter.tpl.html":40,"./schema":42,"js-yaml":1,"lodash":31,"ractive":34,"showdown":38}],42:[function(require,module,exports){
+},{"./filter":40,"./filter.tpl.html":41,"./schema":43,"js-yaml":1,"lodash":31,"ractive":34,"showdown":39}],43:[function(require,module,exports){
 module.exports={
   "GitHub issue": {
     "type": "string"
@@ -47856,4 +47890,4 @@ module.exports={
   }
 }
 
-},{}]},{},[41]);
+},{}]},{},[42]);
