@@ -7,3 +7,51 @@
 #filters {
   padding-top: 45px;
 }
+
+.filter-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 11;
+}
+
+.filter-modal-header h3 {
+  float: left;
+}
+
+.filter-modal {
+  position: fixed;
+  width: 666px;
+  z-index: 22;
+  margin-left: -300px;
+  left: 50%;
+  top: 30px;
+  padding-top: 20px;
+  padding: 10px;
+  background: white;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 6px;
+
+}
+
+.filter-modal .close {
+  -webkit-appearance: none;
+  padding: 0;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+  float: right;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .2;
+}
+
+.filter-modal .form-actions {
+  margin-top: 30px;
+}
