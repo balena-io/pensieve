@@ -7,10 +7,14 @@ const filterTests = {
     'does not contain': (target, value) => !target || !target.includes(value),
   },
   number: {
-    'equals': (target, value) => target === value,
-    'more than': (target, value) => target > value,
-    'less than': (target, value) => target < value,
-  }
+    'equals': (target, value) => _.isNumber(target) && target === value,
+    'more than': (target, value) => _.isNumber(target) && target > value,
+    'less than': (target, value) => _.isNumber(target) && target < value,
+  },
+  boolean: {
+    'is true': (target) => !!target,
+    'is false': (target) => !target,
+  },
 };
 
 class Tamis {

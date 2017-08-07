@@ -97,8 +97,35 @@ describe('resin-filter', () => {
         // Set a value
         input.value = 3;
 
+        expect(t.filter(collection, input)).to.have.all.keys(
+          "Docker won't start",
+          "Bluetooth not working"
+        );
+        expect(t.filter(collection, input)).to.not.have.all.keys('Issues with Line Endings');
+      });
+    });
+
+    describe('boolean types', () => {
+      it('should correctly test values using the "is true" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Pull Leech Logs'];
+
+        input.operator = 'is true';
+
         expect(t.filter(collection, input)).to.have.all.keys('Bluetooth not working');
-        expect(t.filter(collection, input)).to.not.have.all.keys(
+      });
+
+      it('should correctly test values using the "is false" operator', () => {
+        const t = Tamis();
+        const collection = source;
+        const inputs = t.makeFilterInputs(schema)
+        const input = inputs['Pull Leech Logs'];
+
+        input.operator = 'is false';
+
+        expect(t.filter(collection, input)).to.have.all.keys(
           "Docker won't start",
           "Issues with Line Endings"
         );
