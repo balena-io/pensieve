@@ -13,5 +13,8 @@
   },
   "Pull Leech Logs": {
     "type": "boolean"
+  },
+  "Last Updated": {
+    "type": "date"
   }
 }

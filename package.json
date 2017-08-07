@@ -21,6 +21,7 @@
   "dependencies": {
     "js-yaml": "^3.9.1",
     "lodash": "^4.17.4",
+    "moment": "^2.18.1",
     "ractive": "^0.9.3",
     "showdown": "^1.7.1"
   },

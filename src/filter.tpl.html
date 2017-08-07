@@ -36,6 +36,10 @@
       {{#if filterFormType === 'number'}}
         <input type="number" value="{{currentFilter.value}}">
       {{/if}}
+
+      {{#if filterFormType === 'date'}}
+        <input type="date" value="{{currentFilter.value}}">
+      {{/if}}
   </div>
   <div class="one-fourth column">
     <button class="btn" type="button" on-click="addFilter">Add</button>
