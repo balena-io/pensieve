@@ -3,8 +3,8 @@ const _ = require('lodash');
 const jsyaml = require('js-yaml');
 const fs = require('fs');
 const Tamis = require('../src/filter');
-const schema = require('../src/schema');
-const rawYaml = fs.readFileSync('./scratchpad.yaml', 'utf8');
+const schema = require('./resources/schema');
+const rawYaml = fs.readFileSync('./test/resources/test.yaml', 'utf8');
 const source = jsyaml.load(rawYaml);
 
 describe('resin-filter', () => {
@@ -12,7 +12,7 @@ describe('resin-filter', () => {
 
     it('should correctly test string values using the "contains" operator', () => {
       const t = Tamis();
-      const collection = source.Scratchpad;
+      const collection = source;
       const inputs = t.makeFilterInputs(schema)
       const input = inputs['Signs and Symptoms'];
 
@@ -26,7 +26,7 @@ describe('resin-filter', () => {
 
     it('should correctly test string values using the "does not contain" operator', () => {
       const t = Tamis();
-      const collection = source.Scratchpad;
+      const collection = source;
       const inputs = t.makeFilterInputs(schema)
       const input = inputs['Signs and Symptoms'];
 
@@ -46,7 +46,7 @@ describe('resin-filter', () => {
   describe('.filterArray()', () => {
     it('should correctly test string values using the "contains" operator', () => {
       const t = Tamis();
-      const collection = _.map(source.Scratchpad, (value, key) =>
+      const collection = _.map(source, (value, key) =>
         _.assign(_.cloneDeep(value), { key }));
 
       const inputs = t.makeFilterInputs(schema)
@@ -63,7 +63,7 @@ describe('resin-filter', () => {
 
     it('should correctly test string values using the "does not contain" operator', () => {
       const t = Tamis();
-      const collection = _.map(source.Scratchpad, (value, key) =>
+      const collection = _.map(source, (value, key) =>
         _.assign(_.cloneDeep(value), { key }));
 
       const inputs = t.makeFilterInputs(schema)
