@@ -1,5 +1,6 @@
 Scratchpad:
   Docker won't start:
+    Test: testedit
     Address already in use: |
       Docker might be failing to create a network bridge at startup.
 
