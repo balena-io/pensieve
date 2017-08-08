@@ -1,24 +1,29 @@
+process.version = '1.0.0';
 const _ = require('lodash');
 const jsyaml = require('js-yaml');
 const showdown = require('showdown');
 const Ractive = require('ractive');
 const createHistory = require('history').createBrowserHistory;
 const qs = require('qs');
+const GitHub = require('github-api')
 
 const history = createHistory();
 
 const schema = require('./schema');
 const Tamis = require('./filter');
 
+const SOURCE_FILE = 'scratchpad.yaml';
+
 const t = Tamis();
 
 let converter = new showdown.Converter()
 
 let masterSource;
+let editor;
 
 const randomString = (length = 16) => {
   var text = '';
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (var i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
@@ -167,9 +172,45 @@ const filterAndRender = (inputs) => {
   render(src);
 };
 
-fetch('scratchpad.yaml').then(res => res.text()).then((rawYaml) => {
+let username = localStorage.getItem('gh-username');
+let password = localStorage.getItem('gh-password');
+
+if (!username) {
+  username = window.prompt('username');
+  localStorage.setItem('gh-username', username);
+}
+
+if (!password) {
+  password = window.prompt('password');
+  localStorage.setItem('gh-password', password);
+}
+
+// auth
+const gh = new GitHub({
+  username,
+  password
+});
+
+const user = gh.getUser(); // no user specified defaults to the user for whom credentials were provided
+
+user.getProfile().then(({ data }) => {
+  console.log(data);
+});
+
+const repo = gh.getRepo('resin-io', 'scratchpad')
+
+console.log(repo);
+
+repo.getDetails().then((resp) => {
+  console.log('DETAILS', resp);
+});
+
+repo.getContents('master', SOURCE_FILE)
+.then(({ data }) => {
+  const rawYaml = atob(data.content);
   const source = jsyaml.load(rawYaml).Scratchpad;
   masterSource = source;
+
   filterUI.set('source', source);
 
   if (history.location.search) {
@@ -194,4 +235,35 @@ fetch('scratchpad.yaml').then(res => res.text()).then((rawYaml) => {
   } else {
     render(source);
   }
+
+  // setup editor
+  document.getElementById('editor').innerHTML = rawYaml;
+  editor = ace.edit('editor');
 });
+
+document.getElementById('edit-link').addEventListener('click', function() {
+  document.getElementById('target').style.display = 'none';
+  document.getElementById('filters').style.display = 'none';
+  document.getElementById('edit-link').style.display = 'none';
+  document.getElementById('save-link').style.display = 'block';
+  document.getElementById('editor').style.display = 'block';
+}, false);
+
+document.getElementById('save-link').addEventListener('click', function() {
+  const content = editor.getValue();
+  const commitMessage = window.prompt('Please provide a commit message');
+
+  if (!commitMessage) {
+    return;
+  }
+
+  repo.writeFile('master', SOURCE_FILE, content, commitMessage, {
+    encode: true
+  })
+  .then((resp) => {
+    console.log('WRITE RESPONSE', resp);
+    window.location.reload();
+  });
+});
+
+window.gh = gh;
