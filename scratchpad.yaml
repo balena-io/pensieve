@@ -1,5 +1,6 @@
 Scratchpad:
   Docker won't start:
+    TEST: FOO
     Address already in use: |
       Docker might be failing to create a network bridge at startup.
 
