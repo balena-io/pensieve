@@ -6,17 +6,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/9.2.0/build.css" />
     <link rel="stylesheet" href="./styles/github-markdown.css">
     <link rel="stylesheet" href="./styles/main.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js"></script>
   </head>
   <body>
     <div id="filters" class="container"></div>
     <div class="container">
       <div align="right">
-        <a href="https://github.com/resin-io/scratchpad/edit/master/scratchpad.yaml">
+        <a href="#" id="edit-link">
           Edit this page
+        </a>
+        <a href="#" id="save-link" style="display: none">
+          Commit changes
         </a>
       </div>
     </div>
     <div id="target" class="container markdown-body">
+    </div>
+    <div id="editor">
     </div>
     <script src="./build/bundle.js"></script>
   </body>
