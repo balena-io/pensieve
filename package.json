@@ -1,12 +1,12 @@
 {
-  "name": "scratchpad",
+  "name": "pasteur",
   "version": "1.0.0",
   "description": "",
   "main": "src/main.js",
   "scripts": {
     "test": "mocha test/filter.spec.js",
-    "build": "browserify -t stringify --extensions .html src/main.js -o build/bundle.js",
-    "watch": "watchify -t stringify --extensions .html src/main.js -o build/bundle.js"
+    "build": "browserify -t stringify --extensions .html src/main.js -o build/pasteur.js",
+    "watch": "watchify -t stringify --extensions .html src/main.js -o build/pasteur.js"
   },
   "repository": {
     "type": "git",
