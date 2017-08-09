@@ -10,11 +10,12 @@ const Tamis = require('./filter');
 const history = createHistory();
 const mainTpl = require('./templates/main.tpl.html');
 
+require('./styles/github-markdown.css');
+require('./styles/main.css');
+
 // Load deps
 const dependencyPromise = Promise.all([
   util.loadStyle('https://cdnjs.cloudflare.com/ajax/libs/Primer/9.2.0/build.css'),
-  util.loadStyle('../styles/github-markdown.css'),
-  util.loadStyle('../styles/main.css'),
   util.loadScript('https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.8/ace.js')
 ])
 .then(() => console.log('LOADED DEPS'));
