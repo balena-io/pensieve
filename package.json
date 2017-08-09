@@ -5,8 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "test": "mocha test/filter.spec.js",
-    "build": "browserify -t stringify --extensions .html src/main.js -o build/pasteur.js",
-    "watch": "watchify -t stringify --extensions .html src/main.js -o build/pasteur.js"
+    "build": "browserify -t browserify-css -t stringify --extensions .html src/main.js -o build/pasteur.js",
+    "watch": "watchify -t browserify-css -t stringify --extensions .html src/main.js -o build/pasteur.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   "homepage": "https://github.com/resin-io/scratchpad#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
+    "browserify-css": "^0.11.1",
     "github-api": "^3.0.0",
     "history": "^4.6.3",
     "http-browserify": "^1.7.0",
