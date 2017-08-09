@@ -38,10 +38,12 @@
 
       Pasteur({
         container: 'app',
-        repositoryName: 'scratchpad',
-        repositoryAccount: 'resin-io',
-        file: 'scratchpad.yaml',
         schema: schema,
+        repositoryName: 'pasteur',
+        repositoryAccount: 'resin-io',
+        repositoryFile: 'demo/scratchpad-demo.yaml',
+        // The name of the commit/branch/tag. usually the repository’s default branch (eg master)
+        repositoryRef: 'demo'
       });
     </script>
   </body>

@@ -63189,8 +63189,6 @@ const init = (config) => {
 
   const schema = config.schema;
 
-  const SOURCE_FILE = 'scratchpad.yaml';
-
   const t = Tamis();
   let masterSource;
   let editor;
@@ -63322,7 +63320,7 @@ const init = (config) => {
     console.log(data);
   });
 
-  const repo = gh.getRepo('resin-io', 'scratchpad')
+  const repo = gh.getRepo(config.repositoryAccount, config.repositoryName)
 
   console.log(repo);
 
@@ -63330,7 +63328,7 @@ const init = (config) => {
     console.log('DETAILS', resp);
   });
 
-  repo.getContents('master', SOURCE_FILE)
+  repo.getContents(config.repositoryRef, config.repositoryFile)
   .then(({ data }) => {
     const rawYaml = atob(data.content);
     const source = jsyaml.load(rawYaml).Scratchpad;
@@ -63382,7 +63380,7 @@ const init = (config) => {
       return;
     }
 
-    repo.writeFile('master', SOURCE_FILE, content, commitMessage, {
+    repo.writeFile(config.repositoryRef, config.repositoryFile, content, commitMessage, {
       encode: true
     })
     .then((resp) => {
