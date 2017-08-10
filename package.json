@@ -1,43 +1,49 @@
 {
-  "name": "pasteur",
+  "name": "pensieve",
   "version": "1.0.0",
   "description": "",
-  "main": "src/main.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "mocha test/filter.spec.js",
-    "build": "browserify -t browserify-css -t stringify --extensions .html src/main.js -o build/pasteur.js",
-    "watch": "watchify -t browserify-css -t stringify --extensions .html src/main.js -o build/pasteur.js"
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "filter-test": "mocha test/filter.spec.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/resin-io/scratchpad.git"
+    "url": "git+https://github.com/resin-io/pensieve.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Lucian Buzzo <lucian@resin.io>",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/resin-io/scratchpad/issues"
+    "url": "https://github.com/resin-io/pensieve/issues"
   },
-  "homepage": "https://github.com/resin-io/scratchpad#readme",
+  "homepage": "https://github.com/resin-io/pensieve#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
-    "browserify-css": "^0.11.1",
+    "brace": "^0.10.0",
     "github-api": "^3.0.0",
     "history": "^4.6.3",
-    "http-browserify": "^1.7.0",
     "js-yaml": "^3.9.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "qs": "^6.5.0",
     "ractive": "^0.9.3",
+    "react": "^15.6.1",
+    "react-ace": "^5.1.2",
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.11",
+    "rebass": "^1.0.3",
     "regex-parser": "^2.2.7",
     "resin-semver": "^0.8.0",
-    "showdown": "^1.7.1"
+    "showdown": "^1.7.1",
+    "styled-components": "^2.1.2"
   },
   "devDependencies": {
-    "browserify": "^14.4.0",
     "chai": "^4.1.0",
-    "mocha": "^3.5.0",
-    "stringify": "^5.1.0",
-    "watchify": "^3.9.0"
+    "eslint": "^4.4.1",
+    "eslint-plugin-react": "^7.1.0",
+    "mocha": "^3.5.0"
   }
 }

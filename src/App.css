@@ -1,0 +1,75 @@
+#viewer {
+  padding-top: 45px;
+}
+
+#editor {
+  padding-top: 45px;
+}
+
+#code {
+  border: 1px solid #eee;
+}
+
+.container {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.filter-modal {
+  top: 120px !important;
+  box-shadow: 0 0 0 100vmax rgba(0,0,0,0.5), 0 0 32px rgba(0,0,0,0.25) !important;
+}
+
+.login-form {
+  width: 600px;
+  margin: 100px auto 100px;
+}
+
+.login-form input {
+  margin-bottom: 15px;
+}
+
+@media (min-width: 768px) {
+  .container {
+      width: 750px;
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+      width: 970px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+      width: 1170px;
+  }
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

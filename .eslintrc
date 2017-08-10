@@ -16,7 +16,7 @@
     "regexYFlag": true,                        // enable the regular expression y flag
     "templateStrings": true,                   // enable template strings
     "unicodeCodePointEscapes": true,           // enable code point escapes
-    "jsx": false                                // enable JSX
+    "jsx": true                                // enable JSX
   },
 
 
@@ -43,6 +43,7 @@
 
   "plugins": [
     // e.g. "react" (must run `npm install eslint-plugin-react` first)
+    "react"
   ],
 
   "rules": {
