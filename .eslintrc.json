@@ -2,7 +2,8 @@
   "rules": {
     "react/prefer-stateless-function": 0,
     "no-param-reassign": 0,
-    "no-debugger": 0
+    "no-debugger": 0,
+    "class-methods-use-this": 0
   },
   "parser": "babel-eslint",
   "extends": "airbnb",

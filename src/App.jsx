@@ -34,6 +34,7 @@ class App extends Component {
     GitHubService.setConfig(this.props.config.repo);
 
     this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
     if (username && password) {
@@ -81,6 +82,11 @@ class App extends Component {
       });
   }
 
+  logout() {
+    localStorage.clear();
+    window.location = '/';
+  }
+
   render() {
     if (!this.state.isLoggedIn) {
       return (
@@ -118,6 +124,9 @@ class App extends Component {
 
     return (
       <Provider>
+        <div className="container">
+          <Button onClick={this.logout}>Logout</Button>
+        </div>
         <DocumentViewer config={this.props.config} content={this.state.content} />
       </Provider>
     );
