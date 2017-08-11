@@ -140,6 +140,7 @@ class DocFragment extends Component {
             width="100%"
             ref="ace"
             fontSize={14}
+            tabSize={2}
             onChange={this.onChange}
             value={sourceCode}
             onLoad={(editor) => {
