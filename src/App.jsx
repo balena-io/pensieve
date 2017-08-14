@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { injectGlobal } from 'styled-components';
-import { Provider, Input, Panel, PanelHeader, Box, Button, Text } from 'rebass';
+import { Provider, Input, Panel, PanelHeader, Box, Button, Text, Fixed } from 'rebass';
 import 'font-awesome/css/font-awesome.css';
 import './App.css';
 import './styles/github-markdown.css';
@@ -33,9 +33,6 @@ class App extends Component {
     DocumentService.setConfig(this.props.config);
     GitHubService.setConfig(this.props.config.repo);
 
-    this.login = this.login.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-
     if (username && password) {
       this.login();
     }
@@ -49,6 +46,15 @@ class App extends Component {
     const update = {};
     update[attribute] = e.target.value;
     this.setState(update);
+  }
+
+  logout() {
+    localStorage.clear();
+    this.setState({
+      username: null,
+      password: null,
+      isLoggedIn: false
+    });
   }
 
   login(e) {
@@ -95,7 +101,7 @@ class App extends Component {
                   </Text>
                 </Box>}
               <Box p={3}>
-                <form onSubmit={this.login}>
+                <form onSubmit={(e) => this.login(e)}>
                   <Input
                     placeholder="username"
                     value={this.state.username}
@@ -118,6 +124,13 @@ class App extends Component {
 
     return (
       <Provider>
+        <Fixed
+          m={2}
+          right
+          top
+        >
+          <Button bg="red" onClick={e => this.logout()}>Logout</Button>
+        </Fixed>
         <DocumentViewer config={this.props.config} content={this.state.content} />
       </Provider>
     );
