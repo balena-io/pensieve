@@ -7,4 +7,4 @@ deployment:
     branch: master
     commands:
       - npm run build
-      - aws s3 sync build s3://circle-production-static-site/pensieve/ --delete
+      - aws s3 sync build s3://resin-production-downloads/pensieve/ --delete
