@@ -61,7 +61,7 @@ typings/
 .env
 
 # End of https://www.gitignore.io/api/node
- 
+
 # Numerous always-ignore extensions
 *.diff
 *.err
@@ -95,6 +95,7 @@ nbproject
 # Folders to ignore
 .idea
 .vscode
+build
 
 # Node environment
 .cache.json
