@@ -11,12 +11,12 @@ export const setConfig = (config) => {
   _config = _.cloneDeep(config);
 };
 
-export const login = (username, password) => {
+export const login = (loginData) => {
   if (gh) {
     return Promise.resolve();
   }
 
-  const innerGH = new GitHub({ username, password });
+  const innerGH = new GitHub(loginData);
 
   return Promise.resolve(
     innerGH.getUser().getProfile().then(({ data }) => {
