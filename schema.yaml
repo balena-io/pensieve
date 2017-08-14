@@ -1,16 +1,16 @@
 GitHub issue:
-  type:string
+  type: string
 Signs and Symptoms:
-  type:string
+  type: string
 Treatments:
-  type:string
+  type: string
 Fix Difficulty:
-  type:number
+  type: number
 Pull Leech Logs:
-  type:boolean
+  type: boolean
 Last Updated:
-  type:date
+  type: date
 Versions Affected:
-  type:semver - range
+  type: semver - range
 Fixed in Version:
-  type:semver
+  type: semver
