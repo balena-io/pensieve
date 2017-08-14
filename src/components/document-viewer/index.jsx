@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { Button } from 'rebass';
 import Filters from './Filters';
 import Doc from './Doc';
+import DocFragmentCreator from './doc-fragment-creator';
 
 const createHistory = require('history').createBrowserHistory;
 
@@ -59,6 +61,16 @@ class DocumentViewer extends Component {
   }
 
   render() {
+    if (this.state.showNewEntryForm) {
+      return (
+        <div className="container">
+          <DocFragmentCreator
+            schema={this.props.config.schema}
+            close={() => this.setState({ showNewEntryForm: false })}
+          />
+        </div>
+      );
+    }
     return (
       <div className="container">
         <div id="viewer">
@@ -69,6 +81,8 @@ class DocumentViewer extends Component {
             filterRules={this.state.filterRules}
             schema={this.props.config.schema}
           />
+          <hr />
+          <Button onClick={e => this.setState({ showNewEntryForm: true })}>Add entry</Button>
           <hr />
           <Doc content={this.props.content} rules={this.state.filterRules} />
         </div>
