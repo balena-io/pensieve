@@ -6,7 +6,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && node scripts/dist.js",
-    "test": "react-scripts test --env=jsdom",
+    "test": "mocha test/filter.spec.js",
     "eject": "react-scripts eject",
     "filter-test": "mocha test/filter.spec.js",
     "lint": "eslint --debug src/"
