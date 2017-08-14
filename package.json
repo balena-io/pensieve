@@ -37,12 +37,16 @@
     "react-ace": "^5.1.2",
     "react-dom": "^15.6.1",
     "react-fontawesome": "^1.6.1",
+    "react-redux": "^5.0.6",
     "react-scripts": "1.0.11",
     "rebass": "^1.0.3",
+    "redux": "^3.7.2",
     "regex-parser": "^2.2.7",
     "resin-semver": "^0.8.0",
     "showdown": "^1.7.1",
-    "styled-components": "^2.1.2"
+    "styled-components": "^2.1.2",
+    "typed-error": "^2.0.0",
+    "yaml-lint": "0.0.4"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",

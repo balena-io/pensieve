@@ -1,15 +1,16 @@
-import React, { Component } from "react";
-import _ from "lodash";
-import DocFragment from "./DocFragment";
-import UnstyledList from "./UnstyledList";
+import React, { Component } from 'react';
+import _ from 'lodash';
+import DocFragment from './DocFragment';
+import UnstyledList from './UnstyledList';
 
-const SchemaSeive = require("../../services/filter");
+const SchemaSeive = require('../../services/filter');
+
 const seive = SchemaSeive();
 
 const canShowFrag = (fragment, rules) => {
   let source = _.cloneDeep(fragment);
 
-  rules.forEach(rule => {
+  rules.forEach((rule) => {
     source = seive.filter(source, rule);
   });
 
@@ -21,14 +22,8 @@ class Doc extends Component {
     super(props);
 
     this.state = {
-      editMode: false
+      editMode: false,
     };
-
-    this.showEditor = this.showEditor.bind(this);
-  }
-
-  showEditor() {
-    console.log("show editor");
   }
 
   render() {
