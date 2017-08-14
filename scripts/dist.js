@@ -8,7 +8,7 @@ glob.readdirPromise('./build/static/**/*')
     const ext = file.split('.').pop();
     if (ext === 'js' || ext === 'css') {
       // Replace the build hash with ".latest"
-      const newName = file.replace(/(\.[a-zA-Z0-9]+)(\.(css|js))/, ".latest$2")
+      const newName = file.replace(/(\.[a-zA-Z0-9]+)(\.(css|js))/, "$2")
       fs.createReadStream(file)
       .pipe(fs.createWriteStream(newName));
     }
