@@ -1,0 +1,16 @@
+GitHub issue:
+  type:string
+Signs and Symptoms:
+  type:string
+Treatments:
+  type:string
+Fix Difficulty:
+  type:number
+Pull Leech Logs:
+  type:boolean
+Last Updated:
+  type:date
+Versions Affected:
+  type:semver - range
+Fixed in Version:
+  type:semver
