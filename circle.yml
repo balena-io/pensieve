@@ -7,4 +7,5 @@ deployment:
     branch: master
     commands:
       - npm run build
-      - aws s3 sync build s3://resin-production-downloads/pensieve/ --delete
+      - aws s3 sync build s3://resin-production-downloads/pensieve/latest --delete --acl public-read
+      - aws s3 sync build s3://resin-production-downloads/pensieve/$(node -pe "require('./package.json').version") --delete --acl public-read
