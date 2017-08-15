@@ -18,3 +18,5 @@ Test:
   type: string
 test2:
   type: number
+test3:
+  type: number
