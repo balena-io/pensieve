@@ -22,3 +22,5 @@ test3:
   type: number
 test4:
   type: number
+test5:
+  type: number
