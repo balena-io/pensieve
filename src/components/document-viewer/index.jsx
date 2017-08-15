@@ -65,7 +65,7 @@ class DocumentViewer extends Component {
       return (
         <div className="container">
           <DocFragmentCreator
-            schema={this.props.config.schema}
+            schema={this.props.schema}
             close={() => this.setState({ showNewEntryForm: false })}
           />
         </div>
@@ -79,7 +79,7 @@ class DocumentViewer extends Component {
             editFilterRule={this.editFilterRule}
             removeFilterRule={this.removeFilterRule}
             filterRules={this.state.filterRules}
-            schema={this.props.config.schema}
+            schema={this.props.schema}
           />
           <hr />
           <Button onClick={e => this.setState({ showNewEntryForm: true })}>Add entry</Button>

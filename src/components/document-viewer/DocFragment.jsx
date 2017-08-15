@@ -126,7 +126,6 @@ class DocFragment extends Component {
         _.negate(_.isFunction),
       );
       const sourceCode = jsyaml.safeDump(json);
-      console.log(sourceCode);
       return (
         <li className="document-fragment">
           {this.state.loading

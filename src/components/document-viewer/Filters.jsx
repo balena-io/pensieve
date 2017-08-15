@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-
-import { Fixed, Button, ButtonTransparent, Overlay, Input, Select, Flex } from 'rebass';
+import { Fixed, Button, ButtonTransparent, Overlay, Select, Flex } from 'rebass';
+import FilterInput from './filter-input';
 
 const _ = require('lodash');
 const util = require('../../util');
@@ -12,19 +12,9 @@ const createHistory = require('history').createBrowserHistory;
 const history = createHistory();
 const qs = require('qs');
 
-class FilterInput extends Component {
-  render() {
-    if (this.props.type === 'text') {
-      return <Input value={this.props.value} onChange={this.props.onChange} />;
-    }
-  }
-}
-
 class Filters extends Component {
   constructor(props) {
     super(props);
-    const inputModels = seive.makeFilterInputs(this.props.schema);
-
     this.toggleModal = this.toggleModal.bind(this);
     this.handleEditChange = this.handleEditChange.bind(this);
     this.addRule = this.addRule.bind(this);
@@ -32,7 +22,6 @@ class Filters extends Component {
 
     this.state = {
       showModal: false,
-      inputModels,
       edit: this.generateFreshEdit(),
     };
 
@@ -51,6 +40,9 @@ class Filters extends Component {
   }
 
   generateFreshEdit() {
+    if (!this.props.schema) {
+      return {};
+    }
     const inputModels = seive.makeFilterInputs(this.props.schema);
 
     const edit = {
@@ -64,10 +56,12 @@ class Filters extends Component {
   }
 
   addRule(rule) {
+    const inputModels = seive.makeFilterInputs(this.props.schema);
+
     if (!rule) {
       rule = _.cloneDeep(this.state.edit);
     }
-    const baseRule = this.state.inputModels[rule.name];
+    const baseRule = inputModels[rule.name];
     const newRule = _.assign(_.cloneDeep(baseRule), rule);
 
     if (newRule.hash) {
@@ -96,10 +90,11 @@ class Filters extends Component {
   handleEditChange(e, attribute) {
     const update = this.state.edit;
     const value = e.target.value;
+    const inputModels = seive.makeFilterInputs(this.props.schema);
 
     if (attribute === 'name' && update.name !== value) {
       update.name = e.target.value;
-      update.operator = this.state.inputModels[value].availableOperators[0];
+      update.operator = inputModels[value].availableOperators[0];
       update.value = '';
     } else {
       update[attribute] = e.target.value;
@@ -109,6 +104,8 @@ class Filters extends Component {
   }
 
   render() {
+    const inputModels = seive.makeFilterInputs(this.props.schema);
+
     return (
       <div className="filters">
         <Button children="Add filter" onClick={e => this.toggleModal()} />
@@ -123,7 +120,7 @@ class Filters extends Component {
                     value={this.state.edit.name}
                     onChange={e => this.handleEditChange(e, 'name')}
                   >
-                    {_.map(this.state.inputModels, ({ name }) =>
+                    {_.map(inputModels, ({ name }) =>
                       (<option>
                         {name}
                       </option>),
@@ -133,7 +130,7 @@ class Filters extends Component {
                     value={this.state.edit.operator}
                     onChange={e => this.handleEditChange(e, 'operator')}
                   >
-                    {_.map(this.state.inputModels[this.state.edit.name].availableOperators, name =>
+                    {_.map(inputModels[this.state.edit.name].availableOperators, name =>
                       (<option>
                         {name}
                       </option>),
