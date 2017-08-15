@@ -1,9 +1,10 @@
+/* eslint-env mocha */
 const { expect } = require('chai');
-const _ = require('lodash');
 const jsyaml = require('js-yaml');
 const fs = require('fs');
 const Tamis = require('../src/services/filter');
-const schema = require('./resources/schema');
+const schema = require('./resources/scratchpad-schema');
+
 const rawYaml = fs.readFileSync('./test/resources/test.yaml', 'utf8');
 const source = jsyaml.load(rawYaml);
 
@@ -13,7 +14,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['GitHub issue'];
 
         input.operator = 'is';
@@ -26,7 +27,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "contains" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Signs and Symptoms'];
 
         // Set the 'contains' operator
@@ -40,7 +41,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "does not contain" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Signs and Symptoms'];
 
         // Set the 'does not contain' operator
@@ -54,11 +55,11 @@ describe('resin-filter', () => {
       it('should correctly test values using the "matches RegEx" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Signs and Symptoms'];
 
         input.operator = 'matches RegEx';
-        input.value = '/\((\w|\s)+\)/g';
+        input.value = '/((w|s)+)/g';
 
         expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
       });
@@ -66,15 +67,15 @@ describe('resin-filter', () => {
       it('should correctly test values using the "does not match RegEx" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Signs and Symptoms'];
 
         input.operator = 'does not match RegEx';
-        input.value = '/\((\w|\s)+\)/g';
+        input.value = '/((w|s)+)/g';
 
         expect(t.filter(collection, input)).to.have.all.keys(
           "Docker won't start",
-          "Bluetooth not working"
+          'Bluetooth not working',
         );
       });
     });
@@ -83,7 +84,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "equals" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Fix Difficulty'];
 
         input.operator = 'equals';
@@ -93,14 +94,14 @@ describe('resin-filter', () => {
         expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
         expect(t.filter(collection, input)).to.not.have.all.keys(
           "Docker won't start",
-          "Bluetooth not working"
+          'Bluetooth not working',
         );
       });
 
       it('should correctly test values using the "more than" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Fix Difficulty'];
 
         input.operator = 'more than';
@@ -110,14 +111,14 @@ describe('resin-filter', () => {
         expect(t.filter(collection, input)).to.have.all.keys('Issues with Line Endings');
         expect(t.filter(collection, input)).to.not.have.all.keys(
           "Docker won't start",
-          "Bluetooth not working"
+          'Bluetooth not working',
         );
       });
 
       it('should correctly test values using the "less than" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Fix Difficulty'];
 
         input.operator = 'less than';
@@ -126,7 +127,7 @@ describe('resin-filter', () => {
 
         expect(t.filter(collection, input)).to.have.all.keys(
           "Docker won't start",
-          "Bluetooth not working"
+          'Bluetooth not working',
         );
         expect(t.filter(collection, input)).to.not.have.all.keys('Issues with Line Endings');
       });
@@ -136,7 +137,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is true" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Pull Leech Logs'];
 
         input.operator = 'is true';
@@ -147,14 +148,14 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is false" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Pull Leech Logs'];
 
         input.operator = 'is false';
 
         expect(t.filter(collection, input)).to.have.all.keys(
           "Docker won't start",
-          "Issues with Line Endings"
+          'Issues with Line Endings',
         );
       });
     });
@@ -163,7 +164,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Last Updated'];
 
         input.operator = 'is';
@@ -175,7 +176,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is before" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Last Updated'];
 
         input.operator = 'is before';
@@ -187,7 +188,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is after" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Last Updated'];
 
         input.operator = 'is after';
@@ -195,7 +196,7 @@ describe('resin-filter', () => {
 
         expect(t.filter(collection, input)).to.have.all.keys(
           "Docker won't start",
-          'Bluetooth not working'
+          'Bluetooth not working',
         );
       });
     });
@@ -204,7 +205,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "contains" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Versions Affected'];
 
         input.operator = 'contains';
@@ -212,14 +213,14 @@ describe('resin-filter', () => {
 
         expect(t.filter(collection, input)).to.have.all.keys(
           'Bluetooth not working',
-          'Issues with Line Endings'
+          'Issues with Line Endings',
         );
       });
 
       it('should correctly test values using the "does not contain" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Versions Affected'];
 
         input.operator = 'does not contain';
@@ -233,7 +234,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Fixed in Version'];
 
         input.operator = 'is';
@@ -244,7 +245,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is greater than" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Fixed in Version'];
 
         input.operator = 'is greater than';
@@ -255,7 +256,7 @@ describe('resin-filter', () => {
       it('should correctly test values using the "is less than" operator', () => {
         const t = Tamis();
         const collection = source;
-        const inputs = t.makeFilterInputs(schema)
+        const inputs = t.makeFilterInputs(schema);
         const input = inputs['Fixed in Version'];
 
         input.operator = 'is less than';
@@ -264,6 +265,5 @@ describe('resin-filter', () => {
         expect(t.filter(collection, input)).to.have.all.keys("Docker won't start");
       });
     });
-
   });
 });

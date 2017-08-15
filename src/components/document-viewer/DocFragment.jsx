@@ -4,10 +4,13 @@ import 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/yaml';
 import 'brace/theme/chrome';
-import { Button } from 'rebass';
+import { Button, Text, Textarea } from 'rebass';
 import UnstyledList from './UnstyledList';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
+import { lint, schemaValidate } from '../../services/validator';
+import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
+import store from '../../store';
 
 const jsyaml = require('js-yaml');
 
@@ -18,30 +21,92 @@ const converter = new showdown.Converter();
 
 const makeNameClass = name => (name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : '');
 
+const cleanJson = (title, content) => {
+  const json = {};
+  json[title] = _.pickBy(
+    _.mapValues(content, x => (_.isDate(x) ? x.toString() : x)),
+    _.negate(_.isFunction),
+  );
+
+  return json;
+};
+
 class DocFragment extends Component {
   constructor(props) {
     super(props);
 
+    const json = cleanJson(this.props.title, this.props.content);
+    const sourceCode = jsyaml.safeDump(json);
+
     this.state = {
       showEditor: false,
+      lintError: null,
+      validationError: null,
+      sourceCode,
+      message: '',
     };
 
     this.saveChange = this.saveChange.bind(this);
   }
 
-  saveChange() {
-    const source = this.refs.ace.editor.getValue();
-    DocumentService.updateFragment(this.props.content.getHash(), source);
+  cancelEdit() {
+    const json = cleanJson(this.props.title, this.props.content);
+    const sourceCode = jsyaml.safeDump(json);
 
     this.setState({
-      loading: true,
+      showEditor: false,
+      sourceCode,
     });
-    GitHubService.commit({ content: DocumentService.getSource() }).then(() =>
-      this.setState({
-        loading: false,
-        showEditor: false,
-      }),
-    );
+  }
+
+  handleChange() {
+    const sourceCode = this.refs.ace.editor.getValue();
+    this.setState({ sourceCode });
+    lint(sourceCode)
+      .then(() => {
+        this.setState({ lintError: null });
+      })
+      .catch((err) => {
+        this.setState({ lintError: err.message });
+      });
+  }
+
+  updateCommitMessage(e) {
+    const message = e.target.value;
+    this.setState({ message });
+  }
+
+  saveChange() {
+    const source = this.refs.ace.editor.getValue();
+    const message = `Edited section "${this.props.title}" using Pensieve\n\n${this.state.message}`;
+    const { schema } = store.getState();
+
+    lint(source)
+      // When validating, strip the title field from the source
+      .then(() => schemaValidate(schema, source.replace(/^.+\n/, '')))
+      .then(() => {
+        DocumentService.updateFragment(this.props.content.getHash(), source);
+
+        this.setState({
+          loading: true,
+          validationError: null,
+        });
+        GitHubService.commit({
+          content: DocumentService.getSource(),
+          message,
+        }).then(() =>
+          this.setState({
+            loading: false,
+            showEditor: false,
+          }),
+        );
+      })
+      .catch(PensieveLinterError, (err) => {
+        this.setState({ lintError: err.message });
+      })
+      .catch(PensieveValidationError, (err) => {
+        this.setState({ validationError: err.message });
+      });
   }
 
   render() {
@@ -120,18 +185,8 @@ class DocFragment extends Component {
     });
 
     if (this.state.showEditor) {
-      const json = {};
-      json[this.props.title] = _.pickBy(
-        _.mapValues(this.props.content, x => (_.isDate(x) ? x.toString() : x)),
-        _.negate(_.isFunction),
-      );
-      const sourceCode = jsyaml.safeDump(json);
       return (
         <li className="document-fragment">
-          {this.state.loading
-            ? <FontAwesome spin name="cog" />
-            : <Button onClick={this.saveChange}>Save</Button>}
-
           <AceEditor
             mode="yaml"
             theme="chrome"
@@ -140,13 +195,36 @@ class DocFragment extends Component {
             ref="ace"
             fontSize={14}
             tabSize={2}
-            onChange={this.onChange}
-            value={sourceCode}
+            onChange={() => this.handleChange()}
+            value={this.state.sourceCode}
             onLoad={(editor) => {
               editor.focus();
               editor.getSession().setUseWrapMode(true);
             }}
           />
+
+          {this.state.lintError &&
+            <Text color="red">
+              {this.state.lintError}
+            </Text>}
+          {this.state.validationError &&
+            <Text color="red">
+              {this.state.validationError}
+            </Text>}
+          {this.state.loading
+            ? <FontAwesome spin name="cog" />
+            : <div>
+              <Textarea
+                onChange={e => this.updateCommitMessage(e)}
+                placeholder="Please describe your changes"
+              />
+              <Button onClick={this.saveChange} disabled={this.state.lintError}>
+                  Save
+              </Button>
+              <Button bg="red" onClick={() => this.cancelEdit()}>
+                  Cancel
+              </Button>
+            </div>}
         </li>
       );
     }

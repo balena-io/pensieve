@@ -1,26 +1,20 @@
 {
-  "GitHub issue": {
+  "string field": {
     "type": "string"
   },
-  "Signs and Symptoms": {
-    "type": "string"
-  },
-  "Treatments": {
-    "type": "string"
-  },
-  "Fix Difficulty": {
+  "number field": {
     "type": "number"
   },
-  "Pull Leech Logs": {
+  "boolean field": {
     "type": "boolean"
   },
-  "Last Updated": {
+  "date field": {
     "type": "date"
   },
-  "Versions Affected": {
+  "semver-range field": {
     "type": "semver-range"
   },
-  "Fixed in Version": {
+  "semver field": {
     "type": "semver"
   }
 }
