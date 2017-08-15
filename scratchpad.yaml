@@ -56,7 +56,7 @@ Scratchpad:
       ```
     GitHub issue: 'https://github.com/resin-io/hq/issues/784'
     Fix Difficulty: 1
-    Pull Leech Logs: false
+    Pull Leech Logs: text
     Last Updated: 'Fri Jan 27 2017 00:00:00 GMT+0000 (GMT)'
     Versions Affected: ' < 2.0.0'
     Fixed in Version: 2.0.0
