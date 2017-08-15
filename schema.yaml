@@ -16,3 +16,5 @@ Fixed in Version:
   type: semver
 Test:
   type: string
+test2:
+  type: number
