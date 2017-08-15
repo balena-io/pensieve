@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Fixed, Button, ButtonTransparent, Overlay, Select, Flex } from 'rebass';
-import FilterInput from './filter-input';
+import { Input, Fixed, Button, ButtonTransparent, Overlay, Select, Flex } from 'rebass';
 
 const _ = require('lodash');
 const util = require('../../util');
@@ -11,6 +10,23 @@ const createHistory = require('history').createBrowserHistory;
 
 const history = createHistory();
 const qs = require('qs');
+
+const FilterInput = (props) => {
+  if (props.type === 'string' || props.type === 'semver' || props.type === 'semver-range') {
+    return <Input value={props.value} onChange={props.onChange} />;
+  }
+  if (props.type === 'number') {
+    return <Input type="number" value={props.value} onChange={props.onChange} />;
+  }
+  if (props.type === 'boolean') {
+    return null;
+  }
+  if (props.type === 'date') {
+    return <Input type="date" value={props.value} onChange={props.onChange} />;
+  }
+
+  return <Input value={props.value} onChange={props.onChange} />;
+};
 
 class Filters extends Component {
   constructor(props) {
@@ -139,7 +155,7 @@ class Filters extends Component {
                   <FilterInput
                     value={this.state.edit.value}
                     onChange={e => this.handleEditChange(e, 'value')}
-                    type="text"
+                    type={inputModels[this.state.edit.name].type}
                   />
                 </Flex>
                 <Button
