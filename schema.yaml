@@ -11,9 +11,7 @@ Pull Leech Logs:
 Last Updated:
   type: date
 Versions Affected:
-   type: semver - range
+  type: semver - range
 Fixed in Version:
   type: semver
-  adasdasd
-asdasdasd
-         2321332
+
