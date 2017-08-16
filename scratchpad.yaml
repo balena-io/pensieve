@@ -55,7 +55,7 @@ Scratchpad:
 
       ```
     GitHub issue: 'https://github.com/resin-io/hq/issues/784'
-    Fix Difficulty: 1
+    Fix Difficulty: 3
     Versions Affected: ' < 2.0.0'
     Fixed in Version: 2.0.0
     test: foobar
