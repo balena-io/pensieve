@@ -4,7 +4,6 @@ import { injectGlobal } from 'styled-components';
 import { Provider, Button, Fixed } from 'rebass';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import 'font-awesome/css/font-awesome.css';
 import './App.css';
 import './styles/github-markdown.css';
 import DocumentViewer from './components/document-viewer';
