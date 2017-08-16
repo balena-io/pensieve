@@ -1,15 +1,75 @@
 import React, { Component } from 'react';
-import { Input, Fixed, Button, ButtonTransparent, Overlay, Select, Flex } from 'rebass';
+import { Input, Fixed, Button, Overlay, Select, Flex } from 'rebass';
+import { connect } from 'react-redux';
+import FilterSummary from './summary';
+import ViewsMenu from './views-menu';
+import store from '../../store';
 
 const _ = require('lodash');
 const util = require('../../util');
-const SchemaSeive = require('../../services/filter');
+const SchemaSieve = require('../../services/filter');
 
-const seive = SchemaSeive();
-const createHistory = require('history').createBrowserHistory;
+const sieve = SchemaSieve();
 
-const history = createHistory();
-const qs = require('qs');
+const addFilterRule = (rule) => {
+  const { rules } = store.getState();
+  rules.push(rule);
+  store.dispatch({ type: 'SET_RULES', value: rules });
+
+  sieve.updateUrl(rules);
+};
+
+const editFilterRule = (rule) => {
+  const { rules } = store.getState();
+  const updatedRules = rules.map(r => (r.hash === rule ? rule : r));
+
+  store.dispatch({ type: 'SET_RULES', value: updatedRules });
+
+  sieve.updateUrl(updatedRules);
+};
+
+const removeFilterRule = (rule) => {
+  const { rules } = store.getState();
+
+  const updatedRules = rules.filter(r => r.hash !== rule.hash);
+  store.dispatch({ type: 'SET_RULES', value: updatedRules });
+
+  sieve.updateUrl(updatedRules);
+};
+
+const saveView = (name) => {
+  const { rules, views } = store.getState();
+
+  views.push({
+    name,
+    rules,
+    id: util.randomString(),
+  });
+
+  store.dispatch({ type: 'SET_VIEWS', value: views });
+};
+
+const updateView = (id) => {
+  let { rules, views } = store.getState();
+
+  views = views.map((view) => {
+    if (view.id === id) {
+      view.rules = rules;
+    }
+
+    return view;
+  });
+
+  store.dispatch({ type: 'SET_VIEWS', value: views });
+};
+
+const deleteView = ({ id }) => {
+  let { views } = store.getState();
+
+  views = views.filter(view => view.id !== id);
+
+  store.dispatch({ type: 'SET_VIEWS', value: views });
+};
 
 const FilterInput = (props) => {
   if (props.type === 'string' || props.type === 'semver' || props.type === 'semver-range') {
@@ -33,37 +93,23 @@ class Filters extends Component {
     super(props);
     this.toggleModal = this.toggleModal.bind(this);
     this.handleEditChange = this.handleEditChange.bind(this);
-    this.addRule = this.addRule.bind(this);
     this.generateFreshEdit = this.generateFreshEdit.bind(this);
 
     this.state = {
       showModal: false,
       edit: this.generateFreshEdit(),
     };
-
-    if (history.location.search) {
-      const parsed = qs.parse(history.location.search.replace(/^\?/, ''));
-      _.forEach(parsed, ({ n, o, v }) => {
-        const rule = {
-          name: n,
-          operator: o,
-          value: v,
-        };
-
-        this.addRule(rule);
-      });
-    }
   }
-
   generateFreshEdit() {
     if (!this.props.schema) {
       return {};
     }
-    const inputModels = seive.makeFilterInputs(this.props.schema);
+    const inputModels = sieve.makeFilterInputs(this.props.schema);
 
     const edit = {
       name: Object.keys(inputModels).shift(),
       value: '',
+      id: util.randomString(),
     };
 
     edit.operator = inputModels[edit.name].availableOperators[0];
@@ -72,7 +118,7 @@ class Filters extends Component {
   }
 
   addRule(rule) {
-    const inputModels = seive.makeFilterInputs(this.props.schema);
+    const inputModels = sieve.makeFilterInputs(this.props.schema);
 
     if (!rule) {
       rule = _.cloneDeep(this.state.edit);
@@ -81,10 +127,10 @@ class Filters extends Component {
     const newRule = _.assign(_.cloneDeep(baseRule), rule);
 
     if (newRule.hash) {
-      this.props.editFilterRule(newRule);
+      editFilterRule(newRule);
     } else {
       newRule.hash = util.randomString();
-      this.props.addFilterRule(newRule);
+      addFilterRule(newRule);
     }
     this.setState({
       showModal: false,
@@ -106,7 +152,7 @@ class Filters extends Component {
   handleEditChange(e, attribute) {
     const update = this.state.edit;
     const value = e.target.value;
-    const inputModels = seive.makeFilterInputs(this.props.schema);
+    const inputModels = sieve.makeFilterInputs(this.props.schema);
 
     if (attribute === 'name' && update.name !== value) {
       update.name = e.target.value;
@@ -120,10 +166,10 @@ class Filters extends Component {
   }
 
   render() {
-    const inputModels = seive.makeFilterInputs(this.props.schema);
+    const inputModels = sieve.makeFilterInputs(this.props.schema);
 
     return (
-      <div className="filters">
+      <div style={{ position: 'relative' }}>
         <Button children="Add filter" onClick={e => this.toggleModal()} />
 
         {this.state.showModal &&
@@ -167,23 +213,23 @@ class Filters extends Component {
             </Overlay>
           </div>}
 
-        <div>
-          {this.props.filterRules.map(rule =>
-            (<Flex>
-              <p style={{ marginRight: 5 }}>
-                {rule.name} <strong>{rule.operator}</strong> <em>{rule.value}</em>
-              </p>
-              <ButtonTransparent onClick={() => this.showEditModal(rule)} children="edit" />
-              <ButtonTransparent
-                onClick={() => this.props.removeFilterRule(rule)}
-                children="remove"
-              />
-            </Flex>),
-          )}
-        </div>
+        {!!this.props.rules.length &&
+          <FilterSummary
+            edit={rule => this.showEditModal(rule)}
+            delete={rule => removeFilterRule(rule)}
+            saveView={name => saveView(name)}
+            updateView={id => updateView(id)}
+          />}
+
+        <ViewsMenu deleteView={view => deleteView(view)} />
       </div>
     );
   }
 }
 
-export default Filters;
+const mapStatetoProps = ({ rules, schema }) => ({
+  rules,
+  schema,
+});
+
+export default connect(mapStatetoProps)(Filters);
