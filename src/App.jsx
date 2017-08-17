@@ -26,6 +26,7 @@ const mapStatetoProps = state => ({
 });
 
 events.on('commit', () => {
+  console.log('UPDATING CONTENT', DocumentService.getJSON());
   store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
 });
 
