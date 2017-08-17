@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'rebass';
 import Filters from '../filters';
-import Doc from './Doc';
+import Doc from './doc';
 import DocFragmentCreator from './doc-fragment-creator';
 
 class DocumentViewer extends Component {

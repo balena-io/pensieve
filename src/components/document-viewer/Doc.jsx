@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import DocFragment from './DocFragment';
-import UnstyledList from '../shared/UnstyledList';
+import DocFragment from './doc-fragment';
+import { UnstyledList } from '../shared';
 
 const SchemaSeive = require('../../services/filter');
 
