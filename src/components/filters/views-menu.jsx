@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Button, Box, Fixed, Text } from 'rebass';
+import { Box, Fixed, Text } from 'rebass';
 import FontAwesome from 'react-fontawesome';
-import { PlainPanel, UnstyledList } from '../shared';
+import { PlainPanel, UnstyledList, ResinBtn } from '../shared';
 import store from '../../store';
 
 const SchemaSieve = require('../../services/filter');
@@ -65,11 +65,11 @@ class ViewsMenu extends Component {
   render() {
     return (
       <Wrapper>
-        <Button onClick={() => this.setState({ showViewsMenu: !this.state.showViewsMenu })}>
-          <FontAwesome name="pie-chart" />
+        <ResinBtn onClick={() => this.setState({ showViewsMenu: !this.state.showViewsMenu })}>
+          <FontAwesome style={{ marginRight: 10 }} name="pie-chart" />
           Views
-          <FontAwesome name="caret-down" />
-        </Button>
+          <FontAwesome style={{ float: 'right' }} name="caret-down" />
+        </ResinBtn>
         {this.state.showViewsMenu &&
           <Fixed onClick={() => this.setState({ showViewsMenu: false })} top right bottom left />}
         {this.state.showViewsMenu &&

@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
 import { injectGlobal } from 'styled-components';
-import { Provider, Button, Fixed } from 'rebass';
+import { Provider } from 'rebass';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import './app.css';
 import './styles/github-markdown.css';
+import Header from './components/header';
 import DocumentViewer from './components/document-viewer';
 import Login from './components/login';
 import * as GitHubService from './services/github';
@@ -20,26 +20,23 @@ import { loadRulesFromUrl } from './services/path';
 injectGlobal`
   * { box-sizing: border-box; }
   body { margin: 0; }
+  font-family: Roboto,Arial,sans-serif;
 `;
 
-const mapStatetoProps = state => ({
-  schema: state.schema,
-  content: state.content,
-});
+const theme = {
+  font: 'Roboto,Arial,sans-serif',
+  monospace: 'Ubuntu Mono Web,Courier New,monospace',
+};
 
 events.on('commit', () => {
   store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
 });
-
-const WrappedDocumentViewer = connect(mapStatetoProps)(DocumentViewer);
-const WrappedSchemaEditor = connect(mapStatetoProps)(SchemaEditor);
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isLoggedIn: false,
       isLoading: false,
     };
 
@@ -47,50 +44,58 @@ class App extends Component {
 
     DocumentService.setConfig(this.props.config);
 
-    this.runPostLogin = this.runPostLogin.bind(this);
-  }
+    let previouslyLoggedIn = !!store.getState().isLoggedIn;
 
-  logout() {
-    localStorage.clear();
-    this.setState({
-      username: null,
-      password: null,
-      isLoggedIn: false,
-    });
-  }
+    store.subscribe(() => {
+      const { isLoggedIn } = store.getState();
 
-  runPostLogin() {
-    this.setState({
-      isLoggedIn: true,
-      isLoading: true,
-    });
-    GitHubService.loadSchema(this.props.config).then((schema) => {
-      store.dispatch({ type: 'SET_SCHEMA', value: schema });
-      store.dispatch({ type: 'SET_RULES', value: loadRulesFromUrl(schema) });
-      GitHubService.getFile(this.props.config.repo).then((source) => {
-        DocumentService.setSource(source);
-        store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
-        this.setState({
-          isLoading: false,
+      console.log('IS LOGGED IN', isLoggedIn);
+      console.log('PREVIOUSLY LOGGED IN', previouslyLoggedIn);
+
+      if (isLoggedIn === previouslyLoggedIn) {
+        return;
+      }
+
+      previouslyLoggedIn = isLoggedIn;
+
+      if (!isLoggedIn) {
+        return;
+      }
+
+      this.setState({
+        username: null,
+        password: null,
+        isLoading: true,
+      });
+
+      GitHubService.loadSchema(this.props.config).then((schema) => {
+        store.dispatch({ type: 'SET_SCHEMA', value: schema });
+        store.dispatch({ type: 'SET_RULES', value: loadRulesFromUrl(schema) });
+        GitHubService.getFile(this.props.config.repo).then((source) => {
+          DocumentService.setSource(source);
+          store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
+          this.setState({
+            isLoading: false,
+          });
         });
       });
     });
   }
 
   render() {
-    const schemaIsEditable = _.isString(this.props.config.schema);
-
-    if (!this.state.isLoggedIn) {
+    if (!this.props.isLoggedIn) {
       return (
-        <Provider>
-          <Login onLogin={this.runPostLogin} />
+        <Provider theme={theme}>
+          <Header />
+          <Login />
         </Provider>
       );
     }
 
     if (this.state.isLoading) {
       return (
-        <Provider>
+        <Provider theme={theme}>
+          <Header />
           <div className="container">
             <FontAwesome spin name="cog" />
           </div>
@@ -98,31 +103,19 @@ class App extends Component {
       );
     }
 
-    if (this.state.editSchema) {
+    if (this.props.isEditingSchema) {
       return (
-        <Provider>
-          <Fixed m={2} right top>
-            <Button bg="red" onClick={() => this.logout()}>
-              Logout
-            </Button>
-          </Fixed>
-          <WrappedSchemaEditor store={store} done={() => this.setState({ editSchema: false })} />
+        <Provider theme={theme}>
+          <Header />
+          <SchemaEditor />
         </Provider>
       );
     }
 
     return (
-      <Provider>
-        <Fixed m={2} right top>
-          <Button bg="red" onClick={() => this.logout()}>
-            Logout
-          </Button>
-        </Fixed>
-        {schemaIsEditable &&
-          <div className="container">
-            <Button onClick={() => this.setState({ editSchema: true })}>Edit schema</Button>
-          </div>}
-        <WrappedDocumentViewer store={store} />
+      <Provider theme={theme}>
+        <Header />
+        <DocumentViewer store={store} />
       </Provider>
     );
   }
@@ -130,6 +123,12 @@ class App extends Component {
 
 App.propTypes = {
   config: PropTypes.object.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
-export default App;
+const mapStatetoProps = state => ({
+  isLoggedIn: state.isLoggedIn,
+  isEditingSchema: state.isEditingSchema,
+});
+
+export default connect(mapStatetoProps)(App);

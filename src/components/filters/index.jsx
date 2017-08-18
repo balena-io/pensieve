@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import { Input, Fixed, Button, Overlay, Select, Flex } from 'rebass';
+import { Input, Button, Select, Flex } from 'rebass';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import FontAwesome from 'react-fontawesome';
 import FilterSummary from './summary';
 import ViewsMenu from './views-menu';
 import store from '../../store';
+import ResinBtn from '../shared/resin-button';
+import { Modal } from '../shared';
+import { updateUrl } from '../../services/path';
 
 const _ = require('lodash');
 const util = require('../../util');
@@ -17,7 +21,7 @@ const addFilterRule = (rule) => {
   rules.push(rule);
   store.dispatch({ type: 'SET_RULES', value: rules });
 
-  sieve.updateUrl(rules);
+  updateUrl(rules);
 };
 
 const editFilterRule = (rule) => {
@@ -26,7 +30,7 @@ const editFilterRule = (rule) => {
 
   store.dispatch({ type: 'SET_RULES', value: updatedRules });
 
-  sieve.updateUrl(updatedRules);
+  updateUrl(updatedRules);
 };
 
 const removeFilterRule = (rule) => {
@@ -35,7 +39,7 @@ const removeFilterRule = (rule) => {
   const updatedRules = rules.filter(r => r.hash !== rule.hash);
   store.dispatch({ type: 'SET_RULES', value: updatedRules });
 
-  sieve.updateUrl(updatedRules);
+  updateUrl(updatedRules);
 };
 
 const saveView = (name) => {
@@ -183,13 +187,15 @@ class Filters extends Component {
     const inputModels = sieve.makeFilterInputs(this.props.schema);
 
     return (
-      <div style={{ position: 'relative' }}>
-        <Button onClick={() => this.toggleModal()}>Add filter</Button>
+      <div style={{ position: 'relative', marginBottom: 20 }}>
+        <ResinBtn onClick={() => this.toggleModal()}>
+          <FontAwesome style={{ marginRight: 10 }} name="filter" />
+          Add filter
+        </ResinBtn>
 
         {this.state.showModal &&
           <div>
-            <Fixed top right bottom left onClick={() => this.toggleModal()} />
-            <Overlay className="filter-modal" w={600}>
+            <Modal cancel={() => this.setState({ showModal: false })}>
               <form onSubmit={e => e.preventDefault() && this.addRule()}>
                 <Flex>
                   <Select
@@ -222,7 +228,7 @@ class Filters extends Component {
                   {this.state.edit.hash ? 'Update filter' : 'Add filter'}
                 </Button>
               </form>
-            </Overlay>
+            </Modal>
           </div>}
 
         {!!this.props.rules.length &&
