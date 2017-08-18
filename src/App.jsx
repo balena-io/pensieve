@@ -4,7 +4,7 @@ import { injectGlobal } from 'styled-components';
 import { Provider, Button, Fixed } from 'rebass';
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import './App.css';
+import './app.css';
 import './styles/github-markdown.css';
 import DocumentViewer from './components/document-viewer';
 import Login from './components/login';
@@ -14,10 +14,6 @@ import events from './services/events';
 import store from './store';
 import SchemaEditor from './components/schema-editor';
 import { loadRulesFromUrl } from './services/path';
-
-const SchemaSieve = require('./services/filter');
-
-const sieve = SchemaSieve();
 
 injectGlobal`
   * { box-sizing: border-box; }
