@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { Button, Box, Fixed, Text } from 'rebass';
 import FontAwesome from 'react-fontawesome';
-import PlainPanel from '../shared/plain-panel';
-import UnstyledList from '../shared/UnstyledList';
+import { PlainPanel, UnstyledList } from '../shared';
 import store from '../../store';
 
 const SchemaSieve = require('../../services/filter');

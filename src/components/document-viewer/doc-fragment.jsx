@@ -5,7 +5,7 @@ import AceEditor from 'react-ace';
 import 'brace/mode/yaml';
 import 'brace/theme/chrome';
 import { Button, Text, Textarea } from 'rebass';
-import UnstyledList from '../shared/UnstyledList';
+import { UnstyledList } from '../shared';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';

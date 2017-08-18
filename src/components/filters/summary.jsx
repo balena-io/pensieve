@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Radio, Label, ButtonTransparent, Flex, Input, Select, Button, Divider } from 'rebass';
 import FontAwesome from 'react-fontawesome';
-import Modal from '../shared/modal';
+import { Modal } from '../shared';
 
 const BorderedDiv = styled.div`
   margin-top: 10px;
