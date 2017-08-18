@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Fixed, Button, Overlay, Select, Flex } from 'rebass';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import FilterSummary from './summary';
 import ViewsMenu from './views-menu';
 import store from '../../store';
@@ -50,7 +51,9 @@ const saveView = (name) => {
 };
 
 const updateView = (id) => {
-  let { rules, views } = store.getState();
+  const state = store.getState();
+  const { rules } = state;
+  let { views } = state;
 
   views = views.map((view) => {
     if (view.id === id) {
@@ -86,6 +89,17 @@ const FilterInput = (props) => {
   }
 
   return <Input value={props.value} onChange={props.onChange} />;
+};
+
+FilterInput.propTypes = {
+  type: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.instanceOf(Date),
+  ]).isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
 class Filters extends Component {
@@ -170,11 +184,11 @@ class Filters extends Component {
 
     return (
       <div style={{ position: 'relative' }}>
-        <Button children="Add filter" onClick={e => this.toggleModal()} />
+        <Button onClick={() => this.toggleModal()}>Add filter</Button>
 
         {this.state.showModal &&
           <div>
-            <Fixed top right bottom left onClick={e => this.toggleModal()} />
+            <Fixed top right bottom left onClick={() => this.toggleModal()} />
             <Overlay className="filter-modal" w={600}>
               <form onSubmit={e => e.preventDefault() && this.addRule()}>
                 <Flex>
@@ -204,11 +218,9 @@ class Filters extends Component {
                     type={inputModels[this.state.edit.name].type}
                   />
                 </Flex>
-                <Button
-                  style={{ marginTop: 15 }}
-                  onClick={e => this.addRule()}
-                  children={this.state.edit.hash ? 'Update filter' : 'Add filter'}
-                />
+                <Button style={{ marginTop: 15 }} onClick={() => this.addRule()}>
+                  {this.state.edit.hash ? 'Update filter' : 'Add filter'}
+                </Button>
               </form>
             </Overlay>
           </div>}
@@ -226,6 +238,22 @@ class Filters extends Component {
     );
   }
 }
+
+Filters.propTypes = {
+  schema: PropTypes.object.isRequired,
+  rules: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      value: PropTypes.oneOfType([
+        PropTypes.bool,
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.instanceOf(Date),
+      ]),
+      operator: PropTypes.string,
+    }),
+  ).isRequired,
+};
 
 const mapStatetoProps = ({ rules, schema }) => ({
   rules,

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Input, Panel, PanelHeader, Box, Button, Text } from 'rebass';
+import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import * as GitHubService from '../../services/github';
 
@@ -134,7 +135,7 @@ class Login extends Component {
               </form>
               <hr />
               <p>Do you want to login using your username and password?</p>
-              <Button onClick={e => this.toggle2faForm(false)}>Click here</Button>
+              <Button onClick={() => this.toggle2faForm(false)}>Click here</Button>
             </Box>
           </Panel>
         </div>
@@ -174,5 +175,9 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+};
 
 export default Login;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import DocFragment from './doc-fragment';
 import { UnstyledList } from '../shared';
@@ -45,6 +46,11 @@ class Doc extends Component {
     );
   }
 }
+
+Doc.propTypes = {
+  content: PropTypes.object.isRequired,
+  rules: PropTypes.object.isRequired,
+};
 
 const mapStatetoProps = ({ rules, content }) => ({
   rules,

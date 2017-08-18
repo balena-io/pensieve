@@ -6,10 +6,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && node scripts/dist.js",
-    "test": "mocha --compilers js:babel-core/register test/*.spec.js",
+    "test": "npm run lint && mocha --compilers js:babel-core/register test/*.spec.js",
     "eject": "react-scripts eject",
-    "filter-test": "mocha test/filter.spec.js",
-    "lint": "eslint --debug src/"
+    "lint": "eslint src/"
   },
   "repository": {
     "type": "git",
@@ -30,6 +29,7 @@
     "js-yaml": "^3.9.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
+    "prop-types": "^15.5.10",
     "qs": "^6.5.0",
     "ractive": "^0.9.3",
     "react": "^15.6.1",
@@ -62,9 +62,6 @@
     "prettier-eslint": "^6.4.2"
   },
   "babel": {
-    "presets": [
-      "stage-3",
-      "latest"
-    ]
+    "presets": ["stage-3", "latest"]
   }
 }

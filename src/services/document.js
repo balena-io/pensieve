@@ -3,9 +3,9 @@ import util from '../util';
 
 const jsyaml = require('js-yaml');
 
-let _source = null;
-let _config = null;
-let _json = null;
+let innerSource = null;
+let innerConfig = null;
+let innerJson = null;
 
 class Fragment {
   constructor(title, content) {
@@ -21,24 +21,24 @@ class Fragment {
 }
 
 export const setConfig = (config) => {
-  _config = config;
+  innerConfig = config;
 };
 
 export const setSource = (source) => {
-  _source = source;
+  innerSource = source;
 };
 
 export const getJSON = () => {
-  if (_json) {
-    return _json;
+  if (innerJson) {
+    return innerJson;
   }
-  let json = jsyaml.load(_source);
-  if (_config.contentPath) {
-    json = _.get(json, _config.contentPath);
+  let json = jsyaml.load(innerSource);
+  if (innerConfig.contentPath) {
+    json = _.get(json, innerConfig.contentPath);
   }
   json = _.mapValues(json, (value, key) => new Fragment(key, value));
 
-  _json = json;
+  innerJson = json;
 
   return json;
 };
@@ -46,8 +46,8 @@ export const getJSON = () => {
 export const updateFragment = (hash, yaml) => {
   const update = jsyaml.load(yaml);
   const updateTitle = Object.keys(update)[0];
-  _json = _.reduce(
-    _json,
+  innerJson = _.reduce(
+    innerJson,
     (result, value, key) => {
       if (value.getHash() === hash) {
         result[updateTitle] = new Fragment(updateTitle, update[updateTitle]);
@@ -59,34 +59,34 @@ export const updateFragment = (hash, yaml) => {
     {},
   );
 
-  let cleanJson = _.mapValues(_json, (value, key) =>
+  let cleanJson = _.mapValues(innerJson, value =>
     _.pickBy(_.mapValues(value, x => (_.isDate(x) ? x.toString() : x)), _.negate(_.isFunction)),
   );
 
-  if (_config.contentPath) {
-    const sourceJson = jsyaml.load(_source);
-    _.set(sourceJson, _config.contentPath, cleanJson);
+  if (innerConfig.contentPath) {
+    const sourceJson = jsyaml.load(innerSource);
+    _.set(sourceJson, innerConfig.contentPath, cleanJson);
     cleanJson = sourceJson;
   }
 
-  _source = jsyaml.safeDump(cleanJson);
+  innerSource = jsyaml.safeDump(cleanJson);
 };
 
 export const addFragment = (yaml) => {
   const update = _.mapValues(jsyaml.load(yaml), (value, key) => new Fragment(key, value));
-  _.assign(_json, update);
+  _.assign(innerJson, update);
 
-  let cleanJson = _.mapValues(_json, (value, key) =>
+  let cleanJson = _.mapValues(innerJson, value =>
     _.pickBy(_.mapValues(value, x => (_.isDate(x) ? x.toString() : x)), _.negate(_.isFunction)),
   );
 
-  if (_config.contentPath) {
-    const sourceJson = jsyaml.load(_source);
-    _.set(sourceJson, _config.contentPath, cleanJson);
+  if (innerConfig.contentPath) {
+    const sourceJson = jsyaml.load(innerSource);
+    _.set(sourceJson, innerConfig.contentPath, cleanJson);
     cleanJson = sourceJson;
   }
 
-  _source = jsyaml.safeDump(cleanJson);
+  innerSource = jsyaml.safeDump(cleanJson);
 };
 
-export const getSource = () => _source;
+export const getSource = () => innerSource;

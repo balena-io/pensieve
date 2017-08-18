@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, Box, Fixed, Text } from 'rebass';
 import FontAwesome from 'react-fontawesome';
@@ -99,6 +100,11 @@ class ViewsMenu extends Component {
     );
   }
 }
+
+ViewsMenu.propTypes = {
+  deleteView: PropTypes.func.isRequired,
+  views: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 const mapStatetoProps = ({ rules, views }) => ({
   rules,
