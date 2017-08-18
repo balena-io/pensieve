@@ -80,23 +80,3 @@ exports.randomString = (length = 16) => {
 };
 
 exports.json2html = json2html;
-
-exports.prettifyYaml = (sourceCode, indentCols = 3) => {
-  let pretty = sourceCode.replace(/---\n/, '');
-  pretty = pretty.replace(/".*\\n.*"/g, (match, offset) => {
-    // Calculate how many space to indent multiline strings by
-    const substring = pretty.substring(0, offset);
-    const matches = /\n( +).+:/gm.exec(substring);
-    const indent = matches ? `${matches[1]}  ` : '  ';
-
-    console.log(matches);
-    const parsed = match
-      // Convert new line strings values into literals
-      .replace(/\\n/g, `\n${indent}`)
-      // Strip double quoutes from start and end
-      .slice(1, -1);
-    return `|\n${indent}${parsed}`;
-  });
-
-  return pretty;
-};

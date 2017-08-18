@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import DocFragment from './DocFragment';
-import UnstyledList from './UnstyledList';
+import UnstyledList from '../shared/UnstyledList';
 
 const SchemaSeive = require('../../services/filter');
 
@@ -45,4 +46,9 @@ class Doc extends Component {
   }
 }
 
-export default Doc;
+const mapStatetoProps = ({ rules, content }) => ({
+  rules,
+  content,
+});
+
+export default connect(mapStatetoProps)(Doc);

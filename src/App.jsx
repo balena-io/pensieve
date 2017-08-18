@@ -13,6 +13,11 @@ import * as DocumentService from './services/document';
 import events from './services/events';
 import store from './store';
 import SchemaEditor from './components/schema-editor';
+import { loadRulesFromUrl } from './services/path';
+
+const SchemaSieve = require('./services/filter');
+
+const sieve = SchemaSieve();
 
 injectGlobal`
   * { box-sizing: border-box; }
@@ -25,7 +30,6 @@ const mapStatetoProps = state => ({
 });
 
 events.on('commit', () => {
-  console.log('UPDATING CONTENT', DocumentService.getJSON());
   store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
 });
 
@@ -64,6 +68,7 @@ class App extends Component {
     });
     GitHubService.loadSchema(this.props.config).then((schema) => {
       store.dispatch({ type: 'SET_SCHEMA', value: schema });
+      store.dispatch({ type: 'SET_RULES', value: loadRulesFromUrl(schema) });
       GitHubService.getFile(this.props.config.repo).then((source) => {
         DocumentService.setSource(source);
         store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });

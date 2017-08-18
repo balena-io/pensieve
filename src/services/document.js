@@ -67,8 +67,6 @@ export const updateFragment = (hash, yaml) => {
     const sourceJson = jsyaml.load(_source);
     _.set(sourceJson, _config.contentPath, cleanJson);
     cleanJson = sourceJson;
-
-    console.log(cleanJson);
   }
 
   _source = jsyaml.safeDump(cleanJson);
@@ -77,7 +75,6 @@ export const updateFragment = (hash, yaml) => {
 export const addFragment = (yaml) => {
   const update = _.mapValues(jsyaml.load(yaml), (value, key) => new Fragment(key, value));
   _.assign(_json, update);
-  console.log(_json);
 
   let cleanJson = _.mapValues(_json, (value, key) =>
     _.pickBy(_.mapValues(value, x => (_.isDate(x) ? x.toString() : x)), _.negate(_.isFunction)),
@@ -87,13 +84,9 @@ export const addFragment = (yaml) => {
     const sourceJson = jsyaml.load(_source);
     _.set(sourceJson, _config.contentPath, cleanJson);
     cleanJson = sourceJson;
-
-    console.log(cleanJson);
   }
 
   _source = jsyaml.safeDump(cleanJson);
-
-  console.log(_source);
 };
 
 export const getSource = () => _source;
