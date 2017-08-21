@@ -4,6 +4,8 @@ import _ from 'lodash';
 const PENSIEVE_STORAGE_KEY = 'pensieve_store';
 
 const defaultState = () => ({
+  isLoggedIn: false,
+  isEditingSchema: false,
   views: [],
   rules: [],
 });
@@ -31,6 +33,12 @@ const reducer = (state, action) => {
       return assign(state, { views: action.value });
     case 'SET_RULES':
       return assign(state, { rules: _.cloneDeep(action.value) });
+    case 'SET_IS_LOGGED_IN':
+      return assign(state, { isLoggedIn: action.value });
+    case 'SET_IS_EDITING_SCHEMA':
+      return assign(state, { isEditingSchema: action.value });
+    case 'LOGOUT':
+      return defaultState();
     default:
       return state;
   }

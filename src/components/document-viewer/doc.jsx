@@ -38,11 +38,9 @@ class Doc extends Component {
     });
 
     return (
-      <div className="markdown-body">
-        <UnstyledList>
-          {frags}
-        </UnstyledList>
-      </div>
+      <UnstyledList>
+        {frags}
+      </UnstyledList>
     );
   }
 }

@@ -5,12 +5,18 @@ import PropTypes from 'prop-types';
 import jsyaml from 'js-yaml';
 import 'brace';
 import AceEditor from 'react-ace';
+import { connect } from 'react-redux';
 import 'brace/mode/yaml';
 import 'brace/theme/chrome';
 import store from '../../store';
 import * as GitHubService from '../../services/github';
 import { lint } from '../../services/validator';
 import { PensieveLinterError } from '../../services/errors';
+import Container from '../shared/container';
+
+const done = () => {
+  store.dispatch({ type: 'SET_IS_EDITING_SCHEMA', value: false });
+};
 
 class SchemaEditor extends Component {
   constructor(props) {
@@ -47,7 +53,7 @@ class SchemaEditor extends Component {
         });
         GitHubService.commitSchema({ content: source, message: this.state.message }).then(() => {
           store.dispatch({ type: 'SET_SCHEMA', value: jsyaml.load(source) });
-          this.props.done();
+          done();
           this.setState({
             loading: false,
           });
@@ -68,7 +74,7 @@ class SchemaEditor extends Component {
       return <FontAwesome spin name="cog" />;
     }
     return (
-      <div className="container">
+      <Container>
         <AceEditor
           mode="yaml"
           theme="chrome"
@@ -93,10 +99,10 @@ class SchemaEditor extends Component {
           placeholder="Please describe your changes"
         />
         <Button onClick={() => this.save()}>Save changes</Button>
-        <Button bg="red" onClick={() => this.props.done()}>
+        <Button bg="red" onClick={done}>
           Cancel
         </Button>
-      </div>
+      </Container>
     );
   }
 }
@@ -106,4 +112,9 @@ SchemaEditor.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-export default SchemaEditor;
+const mapStatetoProps = state => ({
+  schema: state.schema,
+  content: state.content,
+});
+
+export default connect(mapStatetoProps)(SchemaEditor);

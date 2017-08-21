@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Input, Panel, PanelHeader, Box, Button, Text } from 'rebass';
+import { Input, Box, Button, Text, Heading, Divider } from 'rebass';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import * as GitHubService from '../../services/github';
+import store from '../../store';
 
 class Login extends Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class Login extends Component {
       .then(() => {
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
-        this.props.onLogin();
+        store.dispatch({ type: 'SET_IS_LOGGED_IN', value: true });
       })
       .catch((err) => {
         console.error(err);
@@ -79,7 +80,7 @@ class Login extends Component {
     GitHubService.login({ token })
       .then(() => {
         localStorage.setItem('token', token);
-        this.props.onLogin();
+        store.dispatch({ type: 'SET_IS_LOGGED_IN', value: true });
       })
       .catch((err) => {
         console.error(err);
@@ -101,77 +102,76 @@ class Login extends Component {
     }
     if (this.state.show2faForm) {
       return (
-        <div className="login-form">
-          <Panel>
-            <PanelHeader>Login to GitHub</PanelHeader>
-            {this.state.loginError &&
-              <Box p={3}>
-                <Text color="red">
-                  {this.state.loginError}
-                </Text>
-              </Box>}
-            <Box p={3}>
-              <p>
-                If you have 2fa enabled on your github account, you will need to use a Personal API
-                token to use login to github.
-              </p>
-              <p>
-                <a
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  href="https://github.com/blog/1509-personal-api-tokens"
-                >
-                  Click here
-                </a>{' '}
-                for more information about GitHub Personal API tokens.
-              </p>
-              <form onSubmit={this.loginToken}>
-                <Input
-                  placeholder="Personal access token"
-                  value={this.state.token}
-                  onChange={e => this.handleChange(e, 'token')}
-                />
-                <Button>Login</Button>
-              </form>
-              <hr />
-              <p>Do you want to login using your username and password?</p>
-              <Button onClick={() => this.toggle2faForm(false)}>Click here</Button>
-            </Box>
-          </Panel>
-        </div>
-      );
-    }
-    return (
-      <div className="login-form">
-        <Panel>
-          <PanelHeader>Login to GitHub</PanelHeader>
+        <Box mt={100} mr="auto" ml="auto" w={470}>
+          <Heading>Login to GitHub</Heading>
           {this.state.loginError &&
-            <Box p={3}>
+            <Box>
               <Text color="red">
                 {this.state.loginError}
               </Text>
             </Box>}
-          <Box p={3}>
-            <form onSubmit={this.login}>
+          <Box>
+            <p>
+              If you have 2fa enabled on your github account, you will need to use a Personal API
+              token to login to github.
+            </p>
+            <p>
+              <a
+                rel="noopener noreferrer"
+                target="_blank"
+                href="https://github.com/blog/1509-personal-api-tokens"
+              >
+                Click here
+              </a>{' '}
+              for more information about GitHub Personal API tokens.
+            </p>
+            <form onSubmit={this.loginToken}>
               <Input
-                placeholder="username"
-                value={this.state.username}
-                onChange={e => this.handleChange(e, 'username')}
+                mb={3}
+                placeholder="Personal access token"
+                value={this.state.token}
+                onChange={e => this.handleChange(e, 'token')}
               />
-              <Input
-                placeholder="password"
-                type="password"
-                value={this.state.password}
-                onChange={e => this.handleChange(e, 'password')}
-              />
-              <Button>Login</Button>
+              <Button mb={4}>Login</Button>
             </form>
-            <hr />
-            <p>Do you use two factor authentication?</p>
-            <Button onClick={this.toggle2faForm}>Click here</Button>
+            <Divider color="#cccccc" />
+            <p>Do you want to login using your username and password?</p>
+            <Button onClick={() => this.toggle2faForm(false)}>Click here</Button>
           </Box>
-        </Panel>
-      </div>
+        </Box>
+      );
+    }
+    return (
+      <Box mt={100} mr="auto" ml="auto" w={470}>
+        <Heading mb={3}>Login to GitHub</Heading>
+        {this.state.loginError &&
+          <Box mb={3}>
+            <Text color="red">
+              {this.state.loginError}
+            </Text>
+          </Box>}
+        <Box>
+          <form onSubmit={this.login}>
+            <Input
+              mb={3}
+              placeholder="username"
+              value={this.state.username}
+              onChange={e => this.handleChange(e, 'username')}
+            />
+            <Input
+              mb={3}
+              placeholder="password"
+              type="password"
+              value={this.state.password}
+              onChange={e => this.handleChange(e, 'password')}
+            />
+            <Button mb={4}>Login</Button>
+          </form>
+          <Divider color="#cccccc" />
+          <p>Do you use two factor authentication?</p>
+          <Button onClick={this.toggle2faForm}>Click here</Button>
+        </Box>
+      </Box>
     );
   }
 }

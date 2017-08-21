@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/yaml';
 import 'brace/theme/chrome';
-import { Button, Text, Textarea } from 'rebass';
-import { UnstyledList } from '../shared';
+import { Button, Text, Textarea, Divider } from 'rebass';
+import { UnstyledList, ResinBtn } from '../shared';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
@@ -31,6 +32,11 @@ const cleanJson = (title, content) => {
 
   return json;
 };
+
+const DocFragmentWrapper = styled.li`
+  position: relative;
+  padding-bottom: 60px;
+`;
 
 class DocFragment extends Component {
   constructor(props) {
@@ -134,7 +140,7 @@ class DocFragment extends Component {
               {title}
             </h3>
             <span
-              className={`_string${nameClass}`}
+              className={`_string${nameClass} markdown-body`}
               dangerouslySetInnerHTML={{ __html: converter.makeHtml(data) }}
             />
           </li>
@@ -187,7 +193,9 @@ class DocFragment extends Component {
 
     if (this.state.showEditor) {
       return (
-        <li className="document-fragment">
+        <DocFragmentWrapper>
+          <Divider style={{ borderBottomWidth: 2, marginBottom: 25 }} color="#cccccc" />
+
           <AceEditor
             mode="yaml"
             theme="chrome"
@@ -226,20 +234,25 @@ class DocFragment extends Component {
                   Cancel
               </Button>
             </div>}
-        </li>
+        </DocFragmentWrapper>
       );
     }
 
     return (
-      <li className="document-fragment">
+      <DocFragmentWrapper>
+        <Divider style={{ borderBottomWidth: 2, marginBottom: 30 }} color="#cccccc" />
+
+        <ResinBtn style={{ float: 'right' }} onClick={() => this.setState({ showEditor: true })}>
+          <FontAwesome name="pencil" style={{ marginRight: 10 }} />
+          Edit Entry
+        </ResinBtn>
         <h2>
           {this.props.title}
-          <FontAwesome onClick={() => this.setState({ showEditor: true })} name="pencil" />
         </h2>
         <UnstyledList>
           {fields}
         </UnstyledList>
-      </li>
+      </DocFragmentWrapper>
     );
   }
 }
