@@ -2,8 +2,10 @@ import Promise from 'bluebird';
 import yamlLint from 'yaml-lint';
 import jsyaml from 'js-yaml';
 import _ from 'lodash';
-import moment from 'moment';
+import SchemaSieve from './filter';
 import { PensieveLinterError, PensieveValidationError } from './errors';
+
+const sieve = SchemaSieve();
 
 export const lint = yaml =>
   Promise.resolve(
@@ -21,14 +23,7 @@ export const schemaValidate = (schema, yaml) =>
         return;
       }
 
-      if (
-        (value.type === 'string' && !_.isString(json[key])) ||
-        (value.type === 'number' && !_.isNumber(json[key])) ||
-        (value.type === 'boolean' && !_.isBoolean(json[key])) ||
-        (value.type === 'date' && !moment(json[key]).isValid()) ||
-        (value.type === 'semver-range' && !_.isString(json[key])) ||
-        (value.type === 'semver' && !_.isString(json[key]))
-      ) {
+      if (!sieve.validate(value.type, json[key])) {
         throw new PensieveValidationError(key, json[key], value.type);
       }
     });
