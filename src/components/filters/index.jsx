@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Button, Select, Flex } from 'rebass';
+import { Input, Select, Flex } from 'rebass';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
@@ -49,22 +49,6 @@ const saveView = (name) => {
     name,
     rules,
     id: util.randomString(),
-  });
-
-  store.dispatch({ type: 'SET_VIEWS', value: views });
-};
-
-const updateView = (id) => {
-  const state = store.getState();
-  const { rules } = state;
-  let { views } = state;
-
-  views = views.map((view) => {
-    if (view.id === id) {
-      view.rules = rules;
-    }
-
-    return view;
   });
 
   store.dispatch({ type: 'SET_VIEWS', value: views });
@@ -195,10 +179,16 @@ class Filters extends Component {
 
         {this.state.showModal &&
           <div>
-            <Modal cancel={() => this.setState({ showModal: false })}>
+            <Modal
+              title="Add a new filter"
+              cancel={() => this.setState({ showModal: false })}
+              done={() => this.addRule()}
+              action={this.state.edit.hash ? 'Update filter' : 'Add filter'}
+            >
               <form onSubmit={e => e.preventDefault() && this.addRule()}>
                 <Flex>
                   <Select
+                    mr={20}
                     value={this.state.edit.name}
                     onChange={e => this.handleEditChange(e, 'name')}
                   >
@@ -209,6 +199,7 @@ class Filters extends Component {
                     )}
                   </Select>
                   <Select
+                    mr={20}
                     value={this.state.edit.operator}
                     onChange={e => this.handleEditChange(e, 'operator')}
                   >
@@ -224,9 +215,6 @@ class Filters extends Component {
                     type={inputModels[this.state.edit.name].type}
                   />
                 </Flex>
-                <Button style={{ marginTop: 15 }} onClick={() => this.addRule()}>
-                  {this.state.edit.hash ? 'Update filter' : 'Add filter'}
-                </Button>
               </form>
             </Modal>
           </div>}
@@ -236,7 +224,6 @@ class Filters extends Component {
             edit={rule => this.showEditModal(rule)}
             delete={rule => removeFilterRule(rule)}
             saveView={name => saveView(name)}
-            updateView={id => updateView(id)}
           />}
 
         <ViewsMenu deleteView={view => deleteView(view)} />
