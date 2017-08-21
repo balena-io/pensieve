@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import { injectGlobal } from 'styled-components';
 import { Provider, Button, Fixed } from 'rebass';
 import { connect } from 'react-redux';
@@ -15,6 +16,7 @@ import store from './store';
 import SchemaEditor from './components/schema-editor';
 import { loadRulesFromUrl } from './services/path';
 
+/* eslint no-unused-expressions: 0 */
 injectGlobal`
   * { box-sizing: border-box; }
   body { margin: 0; }
@@ -112,7 +114,7 @@ class App extends Component {
     return (
       <Provider>
         <Fixed m={2} right top>
-          <Button bg="red" onClick={e => this.logout()}>
+          <Button bg="red" onClick={() => this.logout()}>
             Logout
           </Button>
         </Fixed>
@@ -125,5 +127,9 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  config: PropTypes.object.isRequired,
+};
 
 export default App;

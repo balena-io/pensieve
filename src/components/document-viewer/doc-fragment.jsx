@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
+import PropTypes from 'prop-types';
 import 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/yaml';
@@ -242,5 +243,10 @@ class DocFragment extends Component {
     );
   }
 }
+
+DocFragment.propTypes = {
+  title: PropTypes.string.isRequired,
+  content: PropTypes.object.isRequired,
+};
 
 export default DocFragment;

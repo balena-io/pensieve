@@ -1,6 +1,7 @@
 import React from 'react';
 import { Fixed } from 'rebass';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import PlainPanel from './plain-panel';
 
 const MODAL_WIDTH = 666;
@@ -23,5 +24,10 @@ const Modal = props =>
       {props.children}
     </ModalPanel>
   </div>);
+
+Modal.propTypes = {
+  cancel: PropTypes.func.isRequired,
+  children: PropTypes.element.isRequired,
+};
 
 export default Modal;

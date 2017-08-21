@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Button } from 'rebass';
 import Filters from '../filters';
 import Doc from './doc';
@@ -29,7 +30,7 @@ class DocumentViewer extends Component {
         <div id="viewer">
           <Filters schema={this.props.schema} />
           <hr />
-          <Button onClick={e => this.setState({ showNewEntryForm: true })}>Add entry</Button>
+          <Button onClick={() => this.setState({ showNewEntryForm: true })}>Add entry</Button>
           <hr />
           <Doc />
         </div>
@@ -37,5 +38,9 @@ class DocumentViewer extends Component {
     );
   }
 }
+
+DocumentViewer.propTypes = {
+  schema: PropTypes.object.isRequired,
+};
 
 export default DocumentViewer;

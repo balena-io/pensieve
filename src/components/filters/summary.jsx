@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Radio, Label, ButtonTransparent, Flex, Input, Select, Button, Divider } from 'rebass';
 import FontAwesome from 'react-fontawesome';
@@ -129,6 +130,26 @@ class FilterSummary extends Component {
     );
   }
 }
+
+FilterSummary.propTypes = {
+  edit: PropTypes.func.isRequired,
+  delete: PropTypes.func.isRequired,
+  updateView: PropTypes.func.isRequired,
+  saveView: PropTypes.func.isRequired,
+  rules: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      value: PropTypes.oneOfType([
+        PropTypes.bool,
+        PropTypes.string,
+        PropTypes.number,
+        PropTypes.instanceOf(Date),
+      ]),
+      operator: PropTypes.string,
+    }),
+  ).isRequired,
+  views: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 const mapStatetoProps = ({ rules, views }) => ({
   rules,

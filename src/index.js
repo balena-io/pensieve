@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import './index.css';
 import store from './store';
 import App from './app';
-import registerServiceWorker from './registerServiceWorker';
 
 const Pensieve = (config) => {
   const mountElement = document.getElementById(config.container || 'pensieve');
@@ -14,7 +13,6 @@ const Pensieve = (config) => {
     </Provider>,
     mountElement,
   );
-  registerServiceWorker();
 };
 
 window.Pensieve = Pensieve;
