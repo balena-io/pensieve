@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Divider, Flex } from 'rebass';
+import { Flex } from 'rebass';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import FontAwesome from 'react-fontawesome';
