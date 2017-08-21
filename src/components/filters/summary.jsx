@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Radio, Label, ButtonTransparent, Flex, Input, Select, Button, Divider } from 'rebass';
+import { Box, Text, Input, Flex } from 'rebass';
 import FontAwesome from 'react-fontawesome';
 import { Modal } from '../shared';
+import FilterDescription from './filter-description';
 
 const BorderedDiv = styled.div`
   margin-top: 10px;
-  padding: 6px 11px;
+  padding: 6px 11px 0;
   border: solid 1px #979797;
 `;
 
@@ -16,7 +17,7 @@ const ActionBtn = styled.button`
   border: 0;
   background: none;
   padding: 0;
-  font-size: inherit;
+  font-size: 13px;
   float: right;
 `;
 
@@ -36,10 +37,6 @@ class FilterSummary extends Component {
     this.setState({ id });
   }
 
-  handleOptionChange(e) {
-    this.setState({ option: e.target.value });
-  }
-
   handleChange(e) {
     const name = e.target.value;
     this.setState({ name });
@@ -52,11 +49,7 @@ class FilterSummary extends Component {
       return;
     }
 
-    if (id) {
-      this.props.updateView(id);
-    } else {
-      this.props.saveView(name);
-    }
+    this.props.saveView(name);
 
     this.setState({
       name: '',
@@ -72,60 +65,34 @@ class FilterSummary extends Component {
           <FontAwesome name="bookmark-o" style={{ marginRight: 6 }} />
           Save view
         </ActionBtn>
+
+        <Text fontSize={13} mb={10}>
+          Filters ({this.props.rules.length})
+        </Text>
         {this.state.showForm &&
-          <Modal cancel={() => this.setState({ showForm: false })}>
-            {!!this.props.views.length &&
-              <radiogroup>
-                <Label>
-                  <Radio
-                    name="radio"
-                    value="new"
-                    checked={this.state.option === 'new'}
-                    onChange={e => this.handleOptionChange(e)}
-                  />
-                  Create a new view
-                </Label>
-                <Label>
-                  <Radio
-                    name="radio"
-                    value="overwrite"
-                    checked={this.state.option === 'overwrite'}
-                    onChange={e => this.handleOptionChange(e)}
-                  />
-                  Overwrite existing view
-                </Label>
-              </radiogroup>}
-            {!!this.props.views.length && <Divider />}
-            {this.state.option === 'overwrite' &&
-              <Select value={this.state.id} onChange={e => this.setExistingId(e)}>
-                <option disabled value="">
-                  Select a view to overwrite
-                </option>
-                {this.props.views.map(view =>
-                  (<option value={view.id}>
-                    {view.name}
-                  </option>),
-                )}
-              </Select>}
-            {this.state.option === 'new' &&
-              <Input
-                value={this.state.name}
-                placeholder="Enter a name for your new view"
-                onChange={e => this.handleChange(e)}
-              />}
-            <Button mt={15} onClick={() => this.save()}>
-              {this.state.option === 'new' ? 'Save new view' : 'Overwrite view'}
-            </Button>
+          <Modal
+            title="Save current view"
+            cancel={() => this.setState({ showForm: false })}
+            done={() => this.save()}
+            action="Save"
+          >
+            <Input
+              value={this.state.name}
+              placeholder="Enter a name"
+              onChange={e => this.handleChange(e)}
+            />
           </Modal>}
-        {this.props.rules.map(rule =>
-          (<Flex>
-            <p style={{ marginRight: 5 }}>
-              {rule.name} <strong>{rule.operator}</strong> <em>{rule.value}</em>
-            </p>
-            <ButtonTransparent onClick={() => this.props.edit(rule)}>edit</ButtonTransparent>
-            <ButtonTransparent onClick={() => this.props.delete(rule)}>remove</ButtonTransparent>
-          </Flex>),
-        )}
+        <Flex wrap>
+          {this.props.rules.map(rule =>
+            (<Box mb={10} mr={10}>
+              <FilterDescription
+                rule={rule}
+                edit={() => this.props.edit(rule)}
+                delete={() => this.props.delete(rule)}
+              />
+            </Box>),
+          )}
+        </Flex>
       </BorderedDiv>
     );
   }
@@ -134,7 +101,6 @@ class FilterSummary extends Component {
 FilterSummary.propTypes = {
   edit: PropTypes.func.isRequired,
   delete: PropTypes.func.isRequired,
-  updateView: PropTypes.func.isRequired,
   saveView: PropTypes.func.isRequired,
   rules: PropTypes.arrayOf(
     PropTypes.shape({

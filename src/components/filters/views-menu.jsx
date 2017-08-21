@@ -6,15 +6,23 @@ import { Box, Fixed, Text } from 'rebass';
 import FontAwesome from 'react-fontawesome';
 import { PlainPanel, UnstyledList, ResinBtn } from '../shared';
 import store from '../../store';
-
-const SchemaSieve = require('../../services/filter');
-
-const sieve = SchemaSieve();
+import { updateUrl } from '../../services/path';
+import FilterDescription from './filter-description';
 
 const Wrapper = styled.div`
   position: absolute;
   right: 0;
   top: 0;
+`;
+
+const Preview = styled(PlainPanel)`
+  display: none;
+  position: absolute;
+  right: 230px;
+  width: 400px;
+  right: 302px;
+  top: 2px;
+  padding: 15px 15px 5px;
 `;
 
 const ViewListItem = styled.li`
@@ -23,10 +31,10 @@ const ViewListItem = styled.li`
   &:hover {
     background-color: #f3f3f3;
   }
-  & ${Text} {
+  & > ${Text} {
     padding-right: 20px;
   }
-  & button {
+  & > button {
     position: absolute;
     top: 7px;
     right: 10px;
@@ -35,7 +43,10 @@ const ViewListItem = styled.li`
     border: none;
     display: none;
   }
-  &:hover button {
+  &:hover > button {
+    display: block;
+  }
+  &:hover ${Preview} {
     display: block;
   }
 `;
@@ -59,7 +70,7 @@ class ViewsMenu extends Component {
   loadView(view) {
     store.dispatch({ type: 'SET_RULES', value: view.rules });
     this.setState({ showViewsMenu: false });
-    sieve.updateUrl(view.rules);
+    updateUrl(view.rules);
   }
 
   render() {
@@ -92,6 +103,13 @@ class ViewsMenu extends Component {
                     <button>
                       <FontAwesome name="trash" onClick={() => this.props.deleteView(view)} />
                     </button>
+                    <Preview>
+                      {view.rules.map(rule =>
+                        (<Box mb={10}>
+                          <FilterDescription rule={rule} />
+                        </Box>),
+                      )}
+                    </Preview>
                   </ViewListItem>),
                 )}
               </UnstyledList>}

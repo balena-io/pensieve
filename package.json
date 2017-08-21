@@ -23,6 +23,7 @@
   "dependencies": {
     "bluebird": "^3.5.0",
     "brace": "^0.10.0",
+    "color": "^2.0.0",
     "github-api": "^3.0.0",
     "glob-fs": "^0.1.7",
     "history": "^4.6.3",
