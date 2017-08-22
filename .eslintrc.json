@@ -9,7 +9,8 @@
     "react/jsx-filename-extension": 0,
     "react/prefer-stateless-function": 0,
     "react/no-string-refs": 0,
-    "react/require-default-props": 0
+    "react/require-default-props": 0,
+    "func-names": 0
   },
   "parser": "babel-eslint",
   "extends": "airbnb",

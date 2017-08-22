@@ -16,11 +16,11 @@ Assuming that:
 - the structure of `schema.yaml` is:
   ```yaml
   My string field:
-    type: string
+    type: String
   My number field:
-    type: number
+    type: Integer
   My boolean field:
-    type: boolean
+    type: Boolean
   ```
 
 - the repo contains a yaml file called `document.yaml` in its root
@@ -82,10 +82,15 @@ Schema
 Your schema is used to construct filters and validate your data when editing or adding a new entry.
 The schema should be an object composed of key/value pairs, where the fields name is the key and the type definition is the value.
 The type paramater should be one of:
-- string
-- number
-- boolean
-- date
+- Boolean
+- Case Insensitive Text
+- Date Time
+- Date
+- Integer
+- Real
+- Short Text
+- Text
+- Time
 - semver-range
 - semver
 
@@ -93,15 +98,55 @@ Here's an example of a schema file in yaml:
 
 ```yaml
 GitHub issue:
-  type: string
+  type: Short Text
 Difficulty:
-  type: number
+  type: Integer
+Description:
+  type: Text
 Pull Logs:
-  type: boolean
+  type: Boolean
 Last Updated:
-  type: date
+  type: Date Time
 Versions Affected:
   type: semver-range
 Fixed in Version:
   type: semver
 ```
+
+Types
+-----
+
+### Boolean
+A `true` or `false` value.
+
+### Case Insensitive Text
+A string value of any length. When filtering on a field of this type, the match is always case insensitive.
+
+### Date Time
+A date time string or unix timestamp. Under the hood Pensieve uses momentjs to parse values, so your string value should be in a known ISO 8601 or RFC 2822 Date time format.
+See https://momentjs.com/docs/#/parsing/string/ for more information.
+
+### Date
+Similar to the `Date Time` type but ignores the time part. The lowest level of comparison is the day when filtering, making `2013-02-08 09:30:26.123` and `2013-02-08 15:03:42.321` equal.
+
+### Integer
+An integer value.
+
+### Real
+A number value, can be an integer or decimal.
+
+### Short Text
+A string value with a maximum length of 255 characters.
+
+### Text
+A string value with no maximum length.
+
+### Time
+Similar to the `Date Time` type but ignores the date part. Only the time of day is evaluated when filtering, making `2013-02-08 09:30:26.123` and `2017-08-12 09:30:26.123` equal.
+
+### semver
+A valid semver value http://semver.org/
+Under the hood the [resin-semver](https://github.com/resin-io-modules/resin-semver) module is used, so we support resinified semver strings like `Resin OS 2.0.5 (prod)`.
+
+### semver-range
+A semver-range value https://github.com/npm/node-semver#advanced-range-syntax
