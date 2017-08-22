@@ -49,9 +49,6 @@ class App extends Component {
     store.subscribe(() => {
       const { isLoggedIn } = store.getState();
 
-      console.log('IS LOGGED IN', isLoggedIn);
-      console.log('PREVIOUSLY LOGGED IN', previouslyLoggedIn);
-
       if (isLoggedIn === previouslyLoggedIn) {
         return;
       }
