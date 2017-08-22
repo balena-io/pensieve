@@ -1,55 +1,49 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import styled from 'styled-components';
-import 'brace';
-import AceEditor from 'react-ace';
-import 'brace/mode/yaml';
-import 'brace/theme/chrome';
-import { Button, Text, Textarea, Divider } from 'rebass';
-import { UnstyledList, ResinBtn } from '../shared';
+import Color from 'color';
+import { Flex, Input, Text, Textarea, Divider, Box } from 'rebass';
+import DocFragmentField from './doc-fragment-field';
+import DocFragmentInput from './doc-fragment-input';
+import { UnstyledList, ResinBtn, Modal, Container } from '../shared';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
 import store from '../../store';
-
-const jsyaml = require('js-yaml');
-
-const _ = require('lodash');
-const showdown = require('showdown');
-
-const converter = new showdown.Converter();
-
-const makeNameClass = name => (name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : '');
-
-const cleanJson = (title, content) => {
-  const json = {};
-  json[title] = _.pickBy(
-    _.mapValues(content, x => (_.isDate(x) ? x.toString() : x)),
-    _.negate(_.isFunction),
-  );
-
-  return json;
-};
+import { colors } from '../../theme';
 
 const DocFragmentWrapper = styled.li`
   position: relative;
   padding-bottom: 60px;
 `;
 
+const DocFragmentEditWrapper = styled(DocFragmentWrapper)`
+  background-color: ${Color(colors.orange).fade(0.84).string()};
+  border-bottom: 2px solid #cccccc;
+  margin-bottom: -10px;
+`;
+
+const ShortInput = styled(Input)`
+  max-width: 300px;
+  background-color: white;
+`;
+
 class DocFragment extends Component {
   constructor(props) {
     super(props);
 
-    const json = cleanJson(this.props.title, this.props.content);
-    const sourceCode = jsyaml.safeDump(json);
-
     this.state = {
+      edit: {
+        title: this.props.title,
+        content: _.cloneDeep(this.props.content),
+      },
+      newFieldTitle: '',
       showEditor: false,
       lintError: null,
       validationError: null,
-      sourceCode,
       message: '',
     };
 
@@ -57,25 +51,36 @@ class DocFragment extends Component {
   }
 
   cancelEdit() {
-    const json = cleanJson(this.props.title, this.props.content);
-    const sourceCode = jsyaml.safeDump(json);
-
     this.setState({
       showEditor: false,
-      sourceCode,
+      edit: {
+        title: this.props.title,
+        content: _.cloneDeep(this.props.content),
+      },
     });
   }
 
-  handleChange() {
-    const sourceCode = this.refs.ace.editor.getValue();
-    this.setState({ sourceCode });
-    lint(sourceCode)
-      .then(() => {
-        this.setState({ lintError: null });
-      })
-      .catch((err) => {
-        this.setState({ lintError: err.message });
-      });
+  removeField(title) {
+    const edit = this.state.edit;
+    delete edit.content[title];
+    this.setState({ edit });
+  }
+
+  handleTitleEdit(e) {
+    const edit = this.state.edit;
+    edit.title = e.target.value;
+    this.setState({ edit });
+  }
+
+  handleFieldEdit(title, val) {
+    const edit = this.state.edit;
+    edit.content[title] = val;
+    this.setState({ edit });
+  }
+
+  handleNewFieldTitleEdit(e) {
+    const val = e.target.value;
+    this.setState({ newFieldTitle: val });
   }
 
   updateCommitMessage(e) {
@@ -83,16 +88,29 @@ class DocFragment extends Component {
     this.setState({ message });
   }
 
+  addNewField(e) {
+    e.preventDefault();
+    const edit = this.state.edit;
+    edit.content[this.state.newFieldTitle] = '';
+    this.setState({
+      edit,
+      newFieldTitle: '',
+    });
+  }
+
   saveChange() {
-    const source = this.refs.ace.editor.getValue();
-    const message = `Edited section "${this.props.title}" using Pensieve\n\n${this.state.message}`;
+    const source = this.state.edit.content;
+    const title = this.state.edit.title;
+    const message = this.state.message;
+    if (!message) {
+      return;
+    }
     const { schema } = store.getState();
 
     lint(source)
-      // When validating, strip the title field from the source
-      .then(() => schemaValidate(schema, source.replace(/^.+\n/, '')))
+      .then(() => schemaValidate(schema, source))
       .then(() => {
-        DocumentService.updateFragment(this.props.content.getHash(), source);
+        DocumentService.updateFragment(this.props.content.getHash(), title, source);
 
         this.setState({
           loading: true,
@@ -117,141 +135,100 @@ class DocFragment extends Component {
   }
 
   render() {
-    const fields = _.map(this.props.content, (data, title) => {
-      const nameClass = makeNameClass(title);
-      if (_.isFunction(data)) {
-        return null;
-      }
-      if (_.isNumber(data)) {
-        return (
-          <li>
-            <h3>
-              {title}
-            </h3>
-            <span className={`_number${nameClass}`}>
-              {data}
-            </span>
-          </li>
-        );
-      } else if (_.isString(data)) {
-        return (
-          <li>
-            <h3>
-              {title}
-            </h3>
-            <span
-              className={`_string${nameClass} markdown-body`}
-              dangerouslySetInnerHTML={{ __html: converter.makeHtml(data) }}
-            />
-          </li>
-        );
-      } else if (_.isBoolean(data)) {
-        return (
-          <li>
-            <h3>
-              {title}
-            </h3>
-            <span className={`_boolean${nameClass}`}>
-              {data ? 'true' : 'false'}
-            </span>
-          </li>
-        );
-      } else if (_.isNull(data)) {
-        return (
-          <li>
-            <h3>
-              {title}
-            </h3>
-            <span className={`_null${nameClass}`}>
-              {data}
-            </span>
-          </li>
-        );
-      } else if (_.isDate(data)) {
-        return (
-          <li>
-            <h3>
-              {title}
-            </h3>
-            <span className={`_date${nameClass}`}>
-              {data.toString()}
-            </span>
-          </li>
-        );
-      }
-      return (
-        <li>
-          <h3>
-            {title}
-          </h3>
-          <span className={`${nameClass}`}>
-            {data}
-          </span>
-        </li>
-      );
-    });
-
     if (this.state.showEditor) {
       return (
-        <DocFragmentWrapper>
+        <DocFragmentEditWrapper>
           <Divider style={{ borderBottomWidth: 2, marginBottom: 25 }} color="#cccccc" />
+          <Container>
+            {this.state.showSaveModal &&
+              <Modal
+                title="Describe your changes"
+                cancel={() => this.setState({ showSaveModal: false })}
+                done={() => this.saveChange()}
+                action="Save changes"
+              >
+                <Textarea
+                  onChange={e => this.updateCommitMessage(e)}
+                  placeholder="Please describe your changes"
+                />
+              </Modal>}
 
-          <AceEditor
-            mode="yaml"
-            theme="chrome"
-            name="code"
-            width="100%"
-            ref="ace"
-            fontSize={14}
-            tabSize={2}
-            onChange={() => this.handleChange()}
-            value={this.state.sourceCode}
-            onLoad={(editor) => {
-              editor.focus();
-              editor.getSession().setUseWrapMode(true);
-            }}
-          />
+            <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
+              <ResinBtn style={{ marginRight: 10 }} onClick={() => this.cancelEdit()}>
+                <FontAwesome name="tick" style={{ marginRight: 10 }} />
+                Cancel
+              </ResinBtn>
+              <ResinBtn
+                color="orange"
+                disabled={this.state.lintError}
+                onClick={() => this.setState({ showSaveModal: true })}
+              >
+                <FontAwesome name="check" style={{ marginRight: 10 }} />
+                Save Changes
+              </ResinBtn>
+            </Flex>
+            <h2>
+              <ShortInput value={this.state.edit.title} onChange={e => this.handleTitleEdit(e)} />
+            </h2>
+            <UnstyledList>
+              {_.map(this.state.edit.content, (data, title) =>
+                (<DocFragmentInput
+                  data={data}
+                  title={title}
+                  schema={this.props.schema[title]}
+                  change={val => this.handleFieldEdit(title, val)}
+                  remove={() => this.removeField(title)}
+                />),
+              )}
+            </UnstyledList>
 
-          {this.state.lintError &&
-            <Text color="red">
-              {this.state.lintError}
-            </Text>}
-          {this.state.validationError &&
-            <Text color="red">
-              {this.state.validationError}
-            </Text>}
-          {this.state.loading
-            ? <FontAwesome spin name="cog" />
-            : <div>
-              <Textarea
-                onChange={e => this.updateCommitMessage(e)}
-                placeholder="Please describe your changes"
-              />
-              <Button onClick={this.saveChange} disabled={this.state.lintError}>
-                  Save
-              </Button>
-              <Button bg="red" onClick={() => this.cancelEdit()}>
-                  Cancel
-              </Button>
-            </div>}
-        </DocFragmentWrapper>
+            <Box mt={60}>
+              <form onSubmit={e => this.addNewField(e)}>
+                <h3>Add a new field</h3>
+                <Flex>
+                  <ShortInput
+                    mr={10}
+                    value={this.state.newFieldTitle}
+                    onChange={e => this.handleNewFieldTitleEdit(e)}
+                    placeholder="Enter the field title"
+                  />
+                  <ResinBtn onClick={e => this.addNewField(e)}>Add field</ResinBtn>
+                </Flex>
+              </form>
+            </Box>
+
+            {this.state.lintError &&
+              <Text color="red">
+                {this.state.lintError}
+              </Text>}
+            {this.state.validationError &&
+              <Text color="red">
+                {this.state.validationError}
+              </Text>}
+            {this.state.loading ? <FontAwesome spin name="cog" /> : <div />}
+          </Container>
+        </DocFragmentEditWrapper>
       );
     }
 
     return (
       <DocFragmentWrapper>
-        <Divider style={{ borderBottomWidth: 2, marginBottom: 30 }} color="#cccccc" />
+        <Container>
+          <Divider style={{ borderBottomWidth: 2, marginBottom: 30 }} color="#cccccc" />
 
-        <ResinBtn style={{ float: 'right' }} onClick={() => this.setState({ showEditor: true })}>
-          <FontAwesome name="pencil" style={{ marginRight: 10 }} />
-          Edit Entry
-        </ResinBtn>
-        <h2>
-          {this.props.title}
-        </h2>
-        <UnstyledList>
-          {fields}
-        </UnstyledList>
+          <ResinBtn style={{ float: 'right' }} onClick={() => this.setState({ showEditor: true })}>
+            <FontAwesome name="pencil" style={{ marginRight: 10 }} />
+            Edit Entry
+          </ResinBtn>
+          <h2>
+            {this.props.title}
+          </h2>
+          <UnstyledList>
+            {_.map(this.props.content, (data, title) =>
+              <DocFragmentField data={data} title={title} />,
+            )}
+          </UnstyledList>
+        </Container>
       </DocFragmentWrapper>
     );
   }
@@ -260,6 +237,7 @@ class DocFragment extends Component {
 DocFragment.propTypes = {
   title: PropTypes.string.isRequired,
   content: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
 export default DocFragment;

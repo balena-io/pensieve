@@ -31,7 +31,7 @@ class Doc extends Component {
   render() {
     const frags = _.map(this.props.content, (value, key) => {
       if (canShowFrag({ key: value }, this.props.rules)) {
-        return <DocFragment title={key} content={value} />;
+        return <DocFragment title={key} content={value} schema={this.props.schema} />;
       }
 
       return null;
@@ -48,11 +48,13 @@ class Doc extends Component {
 Doc.propTypes = {
   content: PropTypes.object.isRequired,
   rules: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-const mapStatetoProps = ({ rules, content }) => ({
+const mapStatetoProps = ({ rules, content, schema }) => ({
   rules,
   content,
+  schema,
 });
 
 export default connect(mapStatetoProps)(Doc);

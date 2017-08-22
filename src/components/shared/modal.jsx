@@ -53,6 +53,7 @@ Modal.propTypes = {
   done: PropTypes.func.isRequired,
   action: PropTypes.string.isRequired,
   children: PropTypes.element.isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default Modal;

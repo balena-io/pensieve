@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import FontAwesome from 'react-fontawesome';
+import PropTypes from 'prop-types';
+import { DeleteBtn } from '../shared';
 
 const ButtonWrapper = styled.button`
   font-size: 13px;
@@ -11,25 +12,9 @@ const ButtonWrapper = styled.button`
   padding: 3px 8px;
 `;
 
-const DeleteButton = styled.button`
-  border: 0;
-  background: none;
-  padding: 4px;
-  font-size: 14px;
-  margin-right: 5px;
-  color: #9b9b9b;
-
-  &:hover {
-    color: black;
-  }
-`;
-
 const FilterDescription = props =>
   (<div>
-    {!!props.delete &&
-      <DeleteButton onClick={props.delete}>
-        <FontAwesome name="times" />
-      </DeleteButton>}
+    {!!props.delete && <DeleteBtn onClick={props.delete} />}
 
     <ButtonWrapper onClick={!!props.edit && props.edit}>
       {props.rule.name}{' '}
@@ -37,5 +22,11 @@ const FilterDescription = props =>
       <em>{props.rule.value}</em>
     </ButtonWrapper>
   </div>);
+
+FilterDescription.propTypes = {
+  edit: PropTypes.func.isRequired,
+  delete: PropTypes.func.isRequired,
+  rule: PropTypes.object.isRequired,
+};
 
 export default FilterDescription;
