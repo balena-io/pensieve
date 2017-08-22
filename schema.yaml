@@ -1,15 +1,15 @@
 GitHub issue:
-  type: string
+  type: Text
 Signs and Symptoms:
-  type: string
+  type: Text
 Treatments:
-  type: string
+  type: Text
 Fix Difficulty:
-  type: number
+  type: Integer
 Pull Leech Logs:
-  type: boolean
+  type: Boolean
 Last Updated:
-  type: date
+  type: Date Time
 Versions Affected:
   type: semver-range
 Fixed in Version:
