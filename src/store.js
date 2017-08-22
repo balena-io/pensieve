@@ -18,7 +18,13 @@ const save = (store) => {
 
 const load = () => {
   const doc = localStorage.getItem(PENSIEVE_STORAGE_KEY);
-  return (doc && JSON.parse(doc)) || defaultState();
+  if (doc) {
+    const data = JSON.parse(doc);
+    data.isLoggedIn = false;
+    return data;
+  }
+
+  return defaultState();
 };
 
 const reducer = (state, action) => {
