@@ -20,6 +20,8 @@ const ActionBtn = styled.button`
   float: right;
 `;
 
+const hashRule = rule => `${rule.name}::${rule.operator}::${rule.value}`;
+
 class FilterSummary extends Component {
   constructor(props) {
     super(props);
@@ -83,7 +85,7 @@ class FilterSummary extends Component {
           </Modal>}
         <Flex wrap>
           {this.props.rules.map(rule =>
-            (<Box mb={10} mr={10}>
+            (<Box mb={10} mr={10} key={hashRule(rule)}>
               <FilterDescription
                 rule={rule}
                 edit={() => this.props.edit(rule)}

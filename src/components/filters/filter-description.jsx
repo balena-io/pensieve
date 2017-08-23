@@ -13,13 +13,13 @@ const ButtonWrapper = styled.button`
 
 const FilterDescription = props =>
   (<div>
-    {!!props.delete && <DeleteBtn onClick={props.delete} />}
-
     <ButtonWrapper onClick={!!props.edit && props.edit}>
       {props.rule.name}{' '}
       <strong style={{ marginLeft: 7, marginRight: 7 }}>{props.rule.operator}</strong>{' '}
       <em>{props.rule.value}</em>
     </ButtonWrapper>
+
+    {!!props.delete && <DeleteBtn onClick={props.delete} />}
   </div>);
 
 export default FilterDescription;

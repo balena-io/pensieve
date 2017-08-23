@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import styled from 'styled-components';
-import { Button } from 'rebass';
+import { Button, Flex } from 'rebass';
 import { connect } from 'react-redux';
+import { Container } from '../shared';
 import store from '../../store';
 
 const BlackBox = styled.div`
@@ -13,19 +14,10 @@ const BlackBox = styled.div`
 
 const Title = styled.h1`
   margin: 0;
-  position: absolute;
-  left: 30px;
-  top: 15px;
   font-weight: 200;
   font-size: 24px;
   letter-spacing: 0.4px;
   color: #ffffff;
-`;
-
-const LogoutButton = styled(Button)`
-position: absolute;
-right: 30px;
-top: 15px;
 `;
 
 const logout = () => {
@@ -38,13 +30,17 @@ class Header extends Component {
   render() {
     return (
       <BlackBox>
-        <Title>
-          {this.props.config.repo.name}
-        </Title>
-        <LogoutButton onClick={logout} bg="white" color="red">
-          <FontAwesome style={{ marginRight: 5 }} name="sign-out" />
-          Logout
-        </LogoutButton>
+        <Container>
+          <Flex pt={15} justify="space-between">
+            <Title>
+              {this.props.config.repo.name}
+            </Title>
+            <Button onClick={logout} bg="white" color="red">
+              <FontAwesome style={{ marginRight: 5 }} name="sign-out" />
+              Logout
+            </Button>
+          </Flex>
+        </Container>
       </BlackBox>
     );
   }

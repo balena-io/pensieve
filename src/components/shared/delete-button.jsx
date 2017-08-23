@@ -7,8 +7,9 @@ const BtnWrapper = styled.button`
   background: none;
   padding: 4px;
   font-size: 14px;
-  margin-right: 5px;
+  margin-left: 5px;
   color: #9b9b9b;
+  cursor: pointer;
 
   &:hover {
     color: black;
