@@ -44,6 +44,7 @@ class DocFragment extends Component {
       lintError: null,
       validationError: null,
       message: '',
+      deleteMessage: '',
     };
 
     this.saveChange = this.saveChange.bind(this);
@@ -85,6 +86,11 @@ class DocFragment extends Component {
   updateCommitMessage(e) {
     const message = e.target.value;
     this.setState({ message });
+  }
+
+  updateDeleteCommitMessage(e) {
+    const deleteMessage = e.target.value;
+    this.setState({ deleteMessage });
   }
 
   addNewField(e) {
@@ -132,6 +138,30 @@ class DocFragment extends Component {
       .catch(PensieveValidationError, (err) => {
         this.setState({ validationError: err.message });
       });
+  }
+
+  deleteEntry() {
+    const message = this.state.deleteMessage;
+    if (!message) {
+      return;
+    }
+
+    DocumentService.deleteFragment(this.props.content.getHash());
+
+    this.setState({
+      loading: true,
+      showDeleteModal: false,
+      validationError: null,
+    });
+
+    GitHubService.commit({
+      content: DocumentService.getSource(),
+      message,
+    }).finally(() =>
+      this.setState({
+        loading: false,
+      }),
+    );
   }
 
   render() {
@@ -218,10 +248,38 @@ class DocFragment extends Component {
         <Container>
           <Divider style={{ borderBottomWidth: 2, marginBottom: 30 }} color="#cccccc" />
 
-          <ResinBtn style={{ float: 'right' }} onClick={() => this.setState({ showEditor: true })}>
-            <FontAwesome name="pencil" style={{ marginRight: 10 }} />
-            Edit Entry
-          </ResinBtn>
+          {this.state.showDeleteModal &&
+            <Modal
+              title="Delete an entry"
+              cancel={() => this.setState({ showDeleteModal: false })}
+              done={() => this.deleteEntry()}
+              action="Delete entry"
+            >
+              <Textarea
+                rows={4}
+                onChange={e => this.updateDeleteCommitMessage(e)}
+                placeholder="Please describe your changes"
+              />
+            </Modal>}
+
+          {this.state.loading
+            ? <FontAwesome style={{ float: 'right' }} spin name="cog" />
+            : <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
+              <ResinBtn
+                style={{ marginRight: 10 }}
+                onClick={() => this.setState({ showEditor: true })}
+              >
+                <FontAwesome name="pencil" style={{ marginRight: 10 }} />
+                  Edit Entry
+              </ResinBtn>
+
+              <ResinBtn onClick={() => this.setState({ showDeleteModal: true })}>
+                <Text color="red">
+                  <FontAwesome name="trash" style={{ marginRight: 10 }} />
+                    Delete Entry
+                </Text>
+              </ResinBtn>
+            </Flex>}
           <h2>
             {this.props.title}
           </h2>

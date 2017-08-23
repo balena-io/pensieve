@@ -70,6 +70,31 @@ export const updateFragment = (hash, title, content) => {
   innerSource = jsyaml.safeDump(cleanJson);
 };
 
+export const deleteFragment = (hash) => {
+  innerJson = _.reduce(
+    innerJson,
+    (result, value, key) => {
+      if (value.getHash() !== hash) {
+        result[key] = value;
+      }
+      return result;
+    },
+    {},
+  );
+
+  let cleanJson = _.mapValues(innerJson, value =>
+    _.pickBy(_.mapValues(value, x => (_.isDate(x) ? x.toString() : x)), _.negate(_.isFunction)),
+  );
+
+  if (innerConfig.contentPath) {
+    const sourceJson = jsyaml.load(innerSource);
+    _.set(sourceJson, innerConfig.contentPath, cleanJson);
+    cleanJson = sourceJson;
+  }
+
+  innerSource = jsyaml.safeDump(cleanJson);
+};
+
 export const addFragment = (title, content) => {
   const update = {};
   update[title] = new Fragment(title, content);
