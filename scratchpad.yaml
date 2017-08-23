@@ -112,3 +112,7 @@ Scratchpad:
     Versions Affected: // semver-range value
     Fixed in Version: // semver value
     Address already in use: // Text value
+  A new entry:
+    GitHub issue: foobar
+    Signs and Symptoms: barbazfofo
+    Fix Difficulty: 69
