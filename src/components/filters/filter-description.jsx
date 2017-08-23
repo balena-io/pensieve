@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { DeleteBtn } from '../shared';
 
 const ButtonWrapper = styled.button`
@@ -22,11 +21,5 @@ const FilterDescription = props =>
       <em>{props.rule.value}</em>
     </ButtonWrapper>
   </div>);
-
-FilterDescription.propTypes = {
-  edit: PropTypes.func.isRequired,
-  delete: PropTypes.func.isRequired,
-  rule: PropTypes.object.isRequired,
-};
 
 export default FilterDescription;

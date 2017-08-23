@@ -30,7 +30,6 @@
     "js-yaml": "^3.9.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "prop-types": "^15.5.10",
     "qs": "^6.5.0",
     "ractive": "^0.9.3",
     "react": "^15.6.1",
@@ -63,9 +62,6 @@
     "prettier-eslint": "^6.4.2"
   },
   "babel": {
-    "presets": [
-      "stage-3",
-      "latest"
-    ]
+    "presets": ["stage-3", "latest"]
   }
 }

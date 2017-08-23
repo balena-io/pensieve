@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import styled from 'styled-components';
 import Color from 'color';
@@ -114,6 +113,7 @@ class DocFragment extends Component {
 
         this.setState({
           loading: true,
+          showSaveModal: false,
           validationError: null,
         });
         GitHubService.commit({
@@ -148,25 +148,38 @@ class DocFragment extends Component {
                 action="Save changes"
               >
                 <Textarea
+                  rows={4}
                   onChange={e => this.updateCommitMessage(e)}
                   placeholder="Please describe your changes"
                 />
               </Modal>}
 
-            <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
-              <ResinBtn style={{ marginRight: 10 }} onClick={() => this.cancelEdit()}>
-                <FontAwesome name="tick" style={{ marginRight: 10 }} />
-                Cancel
-              </ResinBtn>
-              <ResinBtn
-                color="orange"
-                disabled={this.state.lintError}
-                onClick={() => this.setState({ showSaveModal: true })}
-              >
-                <FontAwesome name="check" style={{ marginRight: 10 }} />
-                Save Changes
-              </ResinBtn>
-            </Flex>
+            {this.state.loading
+              ? <FontAwesome style={{ float: 'right' }} spin name="cog" />
+              : <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
+                <ResinBtn style={{ marginRight: 10 }} onClick={() => this.cancelEdit()}>
+                  <FontAwesome name="tick" style={{ marginRight: 10 }} />
+                    Cancel
+                </ResinBtn>
+                <ResinBtn
+                  color="orange"
+                  disabled={this.state.lintError}
+                  onClick={() => this.setState({ showSaveModal: true })}
+                >
+                  <FontAwesome name="check" style={{ marginRight: 10 }} />
+                    Save Changes
+                </ResinBtn>
+              </Flex>}
+
+            {this.state.lintError &&
+              <Text color="red">
+                {this.state.lintError}
+              </Text>}
+            {this.state.validationError &&
+              <Text color="red">
+                {this.state.validationError}
+              </Text>}
+
             <h2>
               <ShortInput value={this.state.edit.title} onChange={e => this.handleTitleEdit(e)} />
             </h2>
@@ -196,16 +209,6 @@ class DocFragment extends Component {
                 </Flex>
               </form>
             </Box>
-
-            {this.state.lintError &&
-              <Text color="red">
-                {this.state.lintError}
-              </Text>}
-            {this.state.validationError &&
-              <Text color="red">
-                {this.state.validationError}
-              </Text>}
-            {this.state.loading ? <FontAwesome spin name="cog" /> : <div />}
           </Container>
         </DocFragmentEditWrapper>
       );
@@ -233,11 +236,5 @@ class DocFragment extends Component {
     );
   }
 }
-
-DocFragment.propTypes = {
-  title: PropTypes.string.isRequired,
-  content: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 export default DocFragment;

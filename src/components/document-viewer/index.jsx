@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Flex, Box } from 'rebass';
 import styled from 'styled-components';
@@ -37,16 +36,6 @@ class DocumentViewer extends Component {
   render() {
     const schemaIsEditable = _.isString(this.props.config.schema);
 
-    if (this.state.showNewEntryForm) {
-      return (
-        <Container>
-          <DocFragmentCreator
-            schema={this.props.schema}
-            close={() => this.setState({ showNewEntryForm: false })}
-          />
-        </Container>
-      );
-    }
     return (
       <Box mt={40}>
         <Container>
@@ -65,16 +54,17 @@ class DocumentViewer extends Component {
             </ResinBtn>
           </Flex>
         </Container>
+        {this.state.showNewEntryForm &&
+          <DocFragmentCreator
+            schema={this.props.schema}
+            close={() => this.setState({ showNewEntryForm: false })}
+          />}
 
         <Doc />
       </Box>
     );
   }
 }
-
-DocumentViewer.propTypes = {
-  schema: PropTypes.object.isRequired,
-};
 
 const mapStatetoProps = state => ({
   schema: state.schema,

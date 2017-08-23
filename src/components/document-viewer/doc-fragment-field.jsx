@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import showdown from 'showdown';
 
@@ -46,12 +45,6 @@ const DocFragmentField = ({ title, data }) => {
       </span>
     </li>
   );
-};
-
-DocFragmentField.propTypes = {
-  title: PropTypes.string.isRequired,
-  data: PropTypes.oneOf(PropTypes.string, PropTypes.number, PropTypes.bool, PropTypes.date)
-    .isRequired,
 };
 
 export default DocFragmentField;

@@ -10,6 +10,7 @@
     "react/prefer-stateless-function": 0,
     "react/no-string-refs": 0,
     "react/require-default-props": 0,
+    "react/prop-types": 0,
     "func-names": 0
   },
   "parser": "babel-eslint",

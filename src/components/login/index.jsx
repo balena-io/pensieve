@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Input, Box, Button, Text, Heading, Divider } from 'rebass';
-import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import * as GitHubService from '../../services/github';
 import store from '../../store';
@@ -175,9 +174,5 @@ class Login extends Component {
     );
   }
 }
-
-Login.propTypes = {
-  onLogin: PropTypes.func.isRequired,
-};
 
 export default Login;

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Box, Text, Input, Flex } from 'rebass';
 import FontAwesome from 'react-fontawesome';
@@ -97,25 +96,6 @@ class FilterSummary extends Component {
     );
   }
 }
-
-FilterSummary.propTypes = {
-  edit: PropTypes.func.isRequired,
-  delete: PropTypes.func.isRequired,
-  saveView: PropTypes.func.isRequired,
-  rules: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      value: PropTypes.oneOfType([
-        PropTypes.bool,
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.instanceOf(Date),
-      ]),
-      operator: PropTypes.string,
-    }),
-  ).isRequired,
-  views: PropTypes.arrayOf(PropTypes.object).isRequired,
-};
 
 const mapStatetoProps = ({ rules, views }) => ({
   rules,

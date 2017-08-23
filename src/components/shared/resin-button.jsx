@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
 import Color from 'color';
-import PropTypes from 'prop-types';
 import { colors } from '../../theme';
 
 const BaseBtn = styled.button`
@@ -54,10 +53,6 @@ const ResinBtn = (props) => {
     return <OrangeBtn {...other} />;
   }
   return <DefaultBtn {...other} />;
-};
-
-ResinBtn.propTypes = {
-  color: PropTypes.string,
 };
 
 export default ResinBtn;
