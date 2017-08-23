@@ -30,7 +30,14 @@ class Doc extends Component {
   render() {
     const frags = _.map(this.props.content, (value, key) => {
       if (canShowFrag({ key: value }, this.props.rules)) {
-        return <DocFragment title={key} content={value} schema={this.props.schema} />;
+        return (
+          <DocFragment
+            key={value.getHash()}
+            title={key}
+            content={value}
+            schema={this.props.schema}
+          />
+        );
       }
 
       return null;
