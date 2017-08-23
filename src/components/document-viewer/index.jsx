@@ -8,6 +8,7 @@ import store from '../../store';
 import Filters from '../filters';
 import Doc from './doc';
 import DocFragmentCreator from './doc-fragment-creator';
+import SchemaEditor from '../schema-editor';
 import { Container, ResinBtn } from '../shared';
 import { colors } from '../../theme';
 
@@ -54,6 +55,7 @@ class DocumentViewer extends Component {
             </ResinBtn>
           </Flex>
         </Container>
+        {this.props.isEditingSchema && <SchemaEditor />}
         {this.state.showNewEntryForm &&
           <DocFragmentCreator
             schema={this.props.schema}
@@ -70,6 +72,7 @@ const mapStatetoProps = state => ({
   schema: state.schema,
   content: state.content,
   config: state.config,
+  isEditingSchema: state.isEditingSchema,
 });
 
 export default connect(mapStatetoProps)(DocumentViewer);

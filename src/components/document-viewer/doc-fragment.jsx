@@ -158,7 +158,6 @@ class DocFragment extends Component {
               ? <FontAwesome style={{ float: 'right' }} spin name="cog" />
               : <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
                 <ResinBtn style={{ marginRight: 10 }} onClick={() => this.cancelEdit()}>
-                  <FontAwesome name="tick" style={{ marginRight: 10 }} />
                     Cancel
                 </ResinBtn>
                 <ResinBtn
