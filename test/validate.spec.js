@@ -138,40 +138,5 @@ describe('pensieve validator', () => {
       it('should return true when provided with a valid value', () =>
         expect(sieve.validate('semver', '1.5.0')).to.be.true);
     });
-
-    /**
-     * Legacy aliases
-     */
-    describe('string field', () => {
-      it('should return false when provided with an invalid value', () =>
-        expect(sieve.validate('string', 1234)).to.be.false);
-
-      it('should return true when provided with a valid value', () =>
-        expect(sieve.validate('string', 'foobar')).to.be.true);
-    });
-
-    describe('number field', () => {
-      it('should return false when provided with an invalid value', () =>
-        expect(sieve.validate('number', 'foobar')).to.be.false);
-
-      it('should return true when provided with a valid value', () =>
-        expect(sieve.validate('number', 1234)).to.be.true);
-    });
-
-    describe('boolean field', () => {
-      it('should return false when provided with an invalid value', () =>
-        expect(sieve.validate('boolean', 'foobar')).to.be.false);
-
-      it('should return true when provided with a valid value', () =>
-        expect(sieve.validate('boolean', true)).to.be.true);
-    });
-
-    describe('date field', () => {
-      it('should return false when provided with an invalid value', () =>
-        expect(sieve.validate('date', 'foobar')).to.be.false);
-
-      it('should return true when provided with a valid value', () =>
-        expect(sieve.validate('date', '6 Mar 2017 21:22:23 GMT')).to.be.true);
-    });
   });
 });
