@@ -102,3 +102,13 @@ Scratchpad:
     Last Updated: // Date Time value
     Versions Affected: // semver-range value
     Fixed in Version: // semver value
+  'New Entry - Wed Aug 23 2017 10:40:31 GMT+0100 (BST)':
+    GitHub issue: // Text value
+    Signs and Symptoms: // Text value
+    Treatments: // Text value
+    Fix Difficulty: // Integer value
+    Pull Leech Logs: // Boolean value
+    Last Updated: // Date Time value
+    Versions Affected: // semver-range value
+    Fixed in Version: // semver value
+    Address already in use: // Text value
