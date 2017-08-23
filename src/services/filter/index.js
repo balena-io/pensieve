@@ -73,6 +73,10 @@ class SchemaSieve {
 
     return filterTests[type].validate(value);
   }
+
+  getTypes() {
+    return Object.keys(filterTests);
+  }
 }
 
 module.exports = tests => new SchemaSieve(tests);

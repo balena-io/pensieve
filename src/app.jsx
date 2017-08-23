@@ -12,7 +12,6 @@ import * as GitHubService from './services/github';
 import * as DocumentService from './services/document';
 import events from './services/events';
 import store from './store';
-import SchemaEditor from './components/schema-editor';
 import { loadRulesFromUrl } from './services/path';
 
 /* eslint no-unused-expressions: 0 */
@@ -99,15 +98,6 @@ class App extends Component {
       );
     }
 
-    if (this.props.isEditingSchema) {
-      return (
-        <Provider theme={theme}>
-          <Header />
-          <SchemaEditor />
-        </Provider>
-      );
-    }
-
     return (
       <Provider theme={theme}>
         <Header />
@@ -119,7 +109,6 @@ class App extends Component {
 
 const mapStatetoProps = state => ({
   isLoggedIn: state.isLoggedIn,
-  isEditingSchema: state.isEditingSchema,
 });
 
 export default connect(mapStatetoProps)(App);

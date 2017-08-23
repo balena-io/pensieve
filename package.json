@@ -22,7 +22,6 @@
   "homepage": "https://github.com/resin-io/pensieve#readme",
   "dependencies": {
     "bluebird": "^3.5.0",
-    "brace": "^0.10.0",
     "color": "^2.0.0",
     "github-api": "^3.0.0",
     "glob-fs": "^0.1.7",
@@ -33,7 +32,6 @@
     "qs": "^6.5.0",
     "ractive": "^0.9.3",
     "react": "^15.6.1",
-    "react-ace": "^5.1.2",
     "react-dom": "^15.6.1",
     "react-fontawesome": "^1.6.1",
     "react-redux": "^5.0.6",
