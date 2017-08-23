@@ -93,3 +93,12 @@ Scratchpad:
     Versions Affected: // semver - range value
     Fixed in Version: // semver value
   'New Entry - Fri Aug 18 2017 13:03:47 GMT+0100 (BST)': {}
+  'New Entry - Wed Aug 23 2017 10:13:08 GMT+0100 (BST)':
+    GitHub issue: // Text value
+    Signs and Symptoms: // Text value
+    Treatments: // Text value
+    Fix Difficulty: // Integer value
+    Pull Leech Logs: // Boolean value
+    Last Updated: // Date Time value
+    Versions Affected: // semver-range value
+    Fixed in Version: // semver value
