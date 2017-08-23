@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { Flex } from 'rebass';
+import { Flex, Box } from 'rebass';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import FontAwesome from 'react-fontawesome';
@@ -9,8 +9,7 @@ import store from '../../store';
 import Filters from '../filters';
 import Doc from './doc';
 import DocFragmentCreator from './doc-fragment-creator';
-import Container from '../shared/container';
-import ResinBtn from '../shared/resin-button';
+import { Container, ResinBtn } from '../shared';
 import { colors } from '../../theme';
 
 const SkeleBtn = styled(ResinBtn)`
@@ -49,8 +48,8 @@ class DocumentViewer extends Component {
       );
     }
     return (
-      <Container>
-        <div id="viewer">
+      <Box mt={40}>
+        <Container>
           <Filters schema={this.props.schema} />
           <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
             {schemaIsEditable &&
@@ -65,10 +64,10 @@ class DocumentViewer extends Component {
               Add entry
             </ResinBtn>
           </Flex>
+        </Container>
 
-          <Doc />
-        </div>
-      </Container>
+        <Doc />
+      </Box>
     );
   }
 }

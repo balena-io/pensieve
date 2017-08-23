@@ -56,6 +56,7 @@ const MenuPanel = styled(PlainPanel)`
   width: 300px;
   right: 0;
   top: 36px;
+  z-index: 1;
 `;
 
 class ViewsMenu extends Component {
@@ -82,7 +83,14 @@ class ViewsMenu extends Component {
           <FontAwesome style={{ float: 'right' }} name="caret-down" />
         </ResinBtn>
         {this.state.showViewsMenu &&
-          <Fixed onClick={() => this.setState({ showViewsMenu: false })} top right bottom left />}
+          <Fixed
+            z={1}
+            onClick={() => this.setState({ showViewsMenu: false })}
+            top
+            right
+            bottom
+            left
+          />}
         {this.state.showViewsMenu &&
           <MenuPanel className="views-menu__panel">
             {!this.props.views.length &&

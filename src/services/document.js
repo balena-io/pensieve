@@ -43,14 +43,12 @@ export const getJSON = () => {
   return json;
 };
 
-export const updateFragment = (hash, yaml) => {
-  const update = jsyaml.load(yaml);
-  const updateTitle = Object.keys(update)[0];
+export const updateFragment = (hash, title, content) => {
   innerJson = _.reduce(
     innerJson,
     (result, value, key) => {
       if (value.getHash() === hash) {
-        result[updateTitle] = new Fragment(updateTitle, update[updateTitle]);
+        result[title] = new Fragment(title, content);
       } else {
         result[key] = value;
       }

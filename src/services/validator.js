@@ -1,6 +1,5 @@
 import Promise from 'bluebird';
 import yamlLint from 'yaml-lint';
-import jsyaml from 'js-yaml';
 import _ from 'lodash';
 import SchemaSieve from './filter';
 import { PensieveLinterError, PensieveValidationError } from './errors';
@@ -14,10 +13,8 @@ export const lint = yaml =>
     }),
   );
 
-export const schemaValidate = (schema, yaml) =>
+export const schemaValidate = (schema, json) =>
   Promise.try(() => {
-    const json = jsyaml.load(yaml);
-
     _.forEach(schema, (value, key) => {
       if (!_(json).has(key)) {
         return;
