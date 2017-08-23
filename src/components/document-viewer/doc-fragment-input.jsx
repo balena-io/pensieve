@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import _ from 'lodash';
 import styled from 'styled-components';
 import { Select, Input, Textarea } from 'rebass';
@@ -110,15 +109,6 @@ const DocFragmentInput = ({ title, data, schema, change, remove }) => {
       {getInput()}
     </InputListItem>
   );
-};
-
-DocFragmentInput.propTypes = {
-  title: PropTypes.string.isRequired,
-  change: PropTypes.func.isRequired,
-  remove: PropTypes.func.isRequired,
-  data: PropTypes.oneOf(PropTypes.string, PropTypes.number, PropTypes.bool, PropTypes.date)
-    .isRequired,
-  schema: PropTypes.object,
 };
 
 export default DocFragmentInput;

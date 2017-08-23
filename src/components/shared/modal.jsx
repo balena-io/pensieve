@@ -1,7 +1,6 @@
 import React from 'react';
 import { Fixed, Flex, Text } from 'rebass';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import PlainPanel from './plain-panel';
 import ResinBtn from './resin-button';
 
@@ -47,13 +46,5 @@ const Modal = props =>
       </Flex>
     </ModalPanel>
   </div>);
-
-Modal.propTypes = {
-  cancel: PropTypes.func.isRequired,
-  done: PropTypes.func.isRequired,
-  action: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
-  disabled: PropTypes.bool,
-};
 
 export default Modal;

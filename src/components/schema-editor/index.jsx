@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import { Text, Textarea, Button } from 'rebass';
-import PropTypes from 'prop-types';
 import jsyaml from 'js-yaml';
 import 'brace';
 import AceEditor from 'react-ace';
@@ -106,11 +105,6 @@ class SchemaEditor extends Component {
     );
   }
 }
-
-SchemaEditor.propTypes = {
-  done: PropTypes.func.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const mapStatetoProps = state => ({
   schema: state.schema,

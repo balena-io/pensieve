@@ -70,8 +70,9 @@ export const updateFragment = (hash, title, content) => {
   innerSource = jsyaml.safeDump(cleanJson);
 };
 
-export const addFragment = (yaml) => {
-  const update = _.mapValues(jsyaml.load(yaml), (value, key) => new Fragment(key, value));
+export const addFragment = (title, content) => {
+  const update = {};
+  update[title] = new Fragment(title, content);
   _.assign(innerJson, update);
 
   let cleanJson = _.mapValues(innerJson, value =>

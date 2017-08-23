@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Input, Select, Flex } from 'rebass';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import FilterSummary from './summary';
 import ViewsMenu from './views-menu';
@@ -77,17 +76,6 @@ const FilterInput = (props) => {
   }
 
   return <Input value={props.value} onChange={props.onChange} />;
-};
-
-FilterInput.propTypes = {
-  type: PropTypes.string.isRequired,
-  value: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-    PropTypes.number,
-    PropTypes.instanceOf(Date),
-  ]).isRequired,
-  onChange: PropTypes.func.isRequired,
 };
 
 class Filters extends Component {
@@ -231,22 +219,6 @@ class Filters extends Component {
     );
   }
 }
-
-Filters.propTypes = {
-  schema: PropTypes.object.isRequired,
-  rules: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string,
-      value: PropTypes.oneOfType([
-        PropTypes.bool,
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.instanceOf(Date),
-      ]),
-      operator: PropTypes.string,
-    }),
-  ).isRequired,
-};
 
 const mapStatetoProps = ({ rules, schema }) => ({
   rules,

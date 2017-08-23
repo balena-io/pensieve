@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
-import PropTypes from 'prop-types';
 import { injectGlobal } from 'styled-components';
 import { Provider } from 'rebass';
 import { connect } from 'react-redux';
@@ -117,11 +116,6 @@ class App extends Component {
     );
   }
 }
-
-App.propTypes = {
-  config: PropTypes.object.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired,
-};
 
 const mapStatetoProps = state => ({
   isLoggedIn: state.isLoggedIn,
