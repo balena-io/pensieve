@@ -285,7 +285,7 @@ class DocFragment extends Component {
           </h2>
           <UnstyledList>
             {_.map(this.props.content, (data, title) =>
-              <DocFragmentField data={data} title={title} />,
+              <DocFragmentField key={title} data={data} title={title} />,
             )}
           </UnstyledList>
         </Container>
