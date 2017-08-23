@@ -24,10 +24,4 @@ module.exports = {
 
   'semver-range': SemverRangeType,
   semver: SemverType,
-
-  // Alias for legacy types
-  string: TextType,
-  number: RealType,
-  boolean: BooleanType,
-  date: DateTimeType,
 };
