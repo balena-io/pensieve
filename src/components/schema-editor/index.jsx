@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import { Divider, Flex, Box, Input, Select, Textarea } from 'rebass';
 import styled from 'styled-components';
-import Color from 'color';
 import _ from 'lodash';
 import jsyaml from 'js-yaml';
 import { connect } from 'react-redux';
 import store from '../../store';
 import * as GitHubService from '../../services/github';
-import { ResinBtn, DeleteBtn, Modal } from '../shared';
+import { ResinBtn, DeleteBtn, Modal, FieldLabel } from '../shared';
 import Container from '../shared/container';
-import { colors } from '../../theme';
 import SchemeSieve from '../../services/filter';
 
 const sieve = SchemeSieve();
-
-const FieldHeader = styled.h3`margin-bottom: 5px;`;
 
 const ShortSelect = styled(Select)`
   max-width: 300px;
@@ -30,24 +26,36 @@ const ShortInput = styled(Input)`
 const TypeSelect = ({ ...props }) =>
   (<ShortSelect {...props}>
     {_.map(sieve.getTypes(), type =>
-      (<option>
+      (<option key={type}>
         {type}
       </option>),
     )}
   </ShortSelect>);
 
-const DeleteBtnStyle = {
-  position: 'absolute',
-  left: -30,
-  bottom: 3,
-};
+const StyledDeleteBtn = styled(DeleteBtn)`
+  position: absolute;
+  right: -35px;
+  top: 2px;
+
+  &:hover + ${Flex}:after {
+    content: '';
+    content: '';
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+    position: absolute;
+    left: -5px;
+    right: -5px;
+    top: -5px;
+    bottom: -5px;
+  }
+`;
 
 const done = () => {
   store.dispatch({ type: 'SET_IS_EDITING_SCHEMA', value: false });
 };
 
 const Wrapper = styled.div`
-  background-color: ${Color(colors.orange).fade(0.84).string()};
+  background-color: #f3f3f3;
   border-bottom: 2px solid #cccccc;
   margin-bottom: -10px;
   padding-bottom: 60px;
@@ -116,14 +124,21 @@ class SchemaEditor extends Component {
 
   render() {
     const fields = _.map(this.state.edit, (value, title) =>
-      (<Box style={{ position: 'relative' }}>
-        <DeleteBtn style={DeleteBtnStyle} onClick={() => this.remove(title)} />
-        <FieldHeader>
-          {title}
-        </FieldHeader>
-        <TypeSelect value={value.type} onChange={e => this.handleFieldEdit(title, e)} />
+      (<Box mb={28} style={{ position: 'relative' }} key={title}>
+        <StyledDeleteBtn onClick={() => this.remove(title)} />
+        <Flex>
+          <Box width={250}>
+            <FieldLabel>
+              {title}
+            </FieldLabel>
+          </Box>
+          <Box flex={1}>
+            <TypeSelect value={value.type} onChange={e => this.handleFieldEdit(title, e)} />
+          </Box>
+        </Flex>
       </Box>),
     );
+
     return (
       <Wrapper>
         <Divider style={{ borderBottomWidth: 2, marginBottom: 25 }} color="#cccccc" />
@@ -143,7 +158,7 @@ class SchemaEditor extends Component {
             </Modal>}
 
           <Flex justify="space-between">
-            <h2>Edit Schema</h2>
+            <h2 style={{ marginTop: 0 }}>Edit Schema</h2>
             {this.state.loading
               ? <Box>
                 <FontAwesome spin name="cog" />
@@ -162,19 +177,27 @@ class SchemaEditor extends Component {
                 </ResinBtn>
               </Flex>}
           </Flex>
+
           {fields}
 
-          <Box mt={60}>
+          <Box mt={90}>
             <form onSubmit={e => this.addNewField(e)}>
-              <h3>Add a new field</h3>
               <Flex>
-                <ShortInput
-                  mr={10}
-                  value={this.state.newFieldTitle}
-                  onChange={e => this.handleNewFieldTitleEdit(e)}
-                  placeholder="Enter the field title"
-                />
-                <ResinBtn onClick={e => this.addNewField(e)}>Add field</ResinBtn>
+                <Box width={250}>
+                  <FieldLabel>Add a new field</FieldLabel>
+                </Box>
+                <Box flex={1}>
+                  <ShortInput
+                    mr={10}
+                    value={this.state.newFieldTitle}
+                    onChange={e => this.handleNewFieldTitleEdit(e)}
+                    placeholder="Enter the field title"
+                  />
+                </Box>
+                <ResinBtn onClick={e => this.addNewField(e)}>
+                  <FontAwesome name="plus" style={{ marginRight: 10 }} />
+                  Add field
+                </ResinBtn>
               </Flex>
             </form>
           </Box>

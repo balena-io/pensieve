@@ -1,24 +1,27 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
-import Color from 'color';
 import styled from 'styled-components';
 import { Box, Divider, Input, Textarea, Text, Flex } from 'rebass';
-import { Container, Modal, ResinBtn, UnstyledList } from '../shared';
+import { Container, Modal, ResinBtn, UnstyledList, FieldLabel } from '../shared';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
 import DocFragmentInput from './doc-fragment-input';
-import { colors } from '../../theme';
 
 const ShortInput = styled(Input)`
   max-width: 300px;
   background-color: white;
 `;
 
+const InputListItem = styled.li`
+  position: relative;
+  margin-bottom: 28px;
+`;
+
 const Wrapper = styled.div`
-  background-color: ${Color(colors.orange).fade(0.84).string()};
+  background-color: #f6f6f6;
   border-bottom: 2px solid #cccccc;
   margin-bottom: -10px;
   padding-bottom: 60px;
@@ -116,8 +119,7 @@ class DocFragmentCreator extends Component {
     this.setState({ content });
   }
 
-  handleTitleEdit(e) {
-    const title = e.target.value;
+  handleTitleEdit(title) {
     this.setState({ title });
   }
 
@@ -181,36 +183,46 @@ class DocFragmentCreator extends Component {
             <Text color="red">
               {this.state.validationError}
             </Text>}
-          <h2>
-            <ShortInput
-              placeholder="Enter the title"
-              value={this.state.title}
-              onChange={e => this.handleTitleEdit(e)}
-            />
-          </h2>
           <UnstyledList>
+            <InputListItem>
+              <DocFragmentInput
+                data={this.state.title}
+                title="Entry title"
+                change={val => this.handleTitleEdit(val)}
+              />
+            </InputListItem>
+
             {_.map(this.state.content, (data, title) =>
-              (<DocFragmentInput
-                data={data}
-                title={title}
-                schema={this.props.schema[title]}
-                change={val => this.handleFieldEdit(title, val)}
-                remove={() => this.removeField(title)}
-              />),
+              (<InputListItem>
+                <DocFragmentInput
+                  data={data}
+                  title={title}
+                  schema={this.props.schema[title]}
+                  change={val => this.handleFieldEdit(title, val)}
+                  remove={() => this.removeField(title)}
+                />
+              </InputListItem>),
             )}
           </UnstyledList>
 
-          <Box mt={60}>
+          <Box mt={90}>
             <form onSubmit={e => this.addNewField(e)}>
-              <h3>Add a new field</h3>
               <Flex>
-                <ShortInput
-                  mr={10}
-                  value={this.state.newFieldTitle}
-                  onChange={e => this.handleNewFieldTitleEdit(e)}
-                  placeholder="Enter the field title"
-                />
-                <ResinBtn onClick={e => this.addNewField(e)}>Add field</ResinBtn>
+                <Box width={250}>
+                  <FieldLabel>Add a new field</FieldLabel>
+                </Box>
+                <Box flex={1}>
+                  <ShortInput
+                    mr={10}
+                    value={this.state.newFieldTitle}
+                    onChange={e => this.handleNewFieldTitleEdit(e)}
+                    placeholder="Enter the field title"
+                  />
+                </Box>
+                <ResinBtn onClick={e => this.addNewField(e)}>
+                  <FontAwesome name="plus" style={{ marginRight: 10 }} />
+                  Add field
+                </ResinBtn>
               </Flex>
             </form>
           </Box>

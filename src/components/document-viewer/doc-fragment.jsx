@@ -2,25 +2,28 @@ import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import styled from 'styled-components';
-import Color from 'color';
 import { Flex, Input, Text, Textarea, Divider, Box } from 'rebass';
 import DocFragmentField from './doc-fragment-field';
 import DocFragmentInput from './doc-fragment-input';
-import { UnstyledList, ResinBtn, Modal, Container } from '../shared';
+import { UnstyledList, ResinBtn, Modal, Container, FieldLabel } from '../shared';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
 import store from '../../store';
-import { colors } from '../../theme';
 
 const DocFragmentWrapper = styled.li`
   position: relative;
   padding-bottom: 60px;
 `;
 
+const InputListItem = styled.li`
+  position: relative;
+  margin-bottom: 28px;
+`;
+
 const DocFragmentEditWrapper = styled(DocFragmentWrapper)`
-  background-color: ${Color(colors.orange).fade(0.84).string()};
+  background-color: #f6f6f6;
   border-bottom: 2px solid #cccccc;
   margin-bottom: -10px;
 `;
@@ -66,9 +69,9 @@ class DocFragment extends Component {
     this.setState({ edit });
   }
 
-  handleTitleEdit(e) {
+  handleTitleEdit(val) {
     const edit = this.state.edit;
-    edit.title = e.target.value;
+    edit.title = val;
     this.setState({ edit });
   }
 
@@ -209,32 +212,46 @@ class DocFragment extends Component {
                 {this.state.validationError}
               </Text>}
 
-            <h2>
-              <ShortInput value={this.state.edit.title} onChange={e => this.handleTitleEdit(e)} />
-            </h2>
             <UnstyledList>
+              <InputListItem>
+                <DocFragmentInput
+                  data={this.state.edit.title}
+                  title="Entry title"
+                  change={val => this.handleTitleEdit(val)}
+                />
+              </InputListItem>
+
               {_.map(this.state.edit.content, (data, title) =>
-                (<DocFragmentInput
-                  data={data}
-                  title={title}
-                  schema={this.props.schema[title]}
-                  change={val => this.handleFieldEdit(title, val)}
-                  remove={() => this.removeField(title)}
-                />),
+                (<InputListItem>
+                  <DocFragmentInput
+                    data={data}
+                    title={title}
+                    schema={this.props.schema[title]}
+                    change={val => this.handleFieldEdit(title, val)}
+                    remove={() => this.removeField(title)}
+                  />
+                </InputListItem>),
               )}
             </UnstyledList>
 
-            <Box mt={60}>
+            <Box mt={90}>
               <form onSubmit={e => this.addNewField(e)}>
-                <h3>Add a new field</h3>
                 <Flex>
-                  <ShortInput
-                    mr={10}
-                    value={this.state.newFieldTitle}
-                    onChange={e => this.handleNewFieldTitleEdit(e)}
-                    placeholder="Enter the field title"
-                  />
-                  <ResinBtn onClick={e => this.addNewField(e)}>Add field</ResinBtn>
+                  <Box width={250}>
+                    <FieldLabel>Add a new field</FieldLabel>
+                  </Box>
+                  <Box flex={1}>
+                    <ShortInput
+                      mr={10}
+                      value={this.state.newFieldTitle}
+                      onChange={e => this.handleNewFieldTitleEdit(e)}
+                      placeholder="Enter the field title"
+                    />
+                  </Box>
+                  <ResinBtn onClick={e => this.addNewField(e)}>
+                    <FontAwesome name="plus" style={{ marginRight: 10 }} />
+                    Add field
+                  </ResinBtn>
                 </Flex>
               </form>
             </Box>

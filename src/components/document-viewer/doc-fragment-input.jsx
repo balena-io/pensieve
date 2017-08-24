@@ -1,18 +1,25 @@
 import React from 'react';
 import _ from 'lodash';
 import styled from 'styled-components';
-import { Select, Input, Textarea } from 'rebass';
-import { DeleteBtn } from '../shared';
+import { Select, Input, Textarea, Flex, Box } from 'rebass';
+import { DeleteBtn, FieldLabel } from '../shared';
 
-const DeleteBtnStyle = {
-  position: 'absolute',
-  left: -30,
-  bottom: 3,
-};
+const StyledDeleteBtn = styled(DeleteBtn)`
+  position: absolute;
+  right: -35px;
+  top: 2px;
 
-const InputListItem = styled.li`
-  position: relative;
-  margin-bottom: 28px;
+  &:hover + ${Flex}:after {
+    content: '';
+    content: '';
+    background: rgba(0,0,0,0.05);
+    border-radius: 4px;
+    position: absolute;
+    left: -5px;
+    right: -5px;
+    top: -5px;
+    bottom: -5px;
+  }
 `;
 
 const ShortInput = styled(Input)`
@@ -25,15 +32,10 @@ const ShortSelect = styled(Select)`
   background-color: white;
 `;
 
-const FieldHeader = styled.h3`margin-bottom: 5px;`;
-
 const calcTextareaSize = (data) => {
   let matches = data.match(/\n/g);
   if (!matches) {
     matches = 0;
-  }
-  if (matches === 0 && data.length < 30) {
-    return 1;
   }
   return Math.max(matches.length, 4);
 };
@@ -93,7 +95,7 @@ const DocFragmentInput = ({ title, data, schema, change, remove }) => {
     if (type === 'Date') {
       return <ShortInput type="date" value={data} onChange={changeTransform} />;
     }
-    return <ShortInput value={formatData(data)} />;
+    return <ShortInput value={formatData(data)} onChange={changeTransform} />;
   };
 
   if (_.isFunction(data)) {
@@ -101,13 +103,19 @@ const DocFragmentInput = ({ title, data, schema, change, remove }) => {
   }
 
   return (
-    <InputListItem>
-      <DeleteBtn style={DeleteBtnStyle} onClick={remove} />
-      <FieldHeader>
-        {title}
-      </FieldHeader>
-      {getInput()}
-    </InputListItem>
+    <Box>
+      {!!remove && <StyledDeleteBtn onClick={remove} />}
+      <Flex>
+        <Box width={250}>
+          <FieldLabel>
+            {title}
+          </FieldLabel>
+        </Box>
+        <Box flex={1}>
+          {getInput()}
+        </Box>
+      </Flex>
+    </Box>
   );
 };
 
