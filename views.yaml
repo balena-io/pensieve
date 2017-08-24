@@ -1,17 +1,4 @@
-global:
-  - name: global view
-    rules:
-      - type: Integer
-        name: Fix Difficulty
-        availableOperators:
-          - equals
-          - more than
-          - less than
-        operator: more than
-        value: '1'
-        id: pUmgxI7DvQ90gAgG
-    id: PdE6xmXU0HuUM4bG
-    scope: global
+global: []
 user:
   LucianBuzzo:
     - name: local view
