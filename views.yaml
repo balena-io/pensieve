@@ -1,4 +1,17 @@
-global: []
+global:
+  - name: Global view
+    rules:
+      - type: Integer
+        name: Fix Difficulty
+        availableOperators:
+          - equals
+          - more than
+          - less than
+        operator: more than
+        value: '1'
+        id: g2mTRPCVeczmyZEG
+    id: gbcXUNIeAmD5q2me
+    scope: global
 user:
   LucianBuzzo:
     - name: local view
