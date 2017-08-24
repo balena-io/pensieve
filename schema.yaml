@@ -17,4 +17,4 @@ Fixed in Version:
 Address already in use:
   type: Text
 TEST FIELD:
-  type: Boolean
+  type: Time
