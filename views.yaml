@@ -31,18 +31,3 @@ user:
           hash: J9hVr7xFZqjqnc4Z
       id: PXTeXHPpi0iqG7lP
       scope: user
-    - name: local
-      rules:
-        - type: Text
-          name: Signs and Symptoms
-          availableOperators:
-            - is
-            - contains
-            - does not contain
-            - matches RegEx
-            - does not match RegEx
-          operator: contains
-          value: window
-          hash: J9hVr7xFZqjqnc4Z
-      id: g91amXcmSaomV0Mf
-      scope: user
