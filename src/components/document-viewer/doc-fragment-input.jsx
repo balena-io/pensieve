@@ -1,8 +1,9 @@
 import React from 'react';
 import _ from 'lodash';
 import styled from 'styled-components';
-import { Select, Input, Textarea, Flex, Box } from 'rebass';
+import { Input, Textarea, Flex, Box } from 'rebass';
 import { DeleteBtn, FieldLabel } from '../shared';
+import * as types from '../../services/types';
 
 const StyledDeleteBtn = styled(DeleteBtn)`
   position: absolute;
@@ -22,14 +23,16 @@ const StyledDeleteBtn = styled(DeleteBtn)`
   }
 `;
 
-const ShortInput = styled(Input)`
-  max-width: 300px;
-  background-color: white;
-`;
+const EditBox = styled(Box)`
+  ${Input} {
+    max-width: 300px;
+    background-color: white;
+  }
 
-const ShortSelect = styled(Select)`
-  max-width: 300px;
-  background-color: white;
+  ${Textarea} {
+    resize: vertical;
+    background-color: white;
+  }
 `;
 
 const calcTextareaSize = (data) => {
@@ -53,49 +56,17 @@ const formatData = (data) => {
 
 const DocFragmentInput = ({ title, data, schema, change, remove }) => {
   const type = (schema && schema.type) || 'Unknown';
-  const changeTransform = (e) => {
-    const val = e.target.value;
-    if (type === 'Boolean') {
-      return change(val === 'true');
-    }
-    if (type === 'Integer' || type === 'Real' || type === 'number') {
-      return change(parseFloat(val));
-    }
-
-    return change(val);
-  };
 
   const getInput = () => {
-    if (
-      type === 'Text' ||
-      type === 'Short Text' ||
-      type === 'Case Insensitive Text' ||
-      type === 'string'
-    ) {
-      return (
-        <Textarea
-          style={{ backgroundColor: 'white' }}
-          rows={calcTextareaSize(data)}
-          value={data}
-          onChange={changeTransform}
-        />
-      );
+    if (type === 'Text' || type === 'Short Text' || type === 'Case Insensitive Text') {
+      const Control = types[type].Edit;
+      return <Control rows={calcTextareaSize(data)} value={data} onChange={change} />;
     }
-    if (type === 'Boolean') {
-      return (
-        <ShortSelect value={formatData(data)} onChange={changeTransform}>
-          <option>true</option>
-          <option>false</option>
-        </ShortSelect>
-      );
+    if (type in types) {
+      const Control = types[type].Edit;
+      return <Control value={data} onChange={change} />;
     }
-    if (type === 'Integer' || type === 'Real' || type === 'number') {
-      return <ShortInput type="number" value={data} onChange={changeTransform} />;
-    }
-    if (type === 'Date') {
-      return <ShortInput type="date" value={data} onChange={changeTransform} />;
-    }
-    return <ShortInput value={formatData(data)} onChange={changeTransform} />;
+    return <Input value={formatData(data)} onChange={e => change(e.target.value)} />;
   };
 
   if (_.isFunction(data)) {
@@ -111,9 +82,9 @@ const DocFragmentInput = ({ title, data, schema, change, remove }) => {
             {title}
           </FieldLabel>
         </Box>
-        <Box flex={1}>
+        <EditBox flex={1}>
           {getInput()}
-        </Box>
+        </EditBox>
       </Flex>
     </Box>
   );

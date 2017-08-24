@@ -114,7 +114,7 @@ describe('pensieve validator', () => {
         expect(sieve.validate('Time', 'foobar')).to.be.false);
 
       it('should return true when provided with a valid value', () =>
-        expect(sieve.validate('Time', '6 Mar 2017 21:22:23 GMT')).to.be.true);
+        expect(sieve.validate('Time', '21:22:23 GMT')).to.be.true);
     });
 
     /**

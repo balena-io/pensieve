@@ -1,7 +1,7 @@
 /* eslint class-methods-use-this: 0 */
 const _ = require('lodash');
 
-const filterTests = require('./types');
+const filterTests = require('../types');
 
 const SIMPLE_SEARCH_NAME = 'Full text search';
 

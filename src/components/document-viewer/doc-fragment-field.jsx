@@ -1,49 +1,21 @@
 import React from 'react';
 import _ from 'lodash';
-import showdown from 'showdown';
+import * as types from '../../services/types';
 
-const converter = new showdown.Converter();
+const DocFragmentField = ({ title, data, schema }) => {
+  const type = (schema && schema.type) || 'Unknown';
 
-const makeNameClass = name => (name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : '');
-
-const formatData = (data) => {
-  if (_.isBoolean(data)) {
-    return data ? 'true' : 'false';
-  }
-  if (_.isDate(data)) {
-    return data.toString();
-  }
-
-  return data;
-};
-
-const DocFragmentField = ({ title, data }) => {
-  const nameClass = makeNameClass(title);
   if (_.isFunction(data)) {
     return null;
   }
-  if (_.isString(data)) {
-    return (
-      <li>
-        <h3>
-          {title}
-        </h3>
-        <span
-          className={`${nameClass} markdown-body`}
-          dangerouslySetInnerHTML={{ __html: converter.makeHtml(data) }}
-        />
-      </li>
-    );
+  if (type in types) {
+    const Display = types[type].Display;
+    return <Display data={data} />;
   }
   return (
-    <li>
-      <h3>
-        {title}
-      </h3>
-      <span className={`${nameClass}`}>
-        {formatData(data)}
-      </span>
-    </li>
+    <div>
+      {data}
+    </div>
   );
 };
 

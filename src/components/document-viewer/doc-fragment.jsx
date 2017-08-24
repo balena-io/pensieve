@@ -301,8 +301,22 @@ class DocFragment extends Component {
             {this.props.title}
           </h2>
           <UnstyledList>
-            {_.map(this.props.content, (data, title) =>
-              <DocFragmentField key={title} data={data} title={title} />,
+            {_.map(
+              this.props.content,
+              (data, title) =>
+                (_.isFunction(data)
+                  ? null
+                  : <li>
+                    <h3>
+                      {title}
+                    </h3>
+                    <DocFragmentField
+                      key={title}
+                      data={data}
+                      title={title}
+                      schema={this.props.schema[title]}
+                    />
+                  </li>),
             )}
           </UnstyledList>
         </Container>
