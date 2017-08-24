@@ -1,0 +1,48 @@
+global:
+  - name: global
+    rules:
+      - type: Text
+        name: GitHub issue
+        availableOperators:
+          - is
+          - contains
+          - does not contain
+          - matches RegEx
+          - does not match RegEx
+        operator: is
+        value: global
+        hash: ysAAI3sQ4eA3aTLU
+    id: n09U9hK9KNCIDY6q
+    scope: global
+user:
+  LucianBuzzo:
+    - name: local
+      rules:
+        - type: Text
+          name: GitHub issue
+          availableOperators:
+            - is
+            - contains
+            - does not contain
+            - matches RegEx
+            - does not match RegEx
+          operator: is
+          value: local
+          hash: J9hVr7xFZqjqnc4Z
+      id: PXTeXHPpi0iqG7lP
+      scope: user
+    - name: local
+      rules:
+        - type: Text
+          name: Signs and Symptoms
+          availableOperators:
+            - is
+            - contains
+            - does not contain
+            - matches RegEx
+            - does not match RegEx
+          operator: contains
+          value: window
+          hash: J9hVr7xFZqjqnc4Z
+      id: g91amXcmSaomV0Mf
+      scope: user
