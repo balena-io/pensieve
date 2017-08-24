@@ -1,0 +1,18 @@
+global: []
+user:
+  LucianBuzzo:
+    - name: local
+      rules:
+        - type: Text
+          name: GitHub issue
+          availableOperators:
+            - is
+            - contains
+            - does not contain
+            - matches RegEx
+            - does not match RegEx
+          operator: is
+          value: local
+          hash: J9hVr7xFZqjqnc4Z
+      id: PXTeXHPpi0iqG7lP
+      scope: user
