@@ -22,7 +22,7 @@ export const loadRulesFromUrl = (schema) => {
     };
     const baseRule = inputModels[rule.name];
     const newRule = _.assign(_.cloneDeep(baseRule), rule);
-    newRule.hash = util.randomString();
+    newRule.id = util.randomString();
     return newRule;
   });
 

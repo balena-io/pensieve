@@ -3,6 +3,8 @@ import FontAwesome from 'react-fontawesome';
 import { injectGlobal } from 'styled-components';
 import { Provider } from 'rebass';
 import { connect } from 'react-redux';
+import jsyaml from 'js-yaml';
+import _ from 'lodash';
 import './app.css';
 import './styles/github-markdown.css';
 import Header from './components/header';
@@ -63,16 +65,27 @@ class App extends Component {
         isLoading: true,
       });
 
-      GitHubService.loadSchema(this.props.config).then((schema) => {
+      Promise.all([
+        GitHubService.loadSchema(this.props.config),
+        GitHubService.getFile(this.props.config.repo),
+      ]).then(([schema, source]) => {
+        DocumentService.setSource(source);
+        store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
         store.dispatch({ type: 'SET_SCHEMA', value: schema });
         store.dispatch({ type: 'SET_RULES', value: loadRulesFromUrl(schema) });
-        GitHubService.getFile(this.props.config.repo).then((source) => {
-          DocumentService.setSource(source);
-          store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
-          this.setState({
-            isLoading: false,
+
+        GitHubService.getFile(_.assign({}, this.props.config.repo, { file: 'views.yaml' }))
+          .then((views) => {
+            store.dispatch({ type: 'SET_VIEWS', value: jsyaml.load(views) });
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+          .finally(() => {
+            this.setState({
+              isLoading: false,
+            });
           });
-        });
       });
     });
   }

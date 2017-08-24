@@ -16,7 +16,8 @@ export const login = (loginData) => {
   const innerGH = new GitHub(loginData);
 
   return Promise.resolve(
-    innerGH.getUser().getProfile().then(() => {
+    innerGH.getUser().getProfile().then(({ data }) => {
+      store.dispatch({ type: 'SET_USER', value: data });
       // If this was successful assign the gh variable
       gh = innerGH;
     }),
@@ -84,6 +85,24 @@ export const commitSchema = ({ message, content }) => {
   return Promise.resolve(
     repo
       .writeFile(config.repo.ref, config.schema, content, message, {
+        encode: true,
+      })
+      .then(() => {
+        events.emit('commit');
+      }),
+  );
+};
+
+export const commitViews = (views) => {
+  const message = 'Views edited using Pensieve';
+
+  const yaml = jsyaml.safeDump(views);
+
+  const { config } = store.getState();
+
+  return Promise.resolve(
+    repo
+      .writeFile(config.repo.ref, 'views.yaml', yaml, message, {
         encode: true,
       })
       .then(() => {

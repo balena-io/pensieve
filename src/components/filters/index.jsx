@@ -12,6 +12,7 @@ import { Modal } from '../shared';
 import { updateUrl } from '../../services/path';
 import util from '../../util';
 import SchemaSieve from '../../services/filter';
+import * as GitHubService from '../../services/github';
 
 const sieve = SchemaSieve();
 
@@ -52,6 +53,10 @@ const SimpleSearchBox = styled.div`
   }
 `;
 
+const saveViewsToGH = (views) => {
+  GitHubService.commitViews(views);
+};
+
 const addFilterRule = (rule) => {
   const { rules } = store.getState();
   rules.push(rule);
@@ -62,7 +67,7 @@ const addFilterRule = (rule) => {
 
 const editFilterRule = (rule) => {
   const { rules } = store.getState();
-  const updatedRules = rules.map(r => (r.hash === rule ? rule : r));
+  const updatedRules = rules.map(r => (r.id === rule ? rule : r));
 
   store.dispatch({ type: 'SET_RULES', value: updatedRules });
 
@@ -72,30 +77,59 @@ const editFilterRule = (rule) => {
 const removeFilterRule = (rule) => {
   const { rules } = store.getState();
 
-  const updatedRules = rules.filter(r => r.hash !== rule.hash);
+  const updatedRules = rules.filter(r => r.id !== rule.id);
   store.dispatch({ type: 'SET_RULES', value: updatedRules });
 
   updateUrl(updatedRules);
 };
 
-const saveView = (name) => {
-  const { rules, views } = store.getState();
+const saveView = (name, scope) => {
+  const { rules, views, user } = store.getState();
+  console.log(scope);
 
-  views.push({
+  const newView = {
     name,
     rules,
     id: util.randomString(),
-  });
+    scope,
+  };
+
+  if (scope === 'global') {
+    if (!views.global) {
+      views.global = [];
+    }
+    views[scope].push(newView);
+  } else {
+    if (!views[scope]) {
+      views[scope] = {};
+    }
+    if (!views[scope][user.login]) {
+      views[scope][user.login] = [];
+    }
+    views[scope][user.login].push(newView);
+  }
+
+  console.log(views);
 
   store.dispatch({ type: 'SET_VIEWS', value: views });
+
+  saveViewsToGH(views);
 };
 
-const deleteView = ({ id }) => {
-  let { views } = store.getState();
+const deleteView = (view) => {
+  const { views, user } = store.getState();
 
-  views = views.filter(view => view.id !== id);
+  if (view.scope === 'global') {
+    views.global = views.global.filter(item => item.id !== view.id);
+  } else {
+    views[view.scope][user.login] = views[view.scope][user.login].filter(
+      item => item.id !== view.id,
+    );
+  }
 
   store.dispatch({ type: 'SET_VIEWS', value: views });
+
+  saveViewsToGH(views);
 };
 
 const FilterInput = (props) => {
@@ -153,7 +187,6 @@ class Filters extends Component {
     const edit = {
       name: Object.keys(inputModels).shift(),
       value: '',
-      id: util.randomString(),
     };
 
     edit.operator = inputModels[edit.name].availableOperators[0];
@@ -170,10 +203,10 @@ class Filters extends Component {
     const baseRule = inputModels[rule.name];
     const newRule = _.assign(_.cloneDeep(baseRule), rule);
 
-    if (newRule.hash) {
+    if (newRule.id) {
       editFilterRule(newRule);
     } else {
-      newRule.hash = util.randomString();
+      newRule.id = util.randomString();
       addFilterRule(newRule);
     }
     this.setState({
@@ -193,7 +226,7 @@ class Filters extends Component {
       addFilterRule({
         name: sieve.SIMPLE_SEARCH_NAME,
         value: val,
-        hash: util.randomString(),
+        id: util.randomString(),
       });
     }
   }
@@ -262,7 +295,7 @@ class Filters extends Component {
               title="Add a new filter"
               cancel={() => this.setState({ showModal: false })}
               done={() => this.addRule()}
-              action={this.state.edit.hash ? 'Update filter' : 'Add filter'}
+              action={this.state.edit.id ? 'Update filter' : 'Add filter'}
             >
               <form onSubmit={e => e.preventDefault() && this.addRule()}>
                 <Flex>
@@ -302,16 +335,17 @@ class Filters extends Component {
           <FilterSummary
             edit={rule => this.showEditModal(rule)}
             delete={rule => this.removeRule(rule)}
-            saveView={name => saveView(name)}
+            saveView={(name, scope) => saveView(name, scope)}
           />}
       </div>
     );
   }
 }
 
-const mapStatetoProps = ({ rules, schema }) => ({
+const mapStatetoProps = ({ rules, schema, user }) => ({
   rules,
   schema,
+  user,
 });
 
 export default connect(mapStatetoProps)(Filters);
