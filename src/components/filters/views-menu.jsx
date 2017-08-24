@@ -8,11 +8,9 @@ import store from '../../store';
 import { updateUrl } from '../../services/path';
 import FilterDescription from './filter-description';
 
-const Wrapper = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
-`;
+const hashRule = rule => `${rule.name}::${rule.operator}::${rule.value}`;
+
+const Wrapper = styled.div``;
 
 const Preview = styled(PlainPanel)`
   display: none;
@@ -99,7 +97,7 @@ class ViewsMenu extends Component {
             {!!this.props.views.length &&
               <UnstyledList>
                 {this.props.views.map(view =>
-                  (<ViewListItem>
+                  (<ViewListItem key={view.name}>
                     <Text onClick={() => this.loadView(view)}>
                       {view.name}
                       <br />
@@ -112,7 +110,7 @@ class ViewsMenu extends Component {
                     </button>
                     <Preview>
                       {view.rules.map(rule =>
-                        (<Box mb={10}>
+                        (<Box mb={10} key={hashRule(rule)}>
                           <FilterDescription rule={rule} />
                         </Box>),
                       )}

@@ -5,6 +5,9 @@ import { Box, Text, Input, Flex } from 'rebass';
 import FontAwesome from 'react-fontawesome';
 import { Modal } from '../shared';
 import FilterDescription from './filter-description';
+import SchemaSieve from '../../services/filter';
+
+const sieve = SchemaSieve();
 
 const BorderedDiv = styled.div`
   margin-top: 10px;
@@ -88,7 +91,7 @@ class FilterSummary extends Component {
             (<Box mb={10} mr={10} key={hashRule(rule)}>
               <FilterDescription
                 rule={rule}
-                edit={() => this.props.edit(rule)}
+                edit={rule.name === sieve.SIMPLE_SEARCH_NAME ? false : () => this.props.edit(rule)}
                 delete={() => this.props.delete(rule)}
               />
             </Box>),

@@ -3,15 +3,30 @@ const _ = require('lodash');
 
 const filterTests = require('./types');
 
+const SIMPLE_SEARCH_NAME = 'Full text search';
+
 class SchemaSieve {
   constructor(tests = {}) {
     this.tests = _.assign(_.cloneDeep(filterTests), tests);
+
+    this.SIMPLE_SEARCH_NAME = SIMPLE_SEARCH_NAME;
   }
 
   baseTest(item, input) {
-    const { type } = input;
+    const { type, name } = input;
+
+    // A simple search is not strictly a "type" and searches on all fields,
+    // so we handle that seperately here
+    if (name === SIMPLE_SEARCH_NAME) {
+      const { value } = input;
+      return _.some(
+        item,
+        target => target && String(target).toLowerCase().includes(value.toLowerCase()),
+      );
+    }
+
     if (type in filterTests) {
-      const { name, operator, value } = input;
+      const { operator, value } = input;
       const target = item[name];
 
       if (operator in filterTests[type].rules) {

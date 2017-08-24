@@ -642,5 +642,62 @@ describe('resin-filter', () => {
         expect(sieve.filter(this.collection, input)).to.have.all.keys('Entry 1', 'Entry 2');
       });
     });
+
+    /**
+     * Simple text search
+     */
+    describe('Simple text search', () => {
+      before(function () {
+        this.schema = {
+          version: {
+            type: 'semver',
+          },
+          description: {
+            type: 'Text',
+          },
+          brief: {
+            type: 'Short Text',
+          },
+        };
+        this.collection = {
+          'Entry 1': {
+            version: '1.5.0',
+            description: 'Lorem ipsum',
+            brief: 'dolor sit amet',
+            incidents: 1,
+          },
+          'Entry 2': {
+            version: '1.7.0',
+            description: 'consectetur adipiscing elit',
+            brief: 'Nulla condimentum',
+            incidents: 2,
+          },
+          'Entry 3': {
+            version: '2.0.0',
+            description: 'eu mollis',
+            brief: 'finibus lorem',
+            incidents: 3,
+          },
+        };
+      });
+
+      it('should correctly test values', function () {
+        const input = {
+          name: sieve.SIMPLE_SEARCH_NAME,
+          value: 'Lorem',
+        };
+
+        expect(sieve.filter(this.collection, input)).to.have.all.keys('Entry 1', 'Entry 3');
+      });
+
+      it('should correctly stringify non-string values', function () {
+        const input = {
+          name: sieve.SIMPLE_SEARCH_NAME,
+          value: '2',
+        };
+
+        expect(sieve.filter(this.collection, input)).to.have.all.keys('Entry 2', 'Entry 3');
+      });
+    });
   });
 });
