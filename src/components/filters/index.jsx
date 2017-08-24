@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Select, Flex } from 'rebass';
+import _ from 'lodash';
+import styled from 'styled-components';
 import { connect } from 'react-redux';
 import FontAwesome from 'react-fontawesome';
 import FilterSummary from './summary';
@@ -8,12 +10,47 @@ import store from '../../store';
 import ResinBtn from '../shared/resin-button';
 import { Modal } from '../shared';
 import { updateUrl } from '../../services/path';
-
-const _ = require('lodash');
-const util = require('../../util');
-const SchemaSieve = require('../../services/filter');
+import util from '../../util';
+import SchemaSieve from '../../services/filter';
 
 const sieve = SchemaSieve();
+
+const SimpleSearchBox = styled.div`
+  position: relative;
+  width: 500px;
+  border-bottom: 2px solid #ccc;
+  padding-left: 20px;
+  padding-top: 3px;
+  margin-left: 30px;
+  margin-right: 30px;
+
+  .search-icon {
+    position: absolute;
+    top: 7px;
+    left: 0;
+    color: #9b9b9b;
+  }
+
+  ${Input} {
+    box-shadow: none;
+    ::-webkit-input-placeholder {
+      font-style: italic;
+      color: #9b9b9b;
+    }
+    :-moz-placeholder {
+      font-style: italic;
+      color: #9b9b9b;
+    }
+    ::-moz-placeholder {
+      font-style: italic;
+      color: #9b9b9b;
+    }
+    :-ms-input-placeholder {
+      font-style: italic;
+      color: #9b9b9b;
+    }
+  }
+`;
 
 const addFilterRule = (rule) => {
   const { rules } = store.getState();
@@ -85,10 +122,27 @@ class Filters extends Component {
     this.handleEditChange = this.handleEditChange.bind(this);
     this.generateFreshEdit = this.generateFreshEdit.bind(this);
 
+    const { rules } = store.getState();
+    const existingRule = _.find(rules, { name: sieve.SIMPLE_SEARCH_NAME });
+
     this.state = {
       showModal: false,
       edit: this.generateFreshEdit(),
+      searchString: (existingRule && existingRule.value) || '',
     };
+
+    store.subscribe(() => {
+      const currentRules = store.getState().rules;
+      const existing = _.find(currentRules, { name: sieve.SIMPLE_SEARCH_NAME });
+      if (existing) {
+        const { value } = existing;
+        if (value !== this.state.searchString) {
+          this.setState({ searchString: value });
+        }
+      } else {
+        this.setState({ searchString: '' });
+      }
+    });
   }
   generateFreshEdit() {
     if (!this.props.schema) {
@@ -128,6 +182,22 @@ class Filters extends Component {
     });
   }
 
+  updateSimpleSearch(val) {
+    this.setState({ searchString: val });
+    const { rules } = store.getState();
+    const existingRule = _.find(rules, { name: sieve.SIMPLE_SEARCH_NAME });
+    if (existingRule) {
+      existingRule.value = val;
+      editFilterRule(existingRule);
+    } else {
+      addFilterRule({
+        name: sieve.SIMPLE_SEARCH_NAME,
+        value: val,
+        hash: util.randomString(),
+      });
+    }
+  }
+
   toggleModal() {
     this.setState({ showModal: !this.state.showModal });
   }
@@ -137,6 +207,14 @@ class Filters extends Component {
       showModal: true,
       edit: rule,
     });
+  }
+
+  removeRule(rule) {
+    if (rule.name === sieve.SIMPLE_SEARCH_NAME) {
+      this.setState({ searchString: '' });
+    }
+
+    removeFilterRule(rule);
   }
 
   handleEditChange(e, attribute) {
@@ -160,10 +238,23 @@ class Filters extends Component {
 
     return (
       <div style={{ position: 'relative', marginBottom: 20 }}>
-        <ResinBtn onClick={() => this.toggleModal()}>
-          <FontAwesome style={{ marginRight: 10 }} name="filter" />
-          Add filter
-        </ResinBtn>
+        <Flex justify="space-between">
+          <ResinBtn onClick={() => this.toggleModal()}>
+            <FontAwesome style={{ marginRight: 10 }} name="filter" />
+            Add filter
+          </ResinBtn>
+
+          <SimpleSearchBox>
+            <Input
+              placeholder="Search entries..."
+              value={this.state.searchString}
+              onChange={e => this.updateSimpleSearch(e.target.value)}
+            />
+            <FontAwesome className="search-icon" name="search" />
+          </SimpleSearchBox>
+
+          <ViewsMenu deleteView={view => deleteView(view)} />
+        </Flex>
 
         {this.state.showModal &&
           <div>
@@ -210,11 +301,9 @@ class Filters extends Component {
         {!!this.props.rules.length &&
           <FilterSummary
             edit={rule => this.showEditModal(rule)}
-            delete={rule => removeFilterRule(rule)}
+            delete={rule => this.removeRule(rule)}
             saveView={name => saveView(name)}
           />}
-
-        <ViewsMenu deleteView={view => deleteView(view)} />
       </div>
     );
   }
