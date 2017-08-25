@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import styled from 'styled-components';
-import { Flex, Input, Text, Textarea, Divider, Box } from 'rebass';
+import { Flex, Input, Text, Textarea, Box } from 'rebass';
 import DocFragmentField from './doc-fragment-field';
 import DocFragmentInput from './doc-fragment-input';
-import { UnstyledList, ResinBtn, Modal, Container, FieldLabel } from '../shared';
+import { UnstyledList, ResinBtn, Modal, Container, FieldLabel, GreyDivider } from '../shared';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
@@ -171,7 +171,7 @@ class DocFragment extends Component {
     if (this.state.showEditor) {
       return (
         <DocFragmentEditWrapper>
-          <Divider style={{ borderBottomWidth: 2, marginBottom: 25 }} color="#cccccc" />
+          <GreyDivider />
           <Container>
             {this.state.showSaveModal &&
               <Modal
@@ -194,7 +194,7 @@ class DocFragment extends Component {
                     Cancel
                 </ResinBtn>
                 <ResinBtn
-                  color="orange"
+                  secondary
                   disabled={this.state.lintError}
                   onClick={() => this.setState({ showSaveModal: true })}
                 >
@@ -263,7 +263,7 @@ class DocFragment extends Component {
     return (
       <DocFragmentWrapper>
         <Container>
-          <Divider style={{ borderBottomWidth: 2, marginBottom: 30 }} color="#cccccc" />
+          <GreyDivider />
 
           {this.state.showDeleteModal &&
             <Modal

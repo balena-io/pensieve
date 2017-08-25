@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
-import { Divider, Flex, Box, Input, Select, Textarea } from 'rebass';
+import { Flex, Box, Input, Select, Textarea } from 'rebass';
 import styled from 'styled-components';
 import _ from 'lodash';
 import jsyaml from 'js-yaml';
 import { connect } from 'react-redux';
 import store from '../../store';
 import * as GitHubService from '../../services/github';
-import { ResinBtn, DeleteBtn, Modal, FieldLabel } from '../shared';
+import { ResinBtn, DeleteBtn, Modal, FieldLabel, GreyDivider } from '../shared';
 import Container from '../shared/container';
 import SchemeSieve from '../../services/filter';
 
@@ -141,7 +141,7 @@ class SchemaEditor extends Component {
 
     return (
       <Wrapper>
-        <Divider style={{ borderBottomWidth: 2, marginBottom: 25 }} color="#cccccc" />
+        <GreyDivider />
         <Container>
           {this.state.showSaveModal &&
             <Modal
@@ -168,7 +168,7 @@ class SchemaEditor extends Component {
                     Cancel
                 </ResinBtn>
                 <ResinBtn
-                  color="orange"
+                  secondary
                   disabled={this.state.lintError}
                   onClick={() => this.setState({ showSaveModal: true })}
                 >

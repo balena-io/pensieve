@@ -40,7 +40,7 @@ const Modal = props =>
         <ResinBtn style={{ marginRight: 20 }} onClick={props.cancel}>
           Cancel
         </ResinBtn>
-        <ResinBtn color="blue" onClick={props.done}>
+        <ResinBtn primary onClick={props.done}>
           {props.action}
         </ResinBtn>
       </Flex>

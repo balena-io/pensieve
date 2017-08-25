@@ -45,14 +45,13 @@ const BlueBtn = buttonMaker(colors.blue);
 const OrangeBtn = buttonMaker(colors.orange);
 
 const ResinBtn = (props) => {
-  const { color, ...other } = props;
-  if (color === 'blue') {
-    return <BlueBtn {...other} />;
+  if (props.primary) {
+    return <BlueBtn {...props} />;
   }
-  if (color === 'orange') {
-    return <OrangeBtn {...other} />;
+  if (props.secondary) {
+    return <OrangeBtn {...props} />;
   }
-  return <DefaultBtn {...other} />;
+  return <DefaultBtn {...props} />;
 };
 
 export default ResinBtn;

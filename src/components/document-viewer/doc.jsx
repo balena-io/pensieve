@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import DocFragment from './doc-fragment';
-import { UnstyledList } from '../shared';
+import { GitHubMarkdown, UnstyledList } from '../shared';
 
 const SchemaSeive = require('../../services/filter');
 
@@ -44,9 +44,11 @@ class Doc extends Component {
     });
 
     return (
-      <UnstyledList>
-        {frags}
-      </UnstyledList>
+      <GitHubMarkdown>
+        <UnstyledList>
+          {frags}
+        </UnstyledList>
+      </GitHubMarkdown>
     );
   }
 }

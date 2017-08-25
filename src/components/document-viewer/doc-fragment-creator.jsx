@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import styled from 'styled-components';
-import { Box, Divider, Input, Textarea, Text, Flex } from 'rebass';
-import { Container, Modal, ResinBtn, UnstyledList, FieldLabel } from '../shared';
+import { Box, Input, Textarea, Text, Flex } from 'rebass';
+import { Container, Modal, ResinBtn, UnstyledList, FieldLabel, GreyDivider } from '../shared';
 import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
@@ -141,7 +141,7 @@ class DocFragmentCreator extends Component {
   render() {
     return (
       <Wrapper>
-        <Divider style={{ borderBottomWidth: 2, marginBottom: 25 }} color="#cccccc" />
+        <GreyDivider />
 
         <Container>
           {this.state.showSaveModal &&
@@ -166,7 +166,7 @@ class DocFragmentCreator extends Component {
                   Cancel
               </ResinBtn>
               <ResinBtn
-                color="orange"
+                secondary
                 disabled={this.state.lintError}
                 onClick={() => this.setState({ showSaveModal: true })}
               >

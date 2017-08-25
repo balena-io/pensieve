@@ -5,8 +5,6 @@ import { Provider } from 'rebass';
 import { connect } from 'react-redux';
 import jsyaml from 'js-yaml';
 import _ from 'lodash';
-import './app.css';
-import './styles/github-markdown.css';
 import Header from './components/header';
 import DocumentViewer from './components/document-viewer';
 import Login from './components/login';
