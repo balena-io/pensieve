@@ -128,6 +128,7 @@ class Login extends Component {
               <Input
                 mb={3}
                 placeholder="Personal access token"
+                type="password"
                 value={this.state.token}
                 onChange={e => this.handleChange(e, 'token')}
               />

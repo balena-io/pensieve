@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { Box, Text, Input, Flex } from 'rebass';
+import { Box, Text, Input, Flex, Select } from 'rebass';
 import FontAwesome from 'react-fontawesome';
 import { Modal } from '../shared';
 import FilterDescription from './filter-description';
@@ -23,8 +23,6 @@ const ActionBtn = styled.button`
   float: right;
 `;
 
-const hashRule = rule => `${rule.name}::${rule.operator}::${rule.value}`;
-
 class FilterSummary extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +31,7 @@ class FilterSummary extends Component {
       showForm: false,
       id: '',
       option: 'new',
+      scope: 'user',
     };
   }
 
@@ -41,19 +40,26 @@ class FilterSummary extends Component {
     this.setState({ id });
   }
 
+  setViewScope(scope) {
+    console.log('CHANGING SCOPE', scope);
+    this.setState({ scope });
+  }
+
   handleChange(e) {
     const name = e.target.value;
     this.setState({ name });
   }
 
   save() {
-    const { name, id } = this.state;
+    const { name, id, scope } = this.state;
 
     if (!name && !id) {
       return;
     }
 
-    this.props.saveView(name);
+    console.log(scope);
+
+    this.props.saveView(name, scope);
 
     this.setState({
       name: '',
@@ -80,15 +86,27 @@ class FilterSummary extends Component {
             done={() => this.save()}
             action="Save"
           >
+            <Flex mb={30}>
+              <Text width={90}>Visible to:</Text>
+              <Select
+                width={100}
+                value={this.state.scope}
+                onChange={e => this.setViewScope(e.target.value)}
+              >
+                <option value="user">just me</option>
+                <option value="global">everyone</option>
+              </Select>
+            </Flex>
+
             <Input
               value={this.state.name}
-              placeholder="Enter a name"
+              placeholder="Enter a name for the view"
               onChange={e => this.handleChange(e)}
             />
           </Modal>}
         <Flex wrap>
           {this.props.rules.map(rule =>
-            (<Box mb={10} mr={10} key={hashRule(rule)}>
+            (<Box mb={10} mr={10} key={rule.id}>
               <FilterDescription
                 rule={rule}
                 edit={rule.name === sieve.SIMPLE_SEARCH_NAME ? false : () => this.props.edit(rule)}

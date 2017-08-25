@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { Box, Fixed, Text } from 'rebass';
+import { Box, Fixed, Text, Divider } from 'rebass';
 import FontAwesome from 'react-fontawesome';
 import { PlainPanel, UnstyledList, ResinBtn } from '../shared';
 import store from '../../store';
 import { updateUrl } from '../../services/path';
 import FilterDescription from './filter-description';
-
-const hashRule = rule => `${rule.name}::${rule.operator}::${rule.value}`;
 
 const Wrapper = styled.div``;
 
@@ -72,6 +70,9 @@ class ViewsMenu extends Component {
   }
 
   render() {
+    const { views, user } = this.props;
+    const hasGlobalViews = views.global && !!views.global.length;
+    const hasUserViews = views.user && views.user[user.login] && !!views.user[user.login].length;
     return (
       <Wrapper>
         <ResinBtn onClick={() => this.setState({ showViewsMenu: !this.state.showViewsMenu })}>
@@ -90,43 +91,80 @@ class ViewsMenu extends Component {
           />}
         {this.state.showViewsMenu &&
           <MenuPanel className="views-menu__panel">
-            {!this.props.views.length &&
+            {!hasGlobalViews &&
+              !hasUserViews &&
               <Box p={3}>
                 {"You haven't created any views yet"}
               </Box>}
-            {!!this.props.views.length &&
-              <UnstyledList>
-                {this.props.views.map(view =>
-                  (<ViewListItem key={view.name}>
-                    <Text onClick={() => this.loadView(view)}>
-                      {view.name}
-                      <br />
-                      <Text fontSize={12}>
-                        {view.rules.length} filter{view.rules.length > 1 && 's'}
+            {hasGlobalViews &&
+              <Box>
+                <Text fontSize={13} ml={20} mb={2} mt={2} color="#ccc">
+                  Global views
+                </Text>
+                <UnstyledList>
+                  {views.global.map(view =>
+                    (<ViewListItem key={view.name}>
+                      <Text onClick={() => this.loadView(view)}>
+                        {view.name}
+                        <br />
+                        <Text fontSize={12}>
+                          {view.rules.length} filter{view.rules.length > 1 && 's'}
+                        </Text>
                       </Text>
-                    </Text>
-                    <button>
-                      <FontAwesome name="trash" onClick={() => this.props.deleteView(view)} />
-                    </button>
-                    <Preview>
-                      {view.rules.map(rule =>
-                        (<Box mb={10} key={hashRule(rule)}>
-                          <FilterDescription rule={rule} />
-                        </Box>),
-                      )}
-                    </Preview>
-                  </ViewListItem>),
-                )}
-              </UnstyledList>}
+                      <button>
+                        <FontAwesome name="trash" onClick={() => this.props.deleteView(view)} />
+                      </button>
+                      <Preview>
+                        {view.rules.map(rule =>
+                          (<Box mb={10} key={rule.id}>
+                            <FilterDescription rule={rule} />
+                          </Box>),
+                        )}
+                      </Preview>
+                    </ViewListItem>),
+                  )}
+                </UnstyledList>
+              </Box>}
+            {hasGlobalViews && hasUserViews && <Divider color="#ccc" />}
+            {hasUserViews &&
+              <Box>
+                <Text fontSize={13} ml={20} mb={2} mt={2} color="#ccc">
+                  Your views
+                </Text>
+                <UnstyledList>
+                  {views.user[user.login].map(view =>
+                    (<ViewListItem key={view.id}>
+                      <Text onClick={() => this.loadView(view)}>
+                        {view.name}
+                        <br />
+                        <Text fontSize={12}>
+                          {view.rules.length} filter{view.rules.length > 1 && 's'}
+                        </Text>
+                      </Text>
+                      <button>
+                        <FontAwesome name="trash" onClick={() => this.props.deleteView(view)} />
+                      </button>
+                      <Preview>
+                        {view.rules.map(rule =>
+                          (<Box mb={10} key={rule.id}>
+                            <FilterDescription rule={rule} />
+                          </Box>),
+                        )}
+                      </Preview>
+                    </ViewListItem>),
+                  )}
+                </UnstyledList>
+              </Box>}
           </MenuPanel>}
       </Wrapper>
     );
   }
 }
 
-const mapStatetoProps = ({ rules, views }) => ({
+const mapStatetoProps = ({ rules, views, user }) => ({
   rules,
   views: views || [],
+  user,
 });
 
 export default connect(mapStatetoProps)(ViewsMenu);

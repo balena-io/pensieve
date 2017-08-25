@@ -6,7 +6,10 @@ const PENSIEVE_STORAGE_KEY = 'pensieve_store';
 const defaultState = () => ({
   isLoggedIn: false,
   isEditingSchema: false,
-  views: [],
+  views: {
+    global: [],
+    user: {},
+  },
   rules: [],
 });
 
@@ -43,6 +46,8 @@ const reducer = (state, action) => {
       return assign(state, { isLoggedIn: action.value });
     case 'SET_IS_EDITING_SCHEMA':
       return assign(state, { isEditingSchema: action.value });
+    case 'SET_USER':
+      return assign(state, { user: action.value });
     case 'LOGOUT':
       return defaultState();
     default:
