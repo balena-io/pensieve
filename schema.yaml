@@ -10,3 +10,5 @@ Category:
   type: Short Text
 Abilities:
   type: Short Text
+National Pokédex number:
+  type: Integer
