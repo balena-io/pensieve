@@ -1,10 +1,1 @@
-global: []
-user:
-  LucianBuzzo:
-    - name: test
-      rules:
-        - name: Full text search
-          value: char
-          id: cv2IQbR7IKrt7Dh0
-      id: HJfy87VloSLKVtxR
-      scope: user
+
