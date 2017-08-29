@@ -54,3 +54,14 @@ Pokedex:
     Category: Flame
     Abilities: Blaze
     National Pokedex number: 5
+  Charizard:
+    Name: Charizard
+    Height: 1.7
+    Weight: 90.5
+    Description: >-
+      Charizard flies around the sky in search of powerful opponents. It
+      breathes fire of such great heat that it melts anything. However, it never
+      turns its fiery breath on any opponent weaker than itself.
+    Category: Flame
+    Abilities: Blaze
+    National Pokedex number: 6
