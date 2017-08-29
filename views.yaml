@@ -14,16 +14,3 @@ user:
           id: X00OTkfIJT9DFOOL
       id: M5xndYJpdlucvZLR
       scope: user
-    - name: test
-      rules:
-        - type: Real
-          name: Height
-          availableOperators:
-            - equals
-            - more than
-            - less than
-          operator: more than
-          value: '1.5'
-          id: d6VYOyJwNNOYJe5P
-      id: XdjwWpUm56OhLvUO
-      scope: user
