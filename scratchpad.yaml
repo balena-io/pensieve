@@ -1,17 +1,4 @@
 Scratchpad:
-  Bluetooth not working:
-    Signs and Symptoms: Bluetooth device not available.
-    Treatments: >
-      Run the following on startup:
-
-      `hciconfig hci0 reset && hciconfig hci0 up`
-
-      On the Raspberry Pi 3 you can point them to this example project:
-      https://github.com/resin-io-projects/rpi3-bluetooth
-    Fix Difficulty: 2
-    Pull Leech Logs: true
-    Last Updated: 'Tue May 02 2017 01:00:00 GMT+0100 (BST)'
-    Versions Affected: ' >= 2.0.0'
   'New Entry - Wed Aug 16 2017 11:03:59 GMT+0100 (BST)':
     GitHub issue: // string value
     Signs and Symptoms: // string value
