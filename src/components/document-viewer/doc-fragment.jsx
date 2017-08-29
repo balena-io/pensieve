@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
 import { Flex, Input, Text, Textarea, Box } from 'rebass';
 import DocFragmentField from './doc-fragment-field';
 import DocFragmentInput from './doc-fragment-input';
@@ -10,7 +11,7 @@ import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
-import store from '../../store';
+import { actions } from '../../actions';
 
 const DocFragmentWrapper = styled.li`
   position: relative;
@@ -113,7 +114,7 @@ class DocFragment extends Component {
     if (!message) {
       return;
     }
-    const { schema } = store.getState();
+    const { schema } = this.props;
 
     lint(source)
       .then(() => schemaValidate(schema, source))
@@ -129,7 +130,7 @@ class DocFragment extends Component {
           content: DocumentService.getSource(),
           message,
         }).then(() => {
-          store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
+          this.props.setContent(DocumentService.getJSON());
           this.setState({
             loading: false,
             showEditor: false,
@@ -326,4 +327,12 @@ class DocFragment extends Component {
   }
 }
 
-export default DocFragment;
+const mapStatetoProps = state => ({
+  schema: state.schema,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setContent: value => dispatch(actions.setContent(value)),
+});
+
+export default connect(mapStatetoProps, mapDispatchToProps)(DocFragment);

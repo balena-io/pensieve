@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import _ from 'lodash';
 import jsyaml from 'js-yaml';
 import { connect } from 'react-redux';
-import store from '../../store';
+import { actions } from '../../actions';
 import * as GitHubService from '../../services/github';
 import { ResinBtn, DeleteBtn, Modal, FieldLabel, GreyDivider } from '../shared';
 import Container from '../shared/container';
@@ -50,10 +50,6 @@ const StyledDeleteBtn = styled(DeleteBtn)`
   }
 `;
 
-const done = () => {
-  store.dispatch({ type: 'SET_IS_EDITING_SCHEMA', value: false });
-};
-
 const Wrapper = styled.div`
   background-color: #f3f3f3;
   border-bottom: 2px solid #cccccc;
@@ -85,6 +81,10 @@ class SchemaEditor extends Component {
     this.setState({ newFieldTitle: val });
   }
 
+  done() {
+    this.props.setIsEditingSchema(false);
+  }
+
   saveChange() {
     const source = jsyaml.safeDump(this.state.edit);
     this.setState({
@@ -93,8 +93,8 @@ class SchemaEditor extends Component {
       lintError: null,
     });
     GitHubService.commitSchema({ content: source, message: this.state.message }).then(() => {
-      store.dispatch({ type: 'SET_SCHEMA', value: jsyaml.load(source) });
-      done();
+      this.props.setSchema(jsyaml.load(source));
+      this.done();
       this.setState({
         loading: false,
       });
@@ -164,7 +164,7 @@ class SchemaEditor extends Component {
                 <FontAwesome spin name="cog" />
               </Box>
               : <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
-                <ResinBtn style={{ marginRight: 10 }} onClick={done}>
+                <ResinBtn style={{ marginRight: 10 }} onClick={() => this.done()}>
                     Cancel
                 </ResinBtn>
                 <ResinBtn
@@ -212,4 +212,9 @@ const mapStatetoProps = state => ({
   content: state.content,
 });
 
-export default connect(mapStatetoProps)(SchemaEditor);
+const mapDispatchToProps = dispatch => ({
+  setIsEditingSchema: value => dispatch(actions.setIsEditingSchema(value)),
+  setSchema: value => dispatch(actions.setSchema(value)),
+});
+
+export default connect(mapStatetoProps, mapDispatchToProps)(SchemaEditor);
