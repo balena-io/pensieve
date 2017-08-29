@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Box, Text, Input, Flex, Select } from 'rebass';
 import FontAwesome from 'react-fontawesome';
-import { Modal } from '../shared';
+import { Modal } from '../../shared';
 import FilterDescription from './filter-description';
-import SchemaSieve from '../../services/filter';
+import SchemaSieve from '../../../services/filter';
 
 const sieve = SchemaSieve();
 
@@ -120,9 +119,4 @@ class FilterSummary extends Component {
   }
 }
 
-const mapStatetoProps = ({ rules, views }) => ({
-  rules,
-  views: views || [],
-});
-
-export default connect(mapStatetoProps)(FilterSummary);
+export default FilterSummary;

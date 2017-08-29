@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DeleteBtn } from '../shared';
+import { DeleteBtn } from '../../shared';
 
 const ButtonWrapper = styled.button`
   font-size: 13px;

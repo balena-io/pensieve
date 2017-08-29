@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { connect } from 'react-redux';
 import { Box, Fixed, Text, Divider } from 'rebass';
 import FontAwesome from 'react-fontawesome';
-import { PlainPanel, UnstyledList, ResinBtn } from '../shared';
-import store from '../../store';
-import { updateUrl } from '../../services/path';
+import { PlainPanel, UnstyledList, ResinBtn } from '../../shared';
 import FilterDescription from './filter-description';
 
 const Wrapper = styled.div``;
@@ -64,9 +61,8 @@ class ViewsMenu extends Component {
   }
 
   loadView(view) {
-    store.dispatch({ type: 'SET_RULES', value: view.rules });
+    this.props.setRules(view.rules);
     this.setState({ showViewsMenu: false });
-    updateUrl(view.rules);
   }
 
   render() {
@@ -161,10 +157,4 @@ class ViewsMenu extends Component {
   }
 }
 
-const mapStatetoProps = ({ rules, views, user }) => ({
-  rules,
-  views: views || [],
-  user,
-});
-
-export default connect(mapStatetoProps)(ViewsMenu);
+export default ViewsMenu;
