@@ -1,13 +1,4 @@
 Scratchpad:
-  'New Entry - Wed Aug 16 2017 11:03:59 GMT+0100 (BST)':
-    GitHub issue: // string value
-    Signs and Symptoms: // string value
-    Treatments: // string value
-    Fix Difficulty: 1
-    Pull Leech Logs: true
-    Last Updated: 'Wed Aug 16 2017 11:04:33 GMT+0100 (BST)'
-    Versions Affected: // semver - range value
-    Fixed in Version: // semver value
   'New Entry - Fri Aug 18 2017 13:03:47 GMT+0100 (BST)': {}
   'New Entry - Wed Aug 23 2017 10:13:08 GMT+0100 (BST)':
     GitHub issue: // Text value
