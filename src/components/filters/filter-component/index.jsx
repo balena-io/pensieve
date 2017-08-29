@@ -201,7 +201,8 @@ class Filters extends Component {
   }
 
   saveView(name, scope) {
-    const { rules, views, user } = this.props;
+    const { rules, user } = this.props;
+    let { views } = this.props;
 
     const newView = {
       name,
@@ -209,6 +210,10 @@ class Filters extends Component {
       id: util.randomString(),
       scope,
     };
+
+    if (!views) {
+      views = {};
+    }
 
     if (scope === 'global') {
       if (!views.global) {
@@ -319,7 +324,7 @@ class Filters extends Component {
             delete={rule => this.removeRule(rule)}
             saveView={(name, scope) => this.saveView(name, scope)}
             rules={this.props.rules}
-            views={this.props.views || []}
+            views={this.props.views || {}}
           />}
       </div>
     );

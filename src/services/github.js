@@ -87,7 +87,9 @@ export const commitSchema = ({ message, content }) => {
 export const commitViews = (views) => {
   const message = 'Views edited using Pensieve';
 
-  const yaml = jsyaml.safeDump(views);
+  // Set skipinvalid so that the dump doesn't fail if an operator or value is `undefined`
+  // This can happen in the case of a simple text search
+  const yaml = jsyaml.safeDump(views, { skipInvalid: true });
 
   const { config } = store.getState();
 
