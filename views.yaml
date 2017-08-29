@@ -1,4 +1,17 @@
-global: []
+global:
+  - name: Weight
+    rules:
+      - type: Real
+        name: Weight
+        availableOperators:
+          - equals
+          - more than
+          - less than
+        operator: more than
+        value: '10'
+        id: X00OTkfIJT9DFOOL
+    id: SSUOXPKF6sBdE5DJ
+    scope: global
 user:
   LucianBuzzo:
     - name: Height
