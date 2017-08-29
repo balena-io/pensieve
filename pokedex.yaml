@@ -32,3 +32,14 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 3
+  Charmander:
+    Name: Charmander
+    Height: 0.6
+    Weight: 8.5
+    Description: >-
+      The flame that burns at the tip of its tail is an indication of its
+      emotions. The flame wavers when Charmander is enjoying itself. If the
+      Pokemon becomes enraged, the flame burns fiercely.
+    Category: Lizard
+    Abilities: Blaze
+    National Pokedex number: 4
