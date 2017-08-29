@@ -65,3 +65,14 @@ Pokedex:
     Category: Flame
     Abilities: Blaze
     National Pokedex number: 6
+  Squirtle:
+    Name: Squirtle
+    Height: 0.5
+    Weight: 9
+    Description: >-
+      Squirtle's shell is not merely used for protection. The shell's rounded
+      shape and the grooves on its surface help minimize resistance in water,
+      enabling this Pokémon to swim at high speeds.
+    Category: Tiny Turtle
+    Abilities: Torrent
+    National Pokedex number: 7
