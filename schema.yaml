@@ -1,22 +1,12 @@
-GitHub issue:
-  type: Text
-Signs and Symptoms:
-  type: Text
-Treatments:
-  type: Text
-Fix Difficulty:
-  type: Integer
-Pull Leech Logs:
-  type: Boolean
-Last Updated:
-  type: Date Time
-Versions Affected:
-  type: semver-range
-Fixed in Version:
-  type: semver
-Address already in use:
-  type: Text
-TEST FIELD:
-  type: Time
-DATE:
-  type: Date
+Name:
+  type: Short Text
+Height:
+  type: Real
+Weight:
+  type: Real
+Description:
+  type: Case Insensitive Text
+Category:
+  type: Short Text
+Abilities:
+  type: Short Text
