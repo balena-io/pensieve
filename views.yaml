@@ -1,18 +1,3 @@
 global: []
 user:
-  LucianBuzzo:
-    - name: local view
-      rules:
-        - type: Text
-          name: Signs and Symptoms
-          availableOperators:
-            - is
-            - contains
-            - does not contain
-            - matches RegEx
-            - does not match RegEx
-          operator: contains
-          value: window
-          id: FzFCowD5lJ3jNdy6
-      id: XGMvhDxe58MIbCxa
-      scope: user
+  LucianBuzzo: []
