@@ -150,3 +150,14 @@ Under the hood the [resin-semver](https://github.com/resin-io-modules/resin-semv
 
 ### semver-range
 A semver-range value https://github.com/npm/node-semver#advanced-range-syntax
+
+
+Views
+-----
+
+Filters can be saved as "Views", allowing the filter to be loaded at a later date. Views are saved to a file named `views.yaml` in the root of the connected GitHub repository. When saving a view you can set it's visibility to 'just me' (Local), meaning that only you will see the saved views, or 'everyone' (Global) which will make the view visible to anyone using the document.
+
+Default Views
+-------------
+
+You can specify a default view to be loaded when Pensieve is initialised by adding a `defaultView` attribute to the Pensieve config. The value can either be the name of a Global view (visible to everyone) or an array of filter rules.

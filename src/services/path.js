@@ -8,6 +8,8 @@ const qs = require('qs');
 
 const sieve = SchemaSieve();
 
+export const searchExists = () => !!history.location.search;
+
 export const loadRulesFromUrl = (schema) => {
   if (!history.location.search) {
     return [];

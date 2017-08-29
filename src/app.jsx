@@ -12,7 +12,7 @@ import * as GitHubService from './services/github';
 import * as DocumentService from './services/document';
 import events from './services/events';
 import store from './store';
-import { loadRulesFromUrl } from './services/path';
+import { loadRulesFromUrl, updateUrl, searchExists } from './services/path';
 
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
@@ -83,6 +83,24 @@ class App extends Component {
             this.setState({
               isLoading: false,
             });
+
+            const { defaultView } = this.props.config;
+
+            // If a default view has been specified and there is no search query
+            // in the url, load the default view.
+            if (defaultView && !searchExists()) {
+              if (_.isString(defaultView)) {
+                // If the default view is a string, assume it is the name of a global view
+                const { views } = store.getState();
+                const view = _.find(views.global, { name: defaultView });
+                updateUrl(view.rules);
+              } else {
+                // If the value is not a string, assume it is an array of filter views
+                updateUrl(defaultView);
+              }
+            }
+
+            store.dispatch({ type: 'SET_RULES', value: loadRulesFromUrl(schema) });
           });
       });
     });
