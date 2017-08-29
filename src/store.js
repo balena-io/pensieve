@@ -35,7 +35,7 @@ const reducer = (state, action) => {
     case 'SET_SCHEMA':
       return assign(state, { schema: action.value });
     case 'SET_CONTENT':
-      return assign(state, { content: action.value });
+      return assign(state, { content: _.cloneDeep(action.value) });
     case 'SET_CONFIG':
       return assign(state, { config: action.value });
     case 'SET_VIEWS':
