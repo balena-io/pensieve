@@ -43,3 +43,14 @@ Pokedex:
     Category: Lizard
     Abilities: Blaze
     National Pokedex number: 4
+  Charmeleon:
+    Name: Charmeleon
+    Height: 1.1
+    Weight: 19
+    Description: >-
+      Charmeleon mercilessly destroys its foes using its sharp claws. If it
+      encounters a strong foe, it turns aggressive. In this excited state, the
+      flame at the tip of its tail flares with a bluish white color.
+    Category: Flame
+    Abilities: Blaze
+    National Pokedex number: 5
