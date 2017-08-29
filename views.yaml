@@ -1,1 +1,9 @@
-
+user:
+  LucianBuzzo:
+    - name: test
+      rules:
+        - name: Full text search
+          value: char
+          id: AnYWPPGU9rfqLUrQ
+      id: U6b0SVwOy7JPQXud
+      scope: user
