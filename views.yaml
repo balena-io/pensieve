@@ -1,3 +1,16 @@
 global: []
 user:
-  LucianBuzzo: []
+  LucianBuzzo:
+    - name: Height
+      rules:
+        - type: Real
+          name: Height
+          availableOperators:
+            - equals
+            - more than
+            - less than
+          operator: more than
+          value: '1'
+          id: KzaAgJbrbe2JnOYv
+      id: uXXAH9kCrkgRZUZt
+      scope: user
