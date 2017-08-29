@@ -1,5 +1,7 @@
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import _ from 'lodash';
+import { debug } from './util';
+import { updateUrl } from './services/path';
 
 const PENSIEVE_STORAGE_KEY = 'pensieve_store';
 
@@ -66,6 +68,22 @@ const reducerWrapper = (state, action) => {
   return newState;
 };
 
-const store = createStore(reducerWrapper);
+const logger = store => next => (action) => {
+  debug('dispatching', action);
+  const result = next(action);
+  debug('next state', store.getState());
+  return result;
+};
+
+const urlUpdater = store => next => (action) => {
+  const result = next(action);
+  if (action.type === 'SET_RULES') {
+    const { rules } = store.getState();
+    updateUrl(rules);
+  }
+  return result;
+};
+
+const store = createStore(reducerWrapper, applyMiddleware(logger, urlUpdater));
 
 export default store;

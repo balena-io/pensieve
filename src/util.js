@@ -4,6 +4,14 @@ const showdown = require('showdown');
 
 const converter = new showdown.Converter();
 
+const DEBUG = window.location.hostname === 'localhost';
+
+exports.debug = (...params) => {
+  if (DEBUG) {
+    console.log('DEBUG:', ...params);
+  }
+};
+
 exports.loadScript = url =>
   new Promise((resolve) => {
     const scriptTag = document.createElement('script');
