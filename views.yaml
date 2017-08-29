@@ -27,3 +27,18 @@ user:
           id: X00OTkfIJT9DFOOL
       id: M5xndYJpdlucvZLR
       scope: user
+    - name: Char Evo
+      rules:
+        - type: Short Text
+          name: Name
+          availableOperators:
+            - is
+            - contains
+            - does not contain
+            - matches RegEx
+            - does not match RegEx
+          operator: contains
+          value: Char
+          id: KI665gR4wmumlLO4
+      id: Li16wxi1ybahxupU
+      scope: user
