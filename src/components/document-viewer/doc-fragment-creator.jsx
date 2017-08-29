@@ -8,6 +8,7 @@ import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
+import store from '../../store';
 import DocFragmentInput from './doc-fragment-input';
 
 const ShortInput = styled(Input)`
@@ -93,6 +94,7 @@ class DocFragmentCreator extends Component {
         });
 
         GitHubService.commit({ content: DocumentService.getSource(), message }).then(() => {
+          store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
           this.setState({
             loading: false,
           });

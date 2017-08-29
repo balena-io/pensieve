@@ -10,7 +10,6 @@ import DocumentViewer from './components/document-viewer';
 import Login from './components/login';
 import * as GitHubService from './services/github';
 import * as DocumentService from './services/document';
-import events from './services/events';
 import store from './store';
 import { loadRulesFromUrl, updateUrl, searchExists } from './services/path';
 
@@ -25,10 +24,6 @@ const theme = {
   font: 'Roboto,Arial,sans-serif',
   monospace: 'Ubuntu Mono Web,Courier New,monospace',
 };
-
-events.on('commit', () => {
-  store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
-});
 
 class App extends Component {
   constructor(props) {

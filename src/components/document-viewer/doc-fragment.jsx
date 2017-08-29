@@ -128,12 +128,13 @@ class DocFragment extends Component {
         GitHubService.commit({
           content: DocumentService.getSource(),
           message,
-        }).then(() =>
+        }).then(() => {
+          store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
           this.setState({
             loading: false,
             showEditor: false,
-          }),
-        );
+          });
+        });
       })
       .catch(PensieveLinterError, (err) => {
         this.setState({ lintError: err.message });

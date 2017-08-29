@@ -2,7 +2,6 @@ import GitHub from 'github-api';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import jsyaml from 'js-yaml';
-import events from './events';
 import store from '../store';
 
 let gh;
@@ -63,13 +62,9 @@ export const commit = ({ message, content }) => {
   }
 
   return Promise.resolve(
-    repo
-      .writeFile(config.repo.ref, config.repo.file, content, message, {
-        encode: true,
-      })
-      .then(() => {
-        events.emit('commit');
-      }),
+    repo.writeFile(config.repo.ref, config.repo.file, content, message, {
+      encode: true,
+    }),
   );
 };
 
@@ -83,13 +78,9 @@ export const commitSchema = ({ message, content }) => {
   }
 
   return Promise.resolve(
-    repo
-      .writeFile(config.repo.ref, config.schema, content, message, {
-        encode: true,
-      })
-      .then(() => {
-        events.emit('commit');
-      }),
+    repo.writeFile(config.repo.ref, config.schema, content, message, {
+      encode: true,
+    }),
   );
 };
 
@@ -101,12 +92,8 @@ export const commitViews = (views) => {
   const { config } = store.getState();
 
   return Promise.resolve(
-    repo
-      .writeFile(config.repo.ref, 'views.yaml', yaml, message, {
-        encode: true,
-      })
-      .then(() => {
-        events.emit('commit');
-      }),
+    repo.writeFile(config.repo.ref, 'views.yaml', yaml, message, {
+      encode: true,
+    }),
   );
 };
