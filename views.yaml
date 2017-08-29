@@ -1,13 +1,6 @@
 global: []
 user:
   LucianBuzzo:
-    - name: test
-      rules:
-        - name: Full text search
-          value: bulb
-          id: IJoPQHyP1JJ328ok
-      id: 4ZeFBjJyWFWcOKEb
-      scope: user
     - name: test 2
       rules:
         - type: Short Text
