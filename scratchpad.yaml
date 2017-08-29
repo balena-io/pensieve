@@ -1,1 +1,11 @@
-Scratchpad: {}
+Scratchpad:
+  Bulbasaur:
+    Name: Bulbasaur
+    Height: 0.7
+    Weight: 6.9
+    Description: >-
+      Bulbasaur can be seen napping in bright sunlight. There is a seed on its
+      back. By soaking up the sun's rays, the seed grows progressively larger.
+    Category: Seed
+    Abilities: Overgrow
+    National PokÃ©dex number: 1
