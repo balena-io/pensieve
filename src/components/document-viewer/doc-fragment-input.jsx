@@ -58,7 +58,7 @@ const DocFragmentInput = ({ title, data, schema, change, remove }) => {
   const type = (schema && schema.type) || 'Unknown';
 
   const getInput = () => {
-    if (type === 'Text' || type === 'Short Text' || type === 'Case Insensitive Text') {
+    if (type === 'Text' || type === 'Case Insensitive Text') {
       const Control = types[type].Edit;
       return <Control rows={calcTextareaSize(data)} value={data} onChange={change} />;
     }

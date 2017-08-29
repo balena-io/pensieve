@@ -1,7 +1,7 @@
 const RegexParser = require('regex-parser');
 const _ = require('lodash');
 const React = require('react');
-const { Textarea } = require('rebass');
+const { Input } = require('rebass');
 const showdown = require('showdown');
 
 const converter = new showdown.Converter();
@@ -16,7 +16,8 @@ const rules = {
 
 const validate = val => _.isString(val) && val.length <= 255;
 
-const Edit = ({ ...props }) => <Textarea {...props} />;
+const Edit = ({ onChange, ...props }) =>
+  <Input type="text" onChange={e => onChange(e.target.value)} {...props} />;
 
 const Display = ({ data, ...props }) =>
   (<div

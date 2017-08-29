@@ -18,7 +18,8 @@ const rules = {
 
 const validate = _.isString;
 
-const Edit = ({ ...props }) => <Textarea {...props} />;
+const Edit = ({ onChange, ...props }) =>
+  <Textarea onChange={e => onChange(e.target.value)} {...props} />;
 
 const Display = ({ data, ...props }) =>
   (<div
