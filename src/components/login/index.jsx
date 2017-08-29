@@ -59,9 +59,13 @@ class Login extends Component {
         store.dispatch({ type: 'SET_IS_LOGGED_IN', value: true });
       })
       .catch((err) => {
-        console.error(err);
+        let loginError = 'Incorrect username or password';
+        if (err.response.headers['x-github-otp']) {
+          loginError =
+            'Oops! It looks like you have two factor authentication enabled on your account. Click the button below for information on how to login.';
+        }
         this.setState({
-          loginError: 'Incorrect username or password',
+          loginError,
         });
       });
   }
