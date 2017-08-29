@@ -1,15 +1,9 @@
-import _Container from './container';
-import _DeleteBtn from './delete-button';
-import _FieldLabel from './field-label';
-import _Modal from './modal';
-import _PlainPanel from './plain-panel';
-import _ResinBtn from './resin-button';
-import _UnstyledList from './unstyled-list';
-
-export const Container = _Container;
-export const DeleteBtn = _DeleteBtn;
-export const FieldLabel = _FieldLabel;
-export const Modal = _Modal;
-export const PlainPanel = _PlainPanel;
-export const ResinBtn = _ResinBtn;
-export const UnstyledList = _UnstyledList;
+export { default as Container } from './container';
+export { default as DeleteBtn } from './delete-button';
+export { default as FieldLabel } from './field-label';
+export { default as Modal } from './modal';
+export { default as PlainPanel } from './plain-panel';
+export { default as ResinBtn } from './resin-button';
+export { default as UnstyledList } from './unstyled-list';
+export { default as GitHubMarkdown } from './github-markdown';
+export { default as GreyDivider } from './grey-divider';

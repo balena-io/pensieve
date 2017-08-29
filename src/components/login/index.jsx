@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Input, Box, Button, Text, Heading, Divider } from 'rebass';
+import { Input, Box, Text, Heading } from 'rebass';
 import FontAwesome from 'react-fontawesome';
+import { ResinBtn, GreyDivider } from '../shared';
 import * as GitHubService from '../../services/github';
 import store from '../../store';
 
@@ -132,11 +133,11 @@ class Login extends Component {
                 value={this.state.token}
                 onChange={e => this.handleChange(e, 'token')}
               />
-              <Button mb={4}>Login</Button>
+              <ResinBtn primary>Login</ResinBtn>
             </form>
-            <Divider color="#cccccc" />
+            <GreyDivider />
             <p>Do you want to login using your username and password?</p>
-            <Button onClick={() => this.toggle2faForm(false)}>Click here</Button>
+            <ResinBtn onClick={() => this.toggle2faForm(false)}>Click here</ResinBtn>
           </Box>
         </Box>
       );
@@ -165,11 +166,11 @@ class Login extends Component {
               value={this.state.password}
               onChange={e => this.handleChange(e, 'password')}
             />
-            <Button mb={4}>Login</Button>
+            <ResinBtn primary>Login</ResinBtn>
           </form>
-          <Divider color="#cccccc" />
+          <GreyDivider />
           <p>Do you use two factor authentication?</p>
-          <Button onClick={this.toggle2faForm}>Click here</Button>
+          <ResinBtn onClick={this.toggle2faForm}>Click here</ResinBtn>
         </Box>
       </Box>
     );
