@@ -72,7 +72,18 @@ Pokedex:
     Description: >-
       Squirtle's shell is not merely used for protection. The shell's rounded
       shape and the grooves on its surface help minimize resistance in water,
-      enabling this Pokémon to swim at high speeds.
+      enabling this PokÃ©mon to swim at high speeds.
     Category: Tiny Turtle
     Abilities: Torrent
     National Pokedex number: 7
+  Wartortle:
+    Name: Wartortle
+    Height: 1
+    Weight: 22.5
+    Description: >-
+      Its tail is large and covered with a rich, thick fur. The tail becomes
+      increasingly deeper in color as Wartortle ages. The scratches on its shell
+      are evidence of this Pokemon's toughness as a battler.
+    Category: Turtle
+    Abilities: Torrent
+    National Pokedex number: 8
