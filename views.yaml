@@ -1,21 +1,3 @@
 global: []
 user:
-  LucianBuzzo:
-    - name: test 2
-      rules:
-        - type: Short Text
-          name: Name
-          availableOperators:
-            - is
-            - contains
-            - does not contain
-            - matches RegEx
-            - does not match RegEx
-          operator: contains
-          value: Char
-          id: KI665gR4wmumlLO4
-        - name: Full text search
-          value: leon
-          id: leYwOE9z2tPRlRCB
-      id: YGljMBO6ZyqNSDgR
-      scope: user
+  LucianBuzzo: []
