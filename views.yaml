@@ -42,3 +42,10 @@ user:
           id: KI665gR4wmumlLO4
       id: Li16wxi1ybahxupU
       scope: user
+    - name: test
+      rules:
+        - name: Full text search
+          value: bulb
+          id: IJoPQHyP1JJ328ok
+      id: 4ZeFBjJyWFWcOKEb
+      scope: user
