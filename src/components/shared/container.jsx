@@ -1,6 +1,7 @@
 import styled from 'styled-components';
+import { Box } from 'rebass';
 
-const Container = styled.div`
+const Container = styled(Box)`
   padding-left: 15px;
   padding-right: 15px;
   margin-left: auto;

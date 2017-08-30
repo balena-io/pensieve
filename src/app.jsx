@@ -15,6 +15,7 @@ import * as DocumentService from './services/document';
 import { actions } from './actions';
 import { loadRulesFromUrl, updateUrl, searchExists } from './services/path';
 import * as NotificationService from './services/notifications';
+import { debug } from './util';
 
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
@@ -33,12 +34,17 @@ class App extends Component {
     super(props);
 
     this.state = {
-      isLoading: false,
+      loading: true,
     };
 
     this.props.setConfig(this.props.config);
 
     DocumentService.setConfig(this.props.config);
+
+    GitHubService.ready.catch((err) => {
+      debug(err.message);
+      this.setState({ loading: false });
+    });
   }
 
   componentWillReceiveProps({ isLoggedIn }) {
@@ -55,7 +61,7 @@ class App extends Component {
     this.setState({
       username: null,
       password: null,
-      isLoading: true,
+      loading: true,
     });
 
     Promise.all([
@@ -78,7 +84,7 @@ class App extends Component {
         })
         .finally(() => {
           this.setState({
-            isLoading: false,
+            loading: false,
           });
 
           const { defaultView } = this.props.config;
@@ -104,24 +110,24 @@ class App extends Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return (
+        <Provider theme={theme}>
+          <Header />
+
+          <Container mt={30}>
+            <FontAwesome spin name="cog" />
+          </Container>
+        </Provider>
+      );
+    }
+
     if (!this.props.isLoggedIn) {
       return (
         <Provider theme={theme}>
           <Header />
 
           <Login />
-        </Provider>
-      );
-    }
-
-    if (this.state.isLoading) {
-      return (
-        <Provider theme={theme}>
-          <Header />
-
-          <Container>
-            <FontAwesome spin name="cog" />
-          </Container>
         </Provider>
       );
     }

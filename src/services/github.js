@@ -3,6 +3,7 @@ import Promise from 'bluebird';
 import _ from 'lodash';
 import jsyaml from 'js-yaml';
 import store from '../store';
+import { actions } from '../actions';
 
 let gh;
 let repo;
@@ -16,18 +17,24 @@ const b64DecodeUnicode = str =>
       .join(''),
   );
 
-export const login = (loginData) => {
+export const login = (credentials) => {
   if (gh) {
     return Promise.resolve();
   }
 
-  const innerGH = new GitHub(loginData);
+  const innerGH = new GitHub(credentials);
 
   return Promise.resolve(
     innerGH.getUser().getProfile().then(({ data }) => {
-      store.dispatch({ type: 'SET_USER', value: data });
+      store.dispatch(actions.setUser(data));
       // If this was successful assign the gh variable
       gh = innerGH;
+
+      // Save the credentials in the store
+      store.dispatch(actions.setCredentials(credentials));
+
+      // Set the state to logged in
+      store.dispatch(actions.setIsLoggedIn(true));
     }),
   );
 };
@@ -110,3 +117,14 @@ export const commitViews = (views) => {
     }),
   );
 };
+
+// Resolves if login information is stored, otherwise it rejects
+export const ready = new Promise((resolve, reject) => {
+  const { credentials } = store.getState();
+
+  if (credentials) {
+    return login(credentials);
+  }
+
+  return reject(new Error('There are no stored login credentials'));
+});
