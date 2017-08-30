@@ -7,6 +7,15 @@ import store from '../store';
 let gh;
 let repo;
 
+// Correctly decodes accent characters
+// see https://stackoverflow.com/questions/30106476/using-javascripts-atob-to-decode-base64-doesnt-properly-decode-utf-8-strings
+const b64DecodeUnicode = str =>
+  decodeURIComponent(
+    Array.prototype.map
+      .call(atob(str), c => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+      .join(''),
+  );
+
 export const login = (loginData) => {
   if (gh) {
     return Promise.resolve();
@@ -25,7 +34,9 @@ export const login = (loginData) => {
 
 export const getFile = ({ account, name, ref, file }) => {
   repo = gh.getRepo(account, name);
-  return Promise.resolve(repo.getContents(ref, file).then(({ data }) => atob(data.content)));
+  return Promise.resolve(
+    repo.getContents(ref, file).then(({ data }) => b64DecodeUnicode(data.content)),
+  );
 };
 
 export const loadSchema = (config) => {

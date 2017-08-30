@@ -2,6 +2,8 @@ import _ from 'lodash';
 import jsyaml from 'js-yaml';
 import * as util from '../util';
 
+window.jsyaml = jsyaml;
+
 let innerSource = null;
 let innerConfig = null;
 let innerJson = null;
