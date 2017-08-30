@@ -1,10 +1,10 @@
-const _ = require('lodash');
-const createHistory = require('history').createBrowserHistory;
-const SchemaSieve = require('./filter');
-const util = require('../util');
+import _ from 'lodash';
+import { createBrowserHistory } from 'history';
+import qs from 'qs';
+import SchemaSieve from './filter';
+import * as util from '../util';
 
-const history = createHistory();
-const qs = require('qs');
+const history = createBrowserHistory();
 
 const sieve = SchemaSieve();
 

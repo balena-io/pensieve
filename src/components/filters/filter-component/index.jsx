@@ -7,7 +7,7 @@ import FilterSummary from './summary';
 import ViewsMenu from './views-menu';
 import ResinBtn from '../../shared/resin-button';
 import { Modal } from '../../shared';
-import util from '../../../util';
+import * as util from '../../../util';
 import SchemaSieve from '../../../services/filter';
 
 const sieve = SchemaSieve();

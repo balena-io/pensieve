@@ -1,12 +1,12 @@
-const RegexParser = require('regex-parser');
-const _ = require('lodash');
-const React = require('react');
-const { Textarea } = require('rebass');
-const showdown = require('showdown');
+import RegexParser from 'regex-parser';
+import _ from 'lodash';
+import React from 'react';
+import { Textarea } from 'rebass';
+import showdown from 'showdown';
 
 const converter = new showdown.Converter();
 
-const rules = {
+export const rules = {
   is: (target = '', value) => target === value,
   contains: (target = '', value) => target.includes(value),
   'does not contain': (target = '', value) => !target.includes(value),
@@ -14,21 +14,14 @@ const rules = {
   'does not match RegEx': (target = '', value) => !target.match(RegexParser(value)),
 };
 
-const validate = _.isString;
+export const validate = _.isString;
 
-const Edit = ({ onChange, ...props }) =>
+export const Edit = ({ onChange, ...props }) =>
   <Textarea onChange={e => onChange(e.target.value)} {...props} />;
 
-const Display = ({ data, ...props }) =>
+export const Display = ({ data, ...props }) =>
   (<div
     {...props}
     className="markdown-body"
     dangerouslySetInnerHTML={{ __html: converter.makeHtml(data) }}
   />);
-
-module.exports = {
-  rules,
-  validate,
-  Edit,
-  Display,
-};

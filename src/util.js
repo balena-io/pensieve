@@ -1,18 +1,18 @@
-const Promise = require('bluebird');
-const _ = require('lodash');
-const showdown = require('showdown');
+import Promise from 'bluebird';
+import _ from 'lodash';
+import showdown from 'showdown';
 
 const converter = new showdown.Converter();
 
 const DEBUG = window.location.hostname === 'localhost';
 
-exports.debug = (...params) => {
+export const debug = (...params) => {
   if (DEBUG) {
     console.log('DEBUG:', ...params);
   }
 };
 
-exports.loadScript = url =>
+export const loadScript = url =>
   new Promise((resolve) => {
     const scriptTag = document.createElement('script');
     scriptTag.src = url;
@@ -23,7 +23,7 @@ exports.loadScript = url =>
     document.body.appendChild(scriptTag);
   });
 
-exports.loadStyle = url =>
+export const loadStyle = url =>
   new Promise((resolve) => {
     const link = document.createElement('link');
     link.href = url;
@@ -36,7 +36,7 @@ exports.loadStyle = url =>
 
 const makeNameClass = name => (name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : '');
 
-const json2html = (data, name) => {
+export const json2html = (data, name) => {
   const nameClass = makeNameClass(name);
 
   if (_.isPlainObject(data)) {
@@ -78,7 +78,7 @@ const json2html = (data, name) => {
   return data;
 };
 
-exports.randomString = (length = 16) => {
+export const randomString = (length = 16) => {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   for (let i = 0; i < length; i++) {
@@ -86,5 +86,3 @@ exports.randomString = (length = 16) => {
   }
   return text;
 };
-
-exports.json2html = json2html;
