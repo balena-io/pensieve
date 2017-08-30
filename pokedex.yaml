@@ -87,3 +87,14 @@ Pokedex:
     Category: Turtle
     Abilities: Torrent
     National Pokedex number: 8
+  Blastoise:
+    Name: Blastoise
+    Height: 1.6
+    Weight: 85.5
+    Description: >-
+      Blastoise has water spouts that protrude from its shell. The water spouts
+      are very accurate. They can shoot bullets of water with enough accuracy to
+      strike empty cans from a distance of over 160 feet.
+    Category: Shellfish
+    Abilities: Torrent
+    National Pokedex number: 9
