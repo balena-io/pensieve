@@ -24,12 +24,20 @@ module.exports = {
     fs: 'empty',
   },
   plugins: [
+    // Degine 'production' node environment for build
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
       },
     }),
+
+    // Clean the build directory
     new CleanWebpackPlugin([BUILD_DIR]),
+
+    // Don't load moment locales to reduce bundle size
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+
+    // Minify build
     new UglifyJSPlugin(),
   ],
 };
