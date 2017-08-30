@@ -11,6 +11,7 @@ import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
 import { actions } from '../../actions';
 import DocFragmentInput from './doc-fragment-input';
+import * as NotificationService from '../../services/notifications';
 
 const ShortInput = styled(Input)`
   max-width: 300px;
@@ -94,11 +95,8 @@ class DocFragmentCreator extends Component {
           validationError: null,
         });
 
-        GitHubService.commit({ content: DocumentService.getSource(), message }).then(() => {
+        return GitHubService.commit({ content: DocumentService.getSource(), message }).then(() => {
           this.props.setContent(DocumentService.getJSON());
-          this.setState({
-            loading: false,
-          });
           this.props.close();
         });
       })
@@ -107,6 +105,14 @@ class DocFragmentCreator extends Component {
       })
       .catch(PensieveValidationError, (err) => {
         this.setState({ validationError: err.message });
+      })
+      .catch((err) => {
+        NotificationService.error(err);
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
       });
   }
 

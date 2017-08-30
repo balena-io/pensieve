@@ -7,10 +7,12 @@ export const TYPES = {
   SET_IS_LOGGED_IN: 'SET_IS_LOGGED_IN',
   SET_IS_EDITING_SCHEMA: 'SET_IS_EDITING_SCHEMA',
   SET_USER: 'SET_USER',
+  SET_ALERTS: 'SET_ALERTS',
   LOGOUT: 'LOGOUT',
 };
 
 export const actions = {
+  setAlerts: value => ({ type: TYPES.SET_ALERTS, value }),
   setConfig: value => ({ type: TYPES.SET_CONFIG, value }),
   setContent: value => ({ type: TYPES.SET_CONTENT, value }),
   setRules: value => ({ type: TYPES.SET_RULES, value }),

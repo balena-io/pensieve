@@ -11,6 +11,7 @@ import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
+import * as NotificationService from '../../services/notifications';
 import { actions } from '../../actions';
 
 const DocFragmentWrapper = styled.li`
@@ -132,7 +133,6 @@ class DocFragment extends Component {
         }).then(() => {
           this.props.setContent(DocumentService.getJSON());
           this.setState({
-            loading: false,
             showEditor: false,
           });
         });
@@ -142,6 +142,14 @@ class DocFragment extends Component {
       })
       .catch(PensieveValidationError, (err) => {
         this.setState({ validationError: err.message });
+      })
+      .catch((err) => {
+        NotificationService.error(err);
+      })
+      .finally(() => {
+        this.setState({
+          loading: false,
+        });
       });
   }
 
@@ -224,7 +232,7 @@ class DocFragment extends Component {
               </InputListItem>
 
               {_.map(this.state.edit.content, (data, title) =>
-                (<InputListItem>
+                (<InputListItem key={title}>
                   <DocFragmentInput
                     data={data}
                     title={title}
@@ -308,12 +316,11 @@ class DocFragment extends Component {
               (data, title) =>
                 (_.isFunction(data)
                   ? null
-                  : <li>
+                  : <li key={title}>
                     <h3>
                       {title}
                     </h3>
                     <DocFragmentField
-                      key={title}
                       data={data}
                       title={title}
                       schema={this.props.schema[title]}

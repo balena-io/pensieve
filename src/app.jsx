@@ -5,13 +5,16 @@ import { Provider } from 'rebass';
 import { connect } from 'react-redux';
 import jsyaml from 'js-yaml';
 import _ from 'lodash';
+import Alerts from './components/alerts';
 import Header from './components/header';
 import DocumentViewer from './components/document-viewer';
 import Login from './components/login';
+import { Container } from './components/shared';
 import * as GitHubService from './services/github';
 import * as DocumentService from './services/document';
 import { actions } from './actions';
 import { loadRulesFromUrl, updateUrl, searchExists } from './services/path';
+import * as NotificationService from './services/notifications';
 
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
@@ -71,7 +74,7 @@ class App extends Component {
           this.props.setViews(views);
         })
         .catch((err) => {
-          console.error(err);
+          NotificationService.error(err);
         })
         .finally(() => {
           this.setState({
@@ -105,6 +108,7 @@ class App extends Component {
       return (
         <Provider theme={theme}>
           <Header />
+
           <Login />
         </Provider>
       );
@@ -114,9 +118,10 @@ class App extends Component {
       return (
         <Provider theme={theme}>
           <Header />
-          <div className="container">
+
+          <Container>
             <FontAwesome spin name="cog" />
-          </div>
+          </Container>
         </Provider>
       );
     }
@@ -124,6 +129,11 @@ class App extends Component {
     return (
       <Provider theme={theme}>
         <Header />
+
+        <Container>
+          <Alerts />
+        </Container>
+
         <DocumentViewer />
       </Provider>
     );

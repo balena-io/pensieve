@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Input, Box, Text, Heading } from 'rebass';
+import { Input, Box, Heading } from 'rebass';
 import FontAwesome from 'react-fontawesome';
 import { connect } from 'react-redux';
+import Alerts from '../alerts';
 import { ResinBtn, GreyDivider } from '../shared';
 import * as GitHubService from '../../services/github';
 import { actions } from '../../actions';
+import * as NotificationService from '../../services/notifications';
 
 class Login extends Component {
   constructor(props) {
@@ -38,6 +40,7 @@ class Login extends Component {
   }
 
   toggle2faForm(show2faForm = true) {
+    NotificationService.clear();
     this.setState({ show2faForm });
   }
 
@@ -46,12 +49,12 @@ class Login extends Component {
       e.preventDefault();
     }
 
-    this.setState({ loginError: null });
-
     const { username, password } = this.state;
     if (!username || !password) {
       return;
     }
+
+    NotificationService.clear();
 
     GitHubService.login({ username, password })
       .then(() => {
@@ -60,14 +63,13 @@ class Login extends Component {
         this.props.setIsLoggedIn(true);
       })
       .catch((err) => {
-        let loginError = 'Incorrect username or password';
         if (err.response.headers['x-github-otp']) {
-          loginError =
-            'Oops! It looks like you have two factor authentication enabled on your account. Click the button below for information on how to login.';
+          NotificationService.warning(
+            'Oops! It looks like you have two factor authentication enabled on your account. Click the button below for information on how to login.',
+          );
+        } else {
+          NotificationService.error('Incorrect username or password');
         }
-        this.setState({
-          loginError,
-        });
       });
   }
 
@@ -75,12 +77,13 @@ class Login extends Component {
     if (e) {
       e.preventDefault();
     }
-    this.setState({ loginError: null });
 
     const { token } = this.state;
     if (!token) {
       return;
     }
+
+    NotificationService.clear();
 
     GitHubService.login({ token })
       .then(() => {
@@ -89,9 +92,7 @@ class Login extends Component {
       })
       .catch((err) => {
         console.error(err);
-        this.setState({
-          loginError: 'Incorrect username or password',
-        });
+        NotificationService.error('Incorrect API token');
       });
   }
 
@@ -109,12 +110,7 @@ class Login extends Component {
       return (
         <Box mt={100} mr="auto" ml="auto" w={470}>
           <Heading>Login to GitHub</Heading>
-          {this.state.loginError &&
-            <Box>
-              <Text color="red">
-                {this.state.loginError}
-              </Text>
-            </Box>}
+          <Alerts />
           <Box>
             <p>
               If you have 2fa enabled on your github account, you will need to use a Personal API
@@ -150,12 +146,7 @@ class Login extends Component {
     return (
       <Box mt={100} mr="auto" ml="auto" w={470}>
         <Heading mb={3}>Login to GitHub</Heading>
-        {this.state.loginError &&
-          <Box mb={3}>
-            <Text color="red">
-              {this.state.loginError}
-            </Text>
-          </Box>}
+        <Alerts />
         <Box>
           <form onSubmit={this.login}>
             <Input
