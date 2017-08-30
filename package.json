@@ -1,6 +1,6 @@
 {
   "name": "pensieve",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -67,6 +67,9 @@
     "webpack": "^3.5.5"
   },
   "babel": {
-    "presets": ["stage-3", "latest"]
+    "presets": [
+      "stage-3",
+      "latest"
+    ]
   }
 }
