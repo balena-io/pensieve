@@ -1,17 +1,17 @@
-const BooleanType = require('./boolean');
-const CaseInsensitiveTextType = require('./case-insensitive-text');
-const DateTimeType = require('./date-time');
-const DateType = require('./date');
-const IntegerType = require('./integer');
-const RealType = require('./real');
-const ShortTextType = require('./short-text');
-const TextType = require('./text');
-const TimeType = require('./time');
+import * as BooleanType from './boolean';
+import * as CaseInsensitiveTextType from './case-insensitive-text';
+import * as DateTimeType from './date-time';
+import * as DateType from './date';
+import * as IntegerType from './integer';
+import * as RealType from './real';
+import * as ShortTextType from './short-text';
+import * as TextType from './text';
+import * as TimeType from './time';
 
-const SemverRangeType = require('./semver-range');
-const SemverType = require('./semver');
+import * as SemverRangeType from './semver-range';
+import * as SemverType from './semver';
 
-module.exports = {
+export default {
   Boolean: BooleanType,
   'Case Insensitive Text': CaseInsensitiveTextType,
   'Date Time': DateTimeType,

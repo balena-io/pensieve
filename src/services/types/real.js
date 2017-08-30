@@ -1,30 +1,23 @@
-const _ = require('lodash');
-const React = require('react');
-const { Input } = require('rebass');
+import _ from 'lodash';
+import React from 'react';
+import { Input } from 'rebass';
 
 const pF = val => parseFloat(val);
 
-const rules = {
+export const rules = {
   equals: (target, value) => pF(target) === pF(value),
   'more than': (target, value) => pF(target) > pF(value),
   'less than': (target, value) => pF(target) < pF(value),
 };
 
-const validate = _.isNumber;
+export const validate = _.isNumber;
 
-const Edit = ({ value, onChange, ...props }) =>
+export const Edit = ({ value, onChange, ...props }) =>
   <Input {...props} type="number" value={value} onChange={e => onChange(pF(e.target.value))} />;
 
-const Display = ({ data, ...props }) =>
+export const Display = ({ data, ...props }) =>
   (<div {...props}>
     <span>
       {pF(data)}
     </span>
   </div>);
-
-module.exports = {
-  rules,
-  validate,
-  Edit,
-  Display,
-};

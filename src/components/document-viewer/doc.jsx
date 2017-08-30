@@ -3,8 +3,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 import DocFragment from './doc-fragment';
 import { GitHubMarkdown, UnstyledList } from '../shared';
-
-const SchemaSeive = require('../../services/filter');
+import SchemaSeive from '../../services/filter';
 
 const seive = SchemaSeive();
 

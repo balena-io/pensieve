@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import util from '../util';
-
-const jsyaml = require('js-yaml');
+import jsyaml from 'js-yaml';
+import * as util from '../util';
 
 let innerSource = null;
 let innerConfig = null;

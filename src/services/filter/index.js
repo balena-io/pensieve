@@ -1,7 +1,6 @@
 /* eslint class-methods-use-this: 0 */
-const _ = require('lodash');
-
-const filterTests = require('../types');
+import _ from 'lodash';
+import filterTests from '../types';
 
 const SIMPLE_SEARCH_NAME = 'Full text search';
 
@@ -94,4 +93,4 @@ class SchemaSieve {
   }
 }
 
-module.exports = tests => new SchemaSieve(tests);
+export default tests => new SchemaSieve(tests);

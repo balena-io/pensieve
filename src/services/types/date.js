@@ -1,6 +1,6 @@
-const moment = require('moment');
-const React = require('react');
-const { Input } = require('rebass');
+import moment from 'moment';
+import React from 'react';
+import { Input } from 'rebass';
 
 /**
   Date compares the day as the lowest level of granularity.
@@ -11,29 +11,22 @@ const { Input } = require('rebass');
   - JS Date object
   See https://momentjs.com/docs/#/parsing/ for more information
 */
-const startOfDay = val => moment(val).startOf('day');
+export const startOfDay = val => moment(val).startOf('day');
 
-const rules = {
+export const rules = {
   is: (target, value) => target && startOfDay(target).isSame(startOfDay(value)),
   'is before': (target, value) => target && startOfDay(target).isBefore(startOfDay(value)),
   'is after': (target, value) => target && startOfDay(target).isAfter(startOfDay(value)),
 };
 
-const validate = value => moment(value).isValid();
+export const validate = value => moment(value).isValid();
 
-const Edit = ({ value, onChange, ...props }) =>
+export const Edit = ({ value, onChange, ...props }) =>
   <Input {...props} type="date" value={value} onChange={e => onChange(e.target.value)} />;
 
-const Display = ({ data, ...props }) =>
+export const Display = ({ data, ...props }) =>
   (<div {...props}>
     <span>
       {moment(data).format('dddd, MMMM Do YYYY')}
     </span>
   </div>);
-
-module.exports = {
-  rules,
-  validate,
-  Edit,
-  Display,
-};

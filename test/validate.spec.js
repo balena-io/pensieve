@@ -1,6 +1,6 @@
 /* eslint-env mocha */
-const { expect } = require('chai');
-const SchemaSieve = require('../src/services/filter');
+import { expect } from 'chai';
+import SchemaSieve from '../src/services/filter';
 
 const sieve = SchemaSieve();
 

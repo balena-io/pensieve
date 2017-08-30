@@ -3,7 +3,7 @@ import _ from 'lodash';
 import styled from 'styled-components';
 import { Input, Textarea, Flex, Box } from 'rebass';
 import { DeleteBtn, FieldLabel } from '../shared';
-import * as types from '../../services/types';
+import types from '../../services/types';
 
 const StyledDeleteBtn = styled(DeleteBtn)`
   position: absolute;

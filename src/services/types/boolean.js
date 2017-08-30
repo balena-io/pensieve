@@ -1,8 +1,8 @@
-const React = require('react');
-const { Select } = require('rebass');
-const _ = require('lodash');
+import React from 'react';
+import { Select } from 'rebass';
+import _ from 'lodash';
 
-const Edit = ({ value, onChange, ...props }) =>
+export const Edit = ({ value, onChange, ...props }) =>
   (<Select
     {...props}
     value={value ? 'true' : 'false'}
@@ -12,23 +12,16 @@ const Edit = ({ value, onChange, ...props }) =>
     <option>false</option>
   </Select>);
 
-const rules = {
+export const rules = {
   'is true': target => !!target,
   'is false': target => !target,
 };
 
-const validate = _.isBoolean;
+export const validate = _.isBoolean;
 
-const Display = ({ data, ...props }) =>
+export const Display = ({ data, ...props }) =>
   (<div {...props}>
     <span>
       {data ? 'true' : 'false'}
     </span>
   </div>);
-
-module.exports = {
-  rules,
-  validate,
-  Edit,
-  Display,
-};
