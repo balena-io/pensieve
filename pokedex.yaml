@@ -98,3 +98,14 @@ Pokedex:
     Category: Shellfish
     Abilities: Torrent
     National Pokedex number: 9
+  Caterpie:
+    Name: Caterpie
+    Height: 0.3
+    Weight: 2.9
+    Description: >-
+      Caterpie has a voracious appetite. It can devour leaves bigger than its
+      body right before your eyes. From its antenna, this Pokemon releases a
+      terrifically strong odor.
+    Category: Worm
+    Abilities: Shield Dust
+    National Pokedex number: 10
