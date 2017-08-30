@@ -37,26 +37,28 @@ const load = () => {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case TYPES.SET_ALERTS:
-      return assign(state, { alerts: action.value.slice() });
-    case TYPES.SET_SCHEMA:
-      return assign(state, { schema: action.value });
-    case TYPES.SET_CONTENT:
-      return assign(state, { content: _.cloneDeep(action.value) });
-    case TYPES.SET_CONFIG:
-      return assign(state, { config: action.value });
-    case TYPES.SET_VIEWS:
-      return assign(state, { views: action.value });
-    case TYPES.SET_RULES:
-      return assign(state, { rules: _.cloneDeep(action.value) });
-    case TYPES.SET_IS_LOGGED_IN:
-      return assign(state, { isLoggedIn: action.value });
-    case TYPES.SET_IS_EDITING_SCHEMA:
-      return assign(state, { isEditingSchema: action.value });
-    case TYPES.SET_USER:
-      return assign(state, { user: action.value });
     case TYPES.LOGOUT:
       return defaultState();
+    case TYPES.SET_ALERTS:
+      return assign(state, { alerts: action.value.slice() });
+    case TYPES.SET_CONFIG:
+      return assign(state, { config: action.value });
+    case TYPES.SET_CONTENT:
+      return assign(state, { content: _.cloneDeep(action.value) });
+    case TYPES.SET_CREDENTIALS:
+      return assign(state, { credentials: action.value });
+    case TYPES.SET_IS_EDITING_SCHEMA:
+      return assign(state, { isEditingSchema: action.value });
+    case TYPES.SET_IS_LOGGED_IN:
+      return assign(state, { isLoggedIn: action.value });
+    case TYPES.SET_RULES:
+      return assign(state, { rules: _.cloneDeep(action.value) });
+    case TYPES.SET_SCHEMA:
+      return assign(state, { schema: action.value });
+    case TYPES.SET_USER:
+      return assign(state, { user: action.value });
+    case TYPES.SET_VIEWS:
+      return assign(state, { views: action.value });
     default:
       return state;
   }

@@ -12,14 +12,10 @@ class Login extends Component {
   constructor(props) {
     super(props);
 
-    const username = localStorage.getItem('username');
-    const password = localStorage.getItem('password');
-    const token = localStorage.getItem('token');
-
     this.state = {
-      username: username || '',
-      password: password || '',
-      token: token || '',
+      username: '',
+      password: '',
+      token: '',
       loading: false,
       loginError: null,
       show2faForm: false,
@@ -29,14 +25,6 @@ class Login extends Component {
     this.loginToken = this.loginToken.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.toggle2faForm = this.toggle2faForm.bind(this);
-
-    if (token) {
-      return this.loginToken();
-    }
-
-    if (username && password) {
-      return this.login();
-    }
   }
 
   toggle2faForm(show2faForm = true) {
@@ -58,8 +46,6 @@ class Login extends Component {
 
     GitHubService.login({ username, password })
       .then(() => {
-        localStorage.setItem('username', username);
-        localStorage.setItem('password', password);
         this.props.setIsLoggedIn(true);
       })
       .catch((err) => {
@@ -87,7 +73,6 @@ class Login extends Component {
 
     GitHubService.login({ token })
       .then(() => {
-        localStorage.setItem('token', token);
         this.props.setIsLoggedIn(true);
       })
       .catch((err) => {
