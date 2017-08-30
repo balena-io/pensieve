@@ -9,7 +9,7 @@ import SchemaSieve from '../../../services/filter';
 const sieve = SchemaSieve();
 
 const BorderedDiv = styled.div`
-  margin-top: 10px;
+  margin-top: 15px;
   padding: 6px 11px 0;
   border: solid 1px #979797;
 `;

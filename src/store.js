@@ -14,6 +14,7 @@ const defaultState = () => ({
     user: {},
   },
   rules: [],
+  alerts: [],
 });
 
 const assign = (o1, o2) => _.assign({}, o1, o2);
@@ -27,6 +28,7 @@ const load = () => {
   if (doc) {
     const data = JSON.parse(doc);
     data.isLoggedIn = false;
+    data.alerts = [];
     return data;
   }
 
@@ -35,6 +37,8 @@ const load = () => {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case TYPES.SET_ALERTS:
+      return assign(state, { alerts: action.value.slice() });
     case TYPES.SET_SCHEMA:
       return assign(state, { schema: action.value });
     case TYPES.SET_CONTENT:
