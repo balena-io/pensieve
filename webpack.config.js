@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -22,5 +23,13 @@ module.exports = {
   node: {
     fs: 'empty',
   },
-  plugins: [new CleanWebpackPlugin([BUILD_DIR]), new UglifyJSPlugin()],
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify('production'),
+      },
+    }),
+    new CleanWebpackPlugin([BUILD_DIR]),
+    new UglifyJSPlugin(),
+  ],
 };
