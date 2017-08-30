@@ -4,7 +4,7 @@ import { Flex, Box } from 'rebass';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import FontAwesome from 'react-fontawesome';
-import store from '../../store';
+import { actions } from '../../actions';
 import Filters from '../filters';
 import Doc from './doc';
 import DocFragmentCreator from './doc-fragment-creator';
@@ -21,10 +21,6 @@ const SkeleBtn = styled(ResinBtn)`
   }
 `;
 
-const editSchema = () => {
-  store.dispatch({ type: 'SET_IS_EDITING_SCHEMA', value: true });
-};
-
 class DocumentViewer extends Component {
   constructor(props) {
     super(props);
@@ -32,6 +28,10 @@ class DocumentViewer extends Component {
     this.state = {
       filterRules: [],
     };
+  }
+
+  editSchema() {
+    this.props.setIsEditingSchema(true);
   }
 
   render() {
@@ -43,7 +43,7 @@ class DocumentViewer extends Component {
           <Filters schema={this.props.schema} />
           <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
             {schemaIsEditable &&
-              <SkeleBtn style={{ marginRight: 10 }} onClick={editSchema}>
+              <SkeleBtn style={{ marginRight: 10 }} onClick={() => this.editSchema()}>
                 <span>
                   <FontAwesome name="list-alt" style={{ marginRight: 10 }} />
                   Edit schema
@@ -75,4 +75,8 @@ const mapStatetoProps = state => ({
   isEditingSchema: state.isEditingSchema,
 });
 
-export default connect(mapStatetoProps)(DocumentViewer);
+const mapDispatchToProps = dispatch => ({
+  setIsEditingSchema: value => dispatch(actions.setIsEditingSchema(value)),
+});
+
+export default connect(mapStatetoProps, mapDispatchToProps)(DocumentViewer);

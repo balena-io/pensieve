@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Input, Box, Text, Heading } from 'rebass';
 import FontAwesome from 'react-fontawesome';
+import { connect } from 'react-redux';
 import { ResinBtn, GreyDivider } from '../shared';
 import * as GitHubService from '../../services/github';
-import store from '../../store';
+import { actions } from '../../actions';
 
 class Login extends Component {
   constructor(props) {
@@ -56,7 +57,7 @@ class Login extends Component {
       .then(() => {
         localStorage.setItem('username', username);
         localStorage.setItem('password', password);
-        store.dispatch({ type: 'SET_IS_LOGGED_IN', value: true });
+        this.props.setIsLoggedIn(true);
       })
       .catch((err) => {
         let loginError = 'Incorrect username or password';
@@ -84,7 +85,7 @@ class Login extends Component {
     GitHubService.login({ token })
       .then(() => {
         localStorage.setItem('token', token);
-        store.dispatch({ type: 'SET_IS_LOGGED_IN', value: true });
+        this.props.setIsLoggedIn(true);
       })
       .catch((err) => {
         console.error(err);
@@ -181,4 +182,12 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStatetoProps = state => ({
+  isLoggedIn: state.isLoggedIn,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setIsLoggedIn: () => dispatch(actions.setIsLoggedIn(true)),
+});
+
+export default connect(mapStatetoProps, mapDispatchToProps)(Login);

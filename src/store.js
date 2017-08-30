@@ -2,6 +2,7 @@ import { applyMiddleware, createStore } from 'redux';
 import _ from 'lodash';
 import { debug } from './util';
 import { updateUrl } from './services/path';
+import { TYPES } from './actions';
 
 const PENSIEVE_STORAGE_KEY = 'pensieve_store';
 
@@ -34,23 +35,23 @@ const load = () => {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'SET_SCHEMA':
+    case TYPES.SET_SCHEMA:
       return assign(state, { schema: action.value });
-    case 'SET_CONTENT':
+    case TYPES.SET_CONTENT:
       return assign(state, { content: _.cloneDeep(action.value) });
-    case 'SET_CONFIG':
+    case TYPES.SET_CONFIG:
       return assign(state, { config: action.value });
-    case 'SET_VIEWS':
+    case TYPES.SET_VIEWS:
       return assign(state, { views: action.value });
-    case 'SET_RULES':
+    case TYPES.SET_RULES:
       return assign(state, { rules: _.cloneDeep(action.value) });
-    case 'SET_IS_LOGGED_IN':
+    case TYPES.SET_IS_LOGGED_IN:
       return assign(state, { isLoggedIn: action.value });
-    case 'SET_IS_EDITING_SCHEMA':
+    case TYPES.SET_IS_EDITING_SCHEMA:
       return assign(state, { isEditingSchema: action.value });
-    case 'SET_USER':
+    case TYPES.SET_USER:
       return assign(state, { user: action.value });
-    case 'LOGOUT':
+    case TYPES.LOGOUT:
       return defaultState();
     default:
       return state;
@@ -84,6 +85,4 @@ const urlUpdater = store => next => (action) => {
   return result;
 };
 
-const store = createStore(reducerWrapper, applyMiddleware(logger, urlUpdater));
-
-export default store;
+export default createStore(reducerWrapper, applyMiddleware(logger, urlUpdater));

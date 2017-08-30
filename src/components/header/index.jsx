@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Button, Flex } from 'rebass';
 import { connect } from 'react-redux';
 import { Container } from '../shared';
-import store from '../../store';
+import { actions } from '../../actions';
 
 const BlackBox = styled.div`
   height: 60px;
@@ -20,13 +20,13 @@ const Title = styled.h1`
   color: #ffffff;
 `;
 
-const logout = () => {
-  store.dispatch({ type: 'LOGOUT' });
-  localStorage.clear();
-  window.location.reload();
-};
-
 class Header extends Component {
+  logout() {
+    this.props.logout();
+    localStorage.clear();
+    window.location.reload();
+  }
+
   render() {
     return (
       <BlackBox>
@@ -35,10 +35,11 @@ class Header extends Component {
             <Title>
               {this.props.config.repo.name}
             </Title>
-            <Button onClick={logout} bg="white" color="red">
-              <FontAwesome style={{ marginRight: 5 }} name="sign-out" />
-              Logout
-            </Button>
+            {this.props.isLoggedIn &&
+              <Button onClick={() => this.logout()} bg="white" color="red">
+                <FontAwesome style={{ marginRight: 5 }} name="sign-out" />
+                Logout
+              </Button>}
           </Flex>
         </Container>
       </BlackBox>
@@ -48,6 +49,11 @@ class Header extends Component {
 
 const mapStatetoProps = state => ({
   config: state.config,
+  isLoggedIn: state.isLoggedIn,
 });
 
-export default connect(mapStatetoProps)(Header);
+const mapDispatchToProps = dispatch => ({
+  logout: () => dispatch(actions.logout()),
+});
+
+export default connect(mapStatetoProps, mapDispatchToProps)(Header);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import FontAwesome from 'react-fontawesome';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { Box, Input, Textarea, Text, Flex } from 'rebass';
 import { Container, Modal, ResinBtn, UnstyledList, FieldLabel, GreyDivider } from '../shared';
@@ -8,7 +9,7 @@ import * as DocumentService from '../../services/document';
 import * as GitHubService from '../../services/github';
 import { lint, schemaValidate } from '../../services/validator';
 import { PensieveLinterError, PensieveValidationError } from '../../services/errors';
-import store from '../../store';
+import { actions } from '../../actions';
 import DocFragmentInput from './doc-fragment-input';
 
 const ShortInput = styled(Input)`
@@ -94,7 +95,7 @@ class DocFragmentCreator extends Component {
         });
 
         GitHubService.commit({ content: DocumentService.getSource(), message }).then(() => {
-          store.dispatch({ type: 'SET_CONTENT', value: DocumentService.getJSON() });
+          this.props.setContent(DocumentService.getJSON());
           this.setState({
             loading: false,
           });
@@ -234,4 +235,12 @@ class DocFragmentCreator extends Component {
   }
 }
 
-export default DocFragmentCreator;
+const mapStatetoProps = state => ({
+  schema: state.schema,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setContent: value => dispatch(actions.setContent(value)),
+});
+
+export default connect(mapStatetoProps, mapDispatchToProps)(DocFragmentCreator);
