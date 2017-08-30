@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && node scripts/dist.js",
+    "build": "webpack",
     "test": "mocha --compilers js:babel-core/register test/*.spec.js",
     "eject": "react-scripts eject",
     "lint": "eslint src/"
@@ -46,25 +46,27 @@
     "yaml-lint": "0.0.4"
   },
   "devDependencies": {
-    "babel-core": "^6.25.0",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2017": "^6.24.1",
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
     "babel-register": "^6.24.1",
     "chai": "^4.1.0",
     "chai-as-promised": "^7.1.1",
+    "clean-webpack-plugin": "^0.1.16",
     "eslint": "^4.5.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-plugin-flowtype": "^2.35.0",
     "mocha": "^3.5.0",
     "prettier-eslint": "^6.4.2",
-    "react-tools": "^0.13.3"
+    "react-tools": "^0.13.3",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.5.5"
   },
   "babel": {
-    "presets": [
-      "stage-3",
-      "latest"
-    ]
+    "presets": ["stage-3", "latest"]
   }
 }
