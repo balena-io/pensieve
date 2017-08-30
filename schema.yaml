@@ -12,3 +12,5 @@ Abilities:
   type: Short Text
 National Pokedex number:
   type: Integer
+Caught:
+  type: Boolean
