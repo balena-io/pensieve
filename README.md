@@ -8,7 +8,17 @@ Pensieve
 Usage
 -----
 
-Load the Pensieve JS and CSS files into your HTML page, then execuite the `Pensieve` global using your desired configuration.
+Add the following to the `<head>` element on your page:
+
+```html
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Ubuntu+Mono">
+<script src="https://resin-production-downloads.s3.amazonaws.com/pensieve/latest/pensieve.js"></script>
+```
+
+Pensieve uses fontawesome icons and the Roboto and Ubuntu mono fonts, so these should be loaded as well.
+Make sure there is a container element with the id `pensieve` on your page, then execute the `Pensieve` global using your desired configuration.
+
 
 Assuming that:
 - you have a repository called `document-repo` held under the account `resin-io`
@@ -48,12 +58,14 @@ Your HTML page would look like this:
   <head>
     <meta charset="utf-8">
     <title>Scratchpad</title>
-    <link href="https://resin-production-downloads.s3.amazonaws.com/pensieve/latest/static/css/main.css" type="text/css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Ubuntu+Mono">
+    <script src="https://resin-production-downloads.s3.amazonaws.com/pensieve/latest/pensieve.js"></script>
   </head>
   <body>
     <div id="pensieve"></div>
 
-    <script src="https://resin-production-downloads.s3.amazonaws.com/pensieve/latest/static/js/main.js"></script>
     <script>
       Pensieve({
         // The path to you schema file or an object literal of your schema
