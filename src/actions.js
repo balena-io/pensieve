@@ -9,8 +9,8 @@ export const TYPES = {
   SET_RULES: 'SET_RULES',
   SET_SCHEMA: 'SET_SCHEMA',
   SET_USER: 'SET_USER',
-  SET_VIEWS: 'SET_VIEWS',
-};
+  SET_VIEWS: 'SET_VIEWS'
+}
 
 export const actions = {
   logout: () => ({ type: TYPES.LOGOUT }),
@@ -23,5 +23,5 @@ export const actions = {
   setRules: value => ({ type: TYPES.SET_RULES, value }),
   setSchema: value => ({ type: TYPES.SET_SCHEMA, value }),
   setUser: value => ({ type: TYPES.SET_USER, value }),
-  setViews: value => ({ type: TYPES.SET_VIEWS, value }),
-};
+  setViews: value => ({ type: TYPES.SET_VIEWS, value })
+}

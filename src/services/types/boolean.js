@@ -1,27 +1,27 @@
-import React from 'react';
-import { Select } from 'rebass';
-import _ from 'lodash';
+import React from 'react'
+import { Select } from 'rebass'
+import _ from 'lodash'
 
-export const Edit = ({ value, onChange, ...props }) =>
-  (<Select
+export const Edit = ({ value, onChange, ...props }) => (
+  <Select
     {...props}
     value={value ? 'true' : 'false'}
     onChange={e => onChange(e.target.value === 'true')}
   >
     <option>true</option>
     <option>false</option>
-  </Select>);
+  </Select>
+)
 
 export const rules = {
   'is true': target => !!target,
-  'is false': target => !target,
-};
+  'is false': target => !target
+}
 
-export const validate = _.isBoolean;
+export const validate = _.isBoolean
 
-export const Display = ({ data, ...props }) =>
-  (<div {...props}>
-    <span>
-      {data ? 'true' : 'false'}
-    </span>
-  </div>);
+export const Display = ({ data, ...props }) => (
+  <div {...props}>
+    <span>{data ? 'true' : 'false'}</span>
+  </div>
+)

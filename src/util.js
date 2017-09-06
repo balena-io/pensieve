@@ -1,43 +1,44 @@
-import Promise from 'bluebird';
-import _ from 'lodash';
-import showdown from 'showdown';
+import Promise from 'bluebird'
+import _ from 'lodash'
+import showdown from 'showdown'
 
-const converter = new showdown.Converter();
+const converter = new showdown.Converter()
 
-const DEBUG = window.location.hostname === 'localhost';
+const DEBUG = window.location.hostname === 'localhost'
 
 export const debug = (...params) => {
   if (DEBUG) {
-    console.log('DEBUG:', ...params);
+    console.log('DEBUG:', ...params)
   }
-};
+}
 
 export const loadScript = url =>
-  new Promise((resolve) => {
-    const scriptTag = document.createElement('script');
-    scriptTag.src = url;
+  new Promise(resolve => {
+    const scriptTag = document.createElement('script')
+    scriptTag.src = url
 
-    scriptTag.onload = resolve;
-    scriptTag.onreadystatechange = resolve;
+    scriptTag.onload = resolve
+    scriptTag.onreadystatechange = resolve
 
-    document.body.appendChild(scriptTag);
-  });
+    document.body.appendChild(scriptTag)
+  })
 
 export const loadStyle = url =>
-  new Promise((resolve) => {
-    const link = document.createElement('link');
-    link.href = url;
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.onload = resolve;
+  new Promise(resolve => {
+    const link = document.createElement('link')
+    link.href = url
+    link.type = 'text/css'
+    link.rel = 'stylesheet'
+    link.onload = resolve
 
-    document.getElementsByTagName('head')[0].appendChild(link);
-  });
+    document.getElementsByTagName('head')[0].appendChild(link)
+  })
 
-const makeNameClass = name => (name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : '');
+const makeNameClass = name =>
+  name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : ''
 
 export const json2html = (data, name) => {
-  const nameClass = makeNameClass(name);
+  const nameClass = makeNameClass(name)
 
   if (_.isPlainObject(data)) {
     return `<ul class='_object${nameClass}'>
@@ -48,9 +49,9 @@ export const json2html = (data, name) => {
           <span class="doc-label">${k}:</span>
           ${json2html(e, k)}
         </li>
-      `,
+      `
   ).join('')}
-    </ul>`;
+    </ul>`
   } else if (_.isArray(data)) {
     return `<ol class='_array${nameClass}'>
       ${data
@@ -59,30 +60,35 @@ export const json2html = (data, name) => {
         <li class="${k}">
           ${json2html(e)}
         </li>
-      `,
+      `
     )
     .join('')}
-    </ol>`;
+    </ol>`
   } else if (_.isNumber(data)) {
-    return `<span class='_number${nameClass}'>${data}</span>`;
+    return `<span class='_number${nameClass}'>${data}</span>`
   } else if (_.isString(data)) {
     if (name === 'Versions Affected') {
-      return `<span class='_string${nameClass}'>${converter.makeHtml(`\`${data}\``)}</span>`;
+      return `<span class='_string${nameClass}'>${converter.makeHtml(
+        `\`${data}\``
+      )}</span>`
     }
-    return `<span class='_string${nameClass}'>${converter.makeHtml(data)}</span>`;
+    return `<span class='_string${nameClass}'>${converter.makeHtml(
+      data
+    )}</span>`
   } else if (_.isBoolean(data)) {
-    return `<span class='_boolean${nameClass}'>${data}</span>`;
+    return `<span class='_boolean${nameClass}'>${data}</span>`
   } else if (_.isNull(data)) {
-    return `<span class='_null${nameClass}'></span>`;
+    return `<span class='_null${nameClass}'></span>`
   }
-  return data;
-};
+  return data
+}
 
 export const randomString = (length = 16) => {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = ''
+  const possible =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
   for (let i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
   }
-  return text;
-};
+  return text
+}

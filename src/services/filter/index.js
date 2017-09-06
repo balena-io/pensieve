@@ -1,70 +1,74 @@
 /* eslint class-methods-use-this: 0 */
-import _ from 'lodash';
-import filterTests from '../types';
+import _ from 'lodash'
+import filterTests from '../types'
 
-const SIMPLE_SEARCH_NAME = 'Full text search';
+const SIMPLE_SEARCH_NAME = 'Full text search'
 
 class SchemaSieve {
-  constructor(tests = {}) {
-    this.tests = _.assign(_.cloneDeep(filterTests), tests);
+  constructor (tests = {}) {
+    this.tests = _.assign(_.cloneDeep(filterTests), tests)
 
-    this.SIMPLE_SEARCH_NAME = SIMPLE_SEARCH_NAME;
+    this.SIMPLE_SEARCH_NAME = SIMPLE_SEARCH_NAME
   }
 
-  baseTest(item, input) {
-    const { type, name } = input;
+  baseTest (item, input) {
+    const { type, name } = input
 
     // A simple search is not strictly a "type" and searches on all fields,
     // so we handle that seperately here
     if (name === SIMPLE_SEARCH_NAME) {
-      const { value } = input;
+      const { value } = input
       return _.some(
         item,
-        target => target && String(target).toLowerCase().includes(value.toLowerCase()),
-      );
+        target =>
+          target &&
+          String(target)
+            .toLowerCase()
+            .includes(value.toLowerCase())
+      )
     }
 
     if (type in filterTests) {
-      const { operator, value } = input;
-      const target = item[name];
+      const { operator, value } = input
+      const target = item[name]
 
       if (operator in filterTests[type].rules) {
-        return filterTests[type].rules[operator](target, value);
+        return filterTests[type].rules[operator](target, value)
       }
 
-      throw new Error(`${operator} is not a valid operator for ${type} types`);
+      throw new Error(`${operator} is not a valid operator for ${type} types`)
     }
-    throw new Error(`There is no filter test for type ${type}`);
+    throw new Error(`There is no filter test for type ${type}`)
   }
 
-  filter(collection, input) {
+  filter (collection, input) {
     if (_.isObject(collection)) {
-      return this.filterObject(collection, input);
+      return this.filterObject(collection, input)
     }
     if (_.isArray(collection)) {
-      return this.filterArray(collection, input);
+      return this.filterArray(collection, input)
     }
 
-    throw new Error('collection argument must be either object or array.');
+    throw new Error('collection argument must be either object or array.')
   }
 
-  filterArray(collection, input) {
-    return collection.filter(item => this.baseTest(item, input));
+  filterArray (collection, input) {
+    return collection.filter(item => this.baseTest(item, input))
   }
 
-  filterObject(collection, input) {
-    return _.pickBy(collection, value => this.baseTest(value, input));
+  filterObject (collection, input) {
+    return _.pickBy(collection, value => this.baseTest(value, input))
   }
 
-  getOperators(type) {
+  getOperators (type) {
     if (type in filterTests) {
-      return Object.keys(filterTests[type].rules);
+      return Object.keys(filterTests[type].rules)
     }
-    return [];
+    return []
   }
 
-  makeFilterInputs(schema) {
-    const inputs = {};
+  makeFilterInputs (schema) {
+    const inputs = {}
 
     _.forEach(schema, (value, key) => {
       inputs[key] = {
@@ -72,25 +76,25 @@ class SchemaSieve {
         name: key,
         availableOperators: this.getOperators(value.type),
         operator: null,
-        value: null,
-      };
-    });
+        value: null
+      }
+    })
 
-    return inputs;
+    return inputs
   }
 
-  validate(type, value) {
+  validate (type, value) {
     // If the type is unknown just return true
     if (!(type in filterTests)) {
-      return true;
+      return true
     }
 
-    return filterTests[type].validate(value);
+    return filterTests[type].validate(value)
   }
 
-  getTypes() {
-    return Object.keys(filterTests);
+  getTypes () {
+    return Object.keys(filterTests)
   }
 }
 
-export default tests => new SchemaSieve(tests);
+export default tests => new SchemaSieve(tests)
