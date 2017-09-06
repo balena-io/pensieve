@@ -1,23 +1,10 @@
 {
   "rules": {
-    "import/prefer-default-export": 0,
-    "no-console": 0,
-    "no-debugger": 0,
-    "no-param-reassign": 0,
-    "no-plusplus": 0,
-    "react/forbid-prop-types": 0,
-    "react/jsx-filename-extension": 0,
-    "react/prefer-stateless-function": 0,
-    "react/no-string-refs": 0,
-    "react/require-default-props": 0,
-    "react/prop-types": 0,
-    "react/no-danger": 0,
-    "func-names": 0
+    "react/prop-types": 0
+
   },
-  "parser": "babel-eslint",
-  "extends": "airbnb",
   "env": {
     "browser": true
   },
-  "plugins": ["react", "jsx-a11y", "import"]
+  "extends": ["standard", "standard-react"]
 }

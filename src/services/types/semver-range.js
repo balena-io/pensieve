@@ -1,7 +1,7 @@
-import * as semver from 'resin-semver';
-import _ from 'lodash';
-import React from 'react';
-import { Input } from 'rebass';
+import * as semver from 'resin-semver'
+import _ from 'lodash'
+import React from 'react'
+import { Input } from 'rebass'
 
 /**
  * See the node-semver docs for more information on semver ranges
@@ -9,17 +9,22 @@ import { Input } from 'rebass';
  */
 export const rules = {
   contains: (target, value) => semver.satisfies(value, target),
-  'does not contain': (target, value) => !semver.satisfies(value, target),
-};
+  'does not contain': (target, value) => !semver.satisfies(value, target)
+}
 
-export const validate = _.isString;
+export const validate = _.isString
 
-export const Edit = ({ value, onChange, ...props }) =>
-  <Input {...props} type="text" value={value} onChange={e => onChange(e.target.value)} />;
+export const Edit = ({ value, onChange, ...props }) => (
+  <Input
+    {...props}
+    type='text'
+    value={value}
+    onChange={e => onChange(e.target.value)}
+  />
+)
 
-export const Display = ({ data, ...props }) =>
-  (<div {...props} className="markdown-body">
-    <code>
-      {data}
-    </code>
-  </div>);
+export const Display = ({ data, ...props }) => (
+  <div {...props} className='markdown-body'>
+    <code>{data}</code>
+  </div>
+)
