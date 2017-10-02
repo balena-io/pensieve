@@ -173,3 +173,10 @@ Default Views
 -------------
 
 You can specify a default view to be loaded when Pensieve is initialised by adding a `defaultView` attribute to the Pensieve config. The value can either be the name of a Global view (visible to everyone) or an array of filter rules.
+
+Markdown
+--------
+
+The types `Text`, `Short Text` and `Case Insensitive Text` are all rendered as
+markdown.
+
