@@ -1,9 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
-import showdown from 'showdown'
 import types from '../../services/types'
-
-const converter = new showdown.Converter()
+import * as markdown from '../../services/markdown'
 
 const DocFragmentField = ({ title, data, schema }) => {
   const type = (schema && schema.type) || 'Unknown'
@@ -18,7 +16,7 @@ const DocFragmentField = ({ title, data, schema }) => {
   return (
     <div
       className='markdown-body'
-      dangerouslySetInnerHTML={{ __html: converter.makeHtml(data) }}
+      dangerouslySetInnerHTML={{ __html: markdown.render(data) }}
     />
   )
 }

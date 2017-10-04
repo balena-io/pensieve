@@ -42,6 +42,7 @@
     "redux": "^3.7.2",
     "regex-parser": "^2.2.7",
     "resin-semver": "^0.8.0",
+    "sanitize-html": "^1.14.1",
     "showdown": "^1.7.1",
     "styled-components": "^2.1.2",
     "typed-error": "^2.0.0",

@@ -2,9 +2,7 @@ import RegexParser from 'regex-parser'
 import _ from 'lodash'
 import React from 'react'
 import { Input } from 'rebass'
-import showdown from 'showdown'
-
-const converter = new showdown.Converter()
+import * as markdown from '../markdown'
 
 export const rules = {
   is: (target = '', value) => target === value,
@@ -25,6 +23,6 @@ export const Display = ({ data, ...props }) => (
   <div
     {...props}
     className='markdown-body'
-    dangerouslySetInnerHTML={{ __html: converter.makeHtml(data) }}
+    dangerouslySetInnerHTML={{ __html: markdown.render(data) }}
   />
 )
