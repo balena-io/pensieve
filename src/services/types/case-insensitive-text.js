@@ -2,9 +2,7 @@ import RegexParser from 'regex-parser'
 import _ from 'lodash'
 import React from 'react'
 import { Textarea } from 'rebass'
-import showdown from 'showdown'
-
-export const converter = new showdown.Converter()
+import * as markdown from '../markdown'
 
 export const toLowerCase = fn => (target, value) =>
   fn(target.toLowerCase(), value.toLowerCase())
@@ -33,6 +31,6 @@ export const Display = ({ data, ...props }) => (
   <div
     {...props}
     className='markdown-body'
-    dangerouslySetInnerHTML={{ __html: converter.makeHtml(data) }}
+    dangerouslySetInnerHTML={{ __html: markdown.render(data) }}
   />
 )

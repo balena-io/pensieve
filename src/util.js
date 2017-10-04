@@ -1,8 +1,4 @@
 import Promise from 'bluebird'
-import _ from 'lodash'
-import showdown from 'showdown'
-
-const converter = new showdown.Converter()
 
 const DEBUG = window.location.hostname === 'localhost'
 
@@ -33,55 +29,6 @@ export const loadStyle = url =>
 
     document.getElementsByTagName('head')[0].appendChild(link)
   })
-
-const makeNameClass = name =>
-  name ? ` ${name.replace(/\s+/g, '_').toLowerCase()}` : ''
-
-export const json2html = (data, name) => {
-  const nameClass = makeNameClass(name)
-
-  if (_.isPlainObject(data)) {
-    return `<ul class='_object${nameClass}'>
-      ${_.map(
-    data,
-    (e, k) => `
-        <li class="${makeNameClass(k)}">
-          <span class="doc-label">${k}:</span>
-          ${json2html(e, k)}
-        </li>
-      `
-  ).join('')}
-    </ul>`
-  } else if (_.isArray(data)) {
-    return `<ol class='_array${nameClass}'>
-      ${data
-    .map(
-      (e, k) => `
-        <li class="${k}">
-          ${json2html(e)}
-        </li>
-      `
-    )
-    .join('')}
-    </ol>`
-  } else if (_.isNumber(data)) {
-    return `<span class='_number${nameClass}'>${data}</span>`
-  } else if (_.isString(data)) {
-    if (name === 'Versions Affected') {
-      return `<span class='_string${nameClass}'>${converter.makeHtml(
-        `\`${data}\``
-      )}</span>`
-    }
-    return `<span class='_string${nameClass}'>${converter.makeHtml(
-      data
-    )}</span>`
-  } else if (_.isBoolean(data)) {
-    return `<span class='_boolean${nameClass}'>${data}</span>`
-  } else if (_.isNull(data)) {
-    return `<span class='_null${nameClass}'></span>`
-  }
-  return data
-}
 
 export const randomString = (length = 16) => {
   let text = ''
