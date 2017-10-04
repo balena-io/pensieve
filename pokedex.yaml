@@ -204,9 +204,7 @@ Pokedex:
     Description: >-
       The flame that burns at the tip of its tail is an indication of its
       emotions. The flame wavers when Charmander is enjoying itself. If the
-      Pokemon becomes enraged, the flame burns fiercely. test2
-
-      <a name="n" href="javascript:alert('xss')">Test</a>
+      Pokemon becomes enraged, the flame burns fiercely. 
     Category: Lizard
     Abilities: Blaze
     National Pokedex number: 4
