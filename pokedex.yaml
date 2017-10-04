@@ -207,8 +207,7 @@ Pokedex:
       Pokemon becomes enraged, the flame burns fiercely. test2
 
       <a name="n"
-      href="javascript:alert('xss')">Test</a><script>alert('foo')</script><img
-      onError="alert('foo')" />
+      href="javascript:alert('xss')">Test</a><script>alert('foo')</script>
 
 
       <IMG SRC=javascript:alert("XSS")>
