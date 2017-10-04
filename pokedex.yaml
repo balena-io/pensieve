@@ -206,7 +206,9 @@ Pokedex:
       emotions. The flame wavers when Charmander is enjoying itself. If the
       Pokemon becomes enraged, the flame burns fiercely. test2
 
-      <a name="n" href="javascript:alert('xss')">
+      <a name="n"
+      href="javascript:alert('xss')">Test</a><script>alert('foo')</script><img
+      onError="alert('foo')" />
     Category: Lizard
     Abilities: Blaze
     National Pokedex number: 4
