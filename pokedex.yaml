@@ -209,6 +209,9 @@ Pokedex:
       <a name="n"
       href="javascript:alert('xss')">Test</a><script>alert('foo')</script><img
       onError="alert('foo')" />
+
+
+      <IMG SRC=javascript:alert("XSS")>
     Category: Lizard
     Abilities: Blaze
     National Pokedex number: 4
