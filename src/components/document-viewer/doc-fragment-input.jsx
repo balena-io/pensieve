@@ -1,9 +1,9 @@
-import React from 'react';
-import _ from 'lodash';
-import styled from 'styled-components';
-import { Input, Textarea, Flex, Box } from 'rebass';
-import { DeleteBtn, FieldLabel } from '../shared';
-import types from '../../services/types';
+import React from 'react'
+import _ from 'lodash'
+import styled from 'styled-components'
+import { Input, Textarea, Flex, Box } from 'rebass'
+import { DeleteBtn, FieldLabel } from '../shared'
+import types from '../../services/types'
 
 const StyledDeleteBtn = styled(DeleteBtn)`
   position: absolute;
@@ -13,7 +13,7 @@ const StyledDeleteBtn = styled(DeleteBtn)`
   &:hover + ${Flex}:after {
     content: '';
     content: '';
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     position: absolute;
     left: -5px;
@@ -21,7 +21,7 @@ const StyledDeleteBtn = styled(DeleteBtn)`
     top: -5px;
     bottom: -5px;
   }
-`;
+`
 
 const EditBox = styled(Box)`
   ${Input} {
@@ -33,44 +33,52 @@ const EditBox = styled(Box)`
     resize: vertical;
     background-color: white;
   }
-`;
+`
 
-const calcTextareaSize = (data) => {
-  let matches = data.match(/\n/g);
+const calcTextareaSize = data => {
+  let matches = data.match(/\n/g)
   if (!matches) {
-    matches = 0;
+    matches = 0
   }
-  return Math.max(matches.length, 4);
-};
+  return Math.max(matches.length, 4)
+}
 
-const formatData = (data) => {
+const formatData = data => {
   if (_.isBoolean(data)) {
-    return data ? 'true' : 'false';
+    return data ? 'true' : 'false'
   }
   if (_.isDate(data)) {
-    return data.toString();
+    return data.toString()
   }
 
-  return data;
-};
+  return data
+}
 
 const DocFragmentInput = ({ title, data, schema, change, remove }) => {
-  const type = (schema && schema.type) || 'Unknown';
+  const type = (schema && schema.type) || 'Unknown'
 
   const getInput = () => {
     if (type === 'Text' || type === 'Case Insensitive Text') {
-      const Control = types[type].Edit;
-      return <Control rows={calcTextareaSize(data)} value={data} onChange={change} />;
+      const Control = types[type].Edit
+      return (
+        <Control rows={calcTextareaSize(data)} value={data} onChange={change} />
+      )
     }
     if (type in types) {
-      const Control = types[type].Edit;
-      return <Control value={data} onChange={change} />;
+      const Control = types[type].Edit
+      return <Control value={data} onChange={change} />
     }
-    return <Input value={formatData(data)} onChange={e => change(e.target.value)} />;
-  };
+    return (
+      <Textarea
+        rows={4}
+        value={formatData(data)}
+        onChange={e => change(e.target.value)}
+      />
+    )
+  }
 
   if (_.isFunction(data)) {
-    return null;
+    return null
   }
 
   return (
@@ -78,16 +86,12 @@ const DocFragmentInput = ({ title, data, schema, change, remove }) => {
       {!!remove && <StyledDeleteBtn onClick={remove} />}
       <Flex>
         <Box width={250}>
-          <FieldLabel>
-            {title}
-          </FieldLabel>
+          <FieldLabel>{title}</FieldLabel>
         </Box>
-        <EditBox flex={1}>
-          {getInput()}
-        </EditBox>
+        <EditBox flex={1}>{getInput()}</EditBox>
       </Flex>
     </Box>
-  );
-};
+  )
+}
 
-export default DocFragmentInput;
+export default DocFragmentInput
