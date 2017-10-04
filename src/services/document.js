@@ -8,15 +8,23 @@ let innerSource = null
 let innerConfig = null
 let innerJson = null
 
-class Fragment {
-  constructor (title, content) {
-    const hash = util.randomString()
+const PENSIEVE_UUID_KEY = 'PS_UUID'
 
+class Fragment {
+  constructor (title, content, uuid = null) {
     _.forEach(content, (value, key) => {
-      this[key] = value
+      if (key === PENSIEVE_UUID_KEY) {
+        uuid = value
+      } else {
+        this[key] = value
+      }
     })
 
-    this.getHash = () => hash
+    if (!uuid) {
+      uuid = util.uuid()
+    }
+
+    this.getUuid = () => uuid
     this.getTitle = () => title
   }
 }
@@ -29,8 +37,8 @@ export const setSource = source => {
   innerSource = source
 }
 
-export const getJSON = () => {
-  if (innerJson) {
+export const getJSON = (ignoreCache = false) => {
+  if (innerJson && !ignoreCache) {
     return innerJson
   }
   let json = jsyaml.load(innerSource)
@@ -44,12 +52,12 @@ export const getJSON = () => {
   return json
 }
 
-export const updateFragment = (hash, title, content) => {
+export const updateFragment = (uuid, title, content) => {
   innerJson = _.reduce(
     innerJson,
     (result, value, key) => {
-      if (value.getHash() === hash) {
-        result[title] = new Fragment(title, content)
+      if (value.getUuid() === uuid) {
+        result[title] = new Fragment(title, content, uuid)
       } else {
         result[key] = value
       }
@@ -58,12 +66,16 @@ export const updateFragment = (hash, title, content) => {
     {}
   )
 
-  let cleanJson = _.mapValues(innerJson, value =>
-    _.pickBy(
-      _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
-      _.negate(_.isFunction)
+  let cleanJson = _.mapValues(innerJson, value => {
+    let picked = _.assign(
+      _.pickBy(
+        _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
+        _.negate(_.isFunction)
+      ),
+      { [PENSIEVE_UUID_KEY]: value.getUuid() }
     )
-  )
+    return picked
+  })
 
   if (innerConfig.contentPath) {
     const sourceJson = jsyaml.load(innerSource)
@@ -74,11 +86,11 @@ export const updateFragment = (hash, title, content) => {
   innerSource = jsyaml.safeDump(cleanJson)
 }
 
-export const deleteFragment = hash => {
+export const deleteFragment = uuid => {
   innerJson = _.reduce(
     innerJson,
     (result, value, key) => {
-      if (value.getHash() !== hash) {
+      if (value.getUuid() !== uuid) {
         result[key] = value
       }
       return result

@@ -1,4 +1,5 @@
 import Promise from 'bluebird'
+import uuidv1 from 'uuid/v1'
 
 const DEBUG = window.location.hostname === 'localhost'
 
@@ -39,3 +40,5 @@ export const randomString = (length = 16) => {
   }
   return text
 }
+
+export const uuid = uuidv1

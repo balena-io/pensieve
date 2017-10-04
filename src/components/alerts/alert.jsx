@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import { DeleteBtn } from '../shared';
-import { colors } from '../../theme';
+import React from 'react'
+import styled from 'styled-components'
+import { DeleteBtn } from '../shared'
+import { colors } from '../../theme'
 
 const AlertElement = styled.div`
   border-radius: 4px;
@@ -35,12 +35,15 @@ const AlertElement = styled.div`
     right: 9px;
     top: 6px;
   }
-`;
+`
 
-const Alert = props =>
-  (<AlertElement className={props.type}>
-    <DeleteBtn className="dismissBtn" onClick={props.dismiss} />
+const Alert = props => (
+  <AlertElement className={props.type}>
+    {!!props.dismiss && (
+      <DeleteBtn className='dismissBtn' onClick={props.dismiss} />
+    )}
     {props.children}
-  </AlertElement>);
+  </AlertElement>
+)
 
-export default Alert;
+export default Alert
