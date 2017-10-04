@@ -197,7 +197,7 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 3
-  Charmander 1:
+  Charmander 2:
     Name: Charmander
     Height: 0.6
     Weight: 8.5
@@ -207,8 +207,7 @@ Pokedex:
       Pokemon becomes enraged, the flame burns fiercely. test2
 
       <a name="n"
-      href="javascript:alert('xss')">Test</a><script>alert('foo')</script><img
-      onError="alert('foo')" />
+      href="javascript:alert('xss')">Test</a><script>alert('foo')</script>
 
 
       <IMG SRC=javascript:alert("XSS")>
