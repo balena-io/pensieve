@@ -1,4 +1,6 @@
 Pokedex:
+  '1234':
+    Description: macaroni macaroni
   Bulbasaur:
     Name: Bulbasaur
     Height: 0.7
@@ -174,7 +176,6 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 1
-    PS_UUID: 6c3d8360-a9a8-11e7-ae3f-91a51e45977c
   Ivysaur:
     Name: Ivysaur
     Height: 1
@@ -187,7 +188,6 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 2
-    PS_UUID: 6c3d8361-a9a8-11e7-ae3f-91a51e45977c
   Venusaur:
     Name: Venusaur
     Height: 2
@@ -199,7 +199,6 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 3
-    PS_UUID: 6c3d8362-a9a8-11e7-ae3f-91a51e45977c
   Charmander:
     Name: Charmander
     Height: 0
@@ -212,7 +211,6 @@ Pokedex:
     Abilities: Blaze
     National Pokedex number: 4
     Favourite: '#Yes'
-    PS_UUID: 8ad0db00-a9a9-11e7-8df7-27960f953ddf
   Charmeleon:
     Name: Charmeleon
     Height: 1.1
@@ -224,7 +222,6 @@ Pokedex:
     Category: Flame
     Abilities: Blaze
     National Pokedex number: 5
-    PS_UUID: 6c3d8364-a9a8-11e7-ae3f-91a51e45977c
   Charizard:
     Name: Charizard
     Height: 1.7
@@ -236,7 +233,6 @@ Pokedex:
     Category: Flame
     Abilities: Blaze
     National Pokedex number: 6
-    PS_UUID: 6c3d8365-a9a8-11e7-ae3f-91a51e45977c
   Squirtle:
     Name: Squirtle
     Height: 0.5
@@ -248,7 +244,6 @@ Pokedex:
     Category: Tiny Turtle
     Abilities: Torrent
     National Pokedex number: 7
-    PS_UUID: 6c3d8366-a9a8-11e7-ae3f-91a51e45977c
   Wartortle:
     Name: Wartortle
     Height: 1
@@ -260,7 +255,6 @@ Pokedex:
     Category: Turtle
     Abilities: Torrent
     National Pokedex number: 8
-    PS_UUID: 6c3d8367-a9a8-11e7-ae3f-91a51e45977c
   Blastoise:
     Name: Blastoise
     Height: 1.6
@@ -272,7 +266,6 @@ Pokedex:
     Category: Shellfish
     Abilities: Torrent
     National Pokedex number: 9
-    PS_UUID: 6c3d8368-a9a8-11e7-ae3f-91a51e45977c
   Caterpie:
     Name: Caterpie
     Height: 0.3
@@ -284,4 +277,3 @@ Pokedex:
     Category: Worm
     Abilities: Shield Dust
     National Pokedex number: 10
-    PS_UUID: 6c3d8369-a9a8-11e7-ae3f-91a51e45977c
