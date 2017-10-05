@@ -202,12 +202,12 @@ Pokedex:
     PS_UUID: 6c3d8362-a9a8-11e7-ae3f-91a51e45977c
   Charmander:
     Name: Charmander2
-    Height: 0.62
+    Height: 0
     Weight: 8.5
     Description: >
       The flame that burns at the tip of its tail is an indication of its
       emotions. The flame wavers when Charmander is enjoying itself. If the
-      Pokemon becomes enraged, the flame burns fiercely.
+      Pokemon becomes enraged, the flame burns fiercely..
     Category: Lizard
     Abilities: Blaze
     National Pokedex number: 4
