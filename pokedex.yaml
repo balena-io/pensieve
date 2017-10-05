@@ -321,3 +321,6 @@ Pokedex:
   mac102:
     Description: mac102
     PS_UUID: 368d26e0-a9e3-11e7-b70f-f96a440e84d3
+  mac101:
+    Description: mac101
+    PS_UUID: 3ccfef60-a9e3-11e7-b943-8563446582fd
