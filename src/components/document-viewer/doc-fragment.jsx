@@ -227,11 +227,16 @@ class DocFragment extends Component {
     GitHubService.commit({
       content: DocumentService.getSource(),
       message
-    }).finally(() =>
-      this.setState({
-        loading: false
+    })
+      .then(() => {
+        this.props.setContent(DocumentService.getJSON())
       })
-    )
+      .catch(NotificationService.error)
+      .finally(() => {
+        this.setState({
+          loading: false
+        })
+      })
   }
 
   fieldHasConflict (edit, source) {
