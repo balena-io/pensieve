@@ -3,7 +3,6 @@ import FontAwesome from 'react-fontawesome'
 import { injectGlobal } from 'styled-components'
 import { Provider } from 'rebass'
 import { connect } from 'react-redux'
-import jsyaml from 'js-yaml'
 import _ from 'lodash'
 import Alerts from './components/alerts'
 import Header from './components/header'
@@ -14,7 +13,6 @@ import * as GitHubService from './services/github'
 import * as DocumentService from './services/document'
 import { actions } from './actions'
 import { loadRulesFromUrl, updateUrl, searchExists } from './services/path'
-import * as NotificationService from './services/notifications'
 import { debug } from './util'
 
 /* eslint no-unused-expressions: 0 */
@@ -59,7 +57,9 @@ class App extends Component {
         if (this.props.documentCommit && this.props.documentCommit !== sha) {
           debug('New commit detected', sha)
           this.setState({ syncing: true })
-          this.syncDocument().then(() => this.setState({ syncing: false }))
+          DocumentService.syncDocument().then(() =>
+            this.setState({ syncing: false })
+          )
         }
         this.props.setDocumentCommit(sha)
       })
@@ -83,11 +83,7 @@ class App extends Component {
       loading: true
     })
 
-    GitHubService.getBranch(this.props.config.repo).then(data => {
-      this.props.setBranchInfo(data)
-    })
-
-    this.syncDocument().then(() => {
+    DocumentService.syncDocument().then(() => {
       this.setState({
         loading: false
       })
@@ -110,31 +106,6 @@ class App extends Component {
       }
 
       this.props.setRules(loadRulesFromUrl(this.props.schema))
-    })
-  }
-
-  syncDocument () {
-    debug('Syncing document')
-    return Promise.all([
-      GitHubService.loadSchema(this.props.config),
-      GitHubService.getFile(this.props.config.repo)
-    ]).then(([schema, source]) => {
-      DocumentService.setSource(source)
-      this.props.setContent(DocumentService.getJSON(true))
-      this.props.setSchema(schema)
-      this.props.setRules(loadRulesFromUrl(schema))
-      let views = null
-
-      GitHubService.getFile(
-        _.assign({}, this.props.config.repo, { file: 'views.yaml' })
-      )
-        .then(viewsYaml => {
-          views = jsyaml.load(viewsYaml)
-          this.props.setViews(views)
-        })
-        .catch(err => {
-          NotificationService.error(err)
-        })
     })
   }
 

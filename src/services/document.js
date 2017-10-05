@@ -1,6 +1,10 @@
 import _ from 'lodash'
 import jsyaml from 'js-yaml'
 import * as util from '../util'
+import * as GitHubService from './github'
+import * as NotificationService from './notifications'
+import store from '../store'
+import { actions } from '../actions'
 
 window.jsyaml = jsyaml
 
@@ -9,6 +13,21 @@ let innerConfig = null
 let innerJson = null
 
 const PENSIEVE_UUID_KEY = 'PS_UUID'
+
+const getCleanJson = () => {
+  let cleanJson = _.mapValues(innerJson, value => {
+    let picked = _.assign(
+      _.pickBy(
+        _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
+        _.negate(_.isFunction)
+      ),
+      { [PENSIEVE_UUID_KEY]: value.getUuid() }
+    )
+    return picked
+  })
+
+  return cleanJson
+}
 
 class Fragment {
   constructor (title, content, uuid = null) {
@@ -98,12 +117,7 @@ export const deleteFragment = uuid => {
     {}
   )
 
-  let cleanJson = _.mapValues(innerJson, value =>
-    _.pickBy(
-      _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
-      _.negate(_.isFunction)
-    )
-  )
+  let cleanJson = getCleanJson()
 
   if (innerConfig.contentPath) {
     const sourceJson = jsyaml.load(innerSource)
@@ -119,12 +133,7 @@ export const addFragment = (title, content) => {
   update[title] = new Fragment(title, content)
   _.assign(innerJson, update)
 
-  let cleanJson = _.mapValues(innerJson, value =>
-    _.pickBy(
-      _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
-      _.negate(_.isFunction)
-    )
-  )
+  let cleanJson = getCleanJson()
 
   if (innerConfig.contentPath) {
     const sourceJson = jsyaml.load(innerSource)
@@ -136,3 +145,28 @@ export const addFragment = (title, content) => {
 }
 
 export const getSource = () => innerSource
+
+export const syncDocument = () => {
+  const { config } = store.getState()
+  util.debug('Syncing document')
+  return Promise.all([
+    GitHubService.loadSchema(config),
+    GitHubService.getFile(config.repo)
+  ]).then(([schema, source]) => {
+    setSource(source)
+    store.dispatch(actions.setContent(getJSON(true)))
+    store.dispatch(actions.setSchema(schema))
+    let views = null
+
+    return GitHubService.getFile(
+      _.assign({}, config.repo, { file: 'views.yaml' })
+    )
+      .then(viewsYaml => {
+        views = jsyaml.load(viewsYaml)
+        store.dispatch(actions.setViews(views))
+      })
+      .catch(err => {
+        NotificationService.error(err)
+      })
+  })
+}
