@@ -1,125 +1,150 @@
-import React, { Component } from 'react';
-import FontAwesome from 'react-fontawesome';
-import { injectGlobal } from 'styled-components';
-import { Provider } from 'rebass';
-import { connect } from 'react-redux';
-import jsyaml from 'js-yaml';
-import _ from 'lodash';
-import Alerts from './components/alerts';
-import Header from './components/header';
-import DocumentViewer from './components/document-viewer';
-import Login from './components/login';
-import { Container } from './components/shared';
-import * as GitHubService from './services/github';
-import * as DocumentService from './services/document';
-import { actions } from './actions';
-import { loadRulesFromUrl, updateUrl, searchExists } from './services/path';
-import * as NotificationService from './services/notifications';
-import { debug } from './util';
+import React, { Component } from 'react'
+import FontAwesome from 'react-fontawesome'
+import { injectGlobal } from 'styled-components'
+import { Provider } from 'rebass'
+import { connect } from 'react-redux'
+import jsyaml from 'js-yaml'
+import _ from 'lodash'
+import Alerts from './components/alerts'
+import Header from './components/header'
+import DocumentViewer from './components/document-viewer'
+import Login from './components/login'
+import { Container } from './components/shared'
+import * as GitHubService from './services/github'
+import * as DocumentService from './services/document'
+import { actions } from './actions'
+import { loadRulesFromUrl, updateUrl, searchExists } from './services/path'
+import * as NotificationService from './services/notifications'
+import { debug } from './util'
 
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
   * { box-sizing: border-box; }
   body { margin: 0; }
   font-family: Roboto,Arial,sans-serif;
-`;
+`
+
+const DOCUMENT_POLL_INTERVAL = 3 * 1000
 
 const theme = {
   font: 'Roboto,Arial,sans-serif',
-  monospace: 'Ubuntu Mono Web,Courier New,monospace',
-};
+  monospace: 'Ubuntu Mono Web,Courier New,monospace'
+}
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = {
-      loading: true,
-    };
+      loading: true
+    }
 
-    this.props.setConfig(this.props.config);
+    this.props.setConfig(this.props.config)
 
-    DocumentService.setConfig(this.props.config);
+    DocumentService.setConfig(this.props.config)
 
-    GitHubService.ready.catch((err) => {
-      debug(err.message);
-      this.setState({ loading: false });
-    });
+    GitHubService.ready.catch(err => {
+      debug(err.message)
+      this.setState({ loading: false })
+    })
+
+    setInterval(() => {
+      if (!this.props.isLoggedIn) {
+        return
+      }
+
+      GitHubService.getDocumentCommit(
+        this.props.config.repo
+      ).then(({ sha }) => {
+        if (this.props.documentCommit && this.props.documentCommit !== sha) {
+          debug('New commit detected', sha)
+          this.setState({ syncing: true })
+          this.syncDocument().then(() => this.setState({ syncing: false }))
+        }
+        this.props.setDocumentCommit(sha)
+      })
+    }, DOCUMENT_POLL_INTERVAL)
   }
 
-  componentWillReceiveProps({ isLoggedIn }) {
-    const previouslyLoggedIn = this.props.isLoggedIn;
+  componentWillReceiveProps ({ isLoggedIn }) {
+    const previouslyLoggedIn = this.props.isLoggedIn
 
     if (isLoggedIn === previouslyLoggedIn) {
-      return;
+      return
     }
 
     if (!isLoggedIn) {
-      return;
+      return
     }
 
     this.setState({
       username: null,
       password: null,
-      loading: true,
-    });
+      loading: true
+    })
 
-    Promise.all([
-      GitHubService.loadSchema(this.props.config),
-      GitHubService.getFile(this.props.config.repo),
-    ]).then(([schema, source]) => {
-      DocumentService.setSource(source);
-      this.props.setContent(DocumentService.getJSON());
-      this.props.setSchema(schema);
-      this.props.setRules(loadRulesFromUrl(schema));
-      let views = null;
+    this.syncDocument().then(() => {
+      this.setState({
+        loading: false
+      })
 
-      GitHubService.getFile(_.assign({}, this.props.config.repo, { file: 'views.yaml' }))
-        .then((viewsYaml) => {
-          views = jsyaml.load(viewsYaml);
-          this.props.setViews(views);
-        })
-        .catch((err) => {
-          NotificationService.error(err);
-        })
-        .finally(() => {
-          this.setState({
-            loading: false,
-          });
+      const { defaultView } = this.props.config
 
-          const { defaultView } = this.props.config;
-
-          // If a default view has been specified and there is no search query
-          // in the url, load the default view.
-          if (defaultView && !searchExists()) {
-            if (_.isString(defaultView)) {
-              // If the default view is a string, assume it is the name of a global view
-              const view = _.find(views.global, { name: defaultView });
-              if (view) {
-                updateUrl(view.rules);
-              }
-            } else {
-              // If the value is not a string, assume it is an array of filter views
-              updateUrl(defaultView);
-            }
+      // If a default view has been specified and there is no search query
+      // in the url, load the default view.
+      if (defaultView && !searchExists()) {
+        if (_.isString(defaultView)) {
+          // If the default view is a string, assume it is the name of a global view
+          const view = _.find(this.props.views.global, { name: defaultView })
+          if (view) {
+            updateUrl(view.rules)
           }
+        } else {
+          // If the value is not a string, assume it is an array of filter views
+          updateUrl(defaultView)
+        }
+      }
 
-          this.props.setRules(loadRulesFromUrl(schema));
-        });
-    });
+      this.props.setRules(loadRulesFromUrl(this.props.schema))
+    })
   }
 
-  render() {
+  syncDocument () {
+    debug('Syncing document')
+    return Promise.all([
+      GitHubService.loadSchema(this.props.config),
+      GitHubService.getFile(this.props.config.repo)
+    ]).then(([schema, source]) => {
+      DocumentService.setSource(source)
+      this.props.setContent(DocumentService.getJSON(true))
+      this.props.setSchema(schema)
+      this.props.setRules(loadRulesFromUrl(schema))
+      let views = null
+
+      GitHubService.getFile(
+        _.assign({}, this.props.config.repo, { file: 'views.yaml' })
+      )
+        .then(viewsYaml => {
+          views = jsyaml.load(viewsYaml)
+          this.props.setViews(views)
+        })
+        .catch(err => {
+          NotificationService.error(err)
+        })
+    })
+  }
+
+  render () {
     if (this.state.loading) {
       return (
         <Provider theme={theme}>
           <Header />
 
           <Container mt={30}>
-            <FontAwesome spin name="cog" />
+            <FontAwesome spin name='cog' />
           </Container>
         </Provider>
-      );
+      )
     }
 
     if (!this.props.isLoggedIn) {
@@ -129,7 +154,7 @@ class App extends Component {
 
           <Login />
         </Provider>
-      );
+      )
     }
 
     return (
@@ -141,14 +166,28 @@ class App extends Component {
         </Container>
 
         <DocumentViewer />
+        {this.state.syncing && (
+          <div
+            style={{
+              position: 'fixed',
+              left: 8,
+              bottom: 8
+            }}
+          >
+            <FontAwesome spin name='refresh' />
+          </div>
+        )}
       </Provider>
-    );
+    )
   }
 }
 
 const mapStatetoProps = state => ({
   isLoggedIn: state.isLoggedIn,
-});
+  documentCommit: state.documentCommit,
+  views: state.views,
+  schema: state.schema
+})
 
 const mapDispatchToProps = dispatch => ({
   setConfig: value => dispatch(actions.setConfig(value)),
@@ -156,6 +195,7 @@ const mapDispatchToProps = dispatch => ({
   setRules: value => dispatch(actions.setRules(value)),
   setContent: value => dispatch(actions.setContent(value)),
   setViews: value => dispatch(actions.setViews(value)),
-});
+  setDocumentCommit: value => dispatch(actions.setDocumentCommit(value))
+})
 
-export default connect(mapStatetoProps, mapDispatchToProps)(App);
+export default connect(mapStatetoProps, mapDispatchToProps)(App)

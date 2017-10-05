@@ -14,7 +14,9 @@ const defaultState = () => ({
     user: {}
   },
   rules: [],
-  alerts: []
+  alerts: [],
+  documentCommit: null,
+  userIsEditing: false
 })
 
 const assign = (o1, o2) => _.assign({}, o1, o2)
@@ -28,7 +30,9 @@ const load = () => {
   if (doc) {
     const data = JSON.parse(doc)
     data.isLoggedIn = false
+    data.documentCommit = null
     data.alerts = []
+    data.userIsEditing = false
     return data
   }
 
@@ -47,6 +51,8 @@ const reducer = (state, action) => {
       return assign(state, { content: _.cloneDeep(action.value) })
     case TYPES.SET_CREDENTIALS:
       return assign(state, { credentials: action.value })
+    case TYPES.SET_DOCUMENT_COMMIT:
+      return assign(state, { documentCommit: action.value })
     case TYPES.SET_IS_EDITING_SCHEMA:
       return assign(state, { isEditingSchema: action.value })
     case TYPES.SET_IS_LOGGED_IN:
@@ -57,6 +63,8 @@ const reducer = (state, action) => {
       return assign(state, { schema: action.value })
     case TYPES.SET_USER:
       return assign(state, { user: action.value })
+    case TYPES.SET_USER_IS_EDITING:
+      return assign(state, { userIsEditing: action.value })
     case TYPES.SET_VIEWS:
       return assign(state, { views: action.value })
     default:

@@ -51,6 +51,11 @@ export const getFile = ({ account, name, ref, file }) => {
   )
 }
 
+export const getDocumentCommit = ({ account, name, ref }) => {
+  repo = gh.getRepo(account, name)
+  return Promise.resolve(repo.getBranch(ref)).then(({ data }) => data.commit)
+}
+
 export const loadSchema = config => {
   if (_.isObject(config.schema)) {
     return Promise.resolve(config.schema)

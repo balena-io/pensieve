@@ -2,6 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import styled from 'styled-components'
 import { Input, Textarea, Flex, Box } from 'rebass'
+import FontAwesome from 'react-fontawesome'
 import { DeleteBtn, FieldLabel } from '../shared'
 import types from '../../services/types'
 
@@ -23,6 +24,11 @@ const StyledDeleteBtn = styled(DeleteBtn)`
   }
 `
 
+const DiffArrowWrapper = styled.div`
+  text-align: center;
+  padding-top: 4px;
+`
+
 const EditBox = styled(Box)`
   ${Input} {
     max-width: 300px;
@@ -32,6 +38,16 @@ const EditBox = styled(Box)`
   ${Textarea} {
     resize: vertical;
     background-color: white;
+  }
+
+  &.diff-display {
+    ${Input} {
+      background: #e6ffed;
+    }
+
+    ${Textarea} {
+      background: #e6ffed;
+    }
   }
 `
 
@@ -54,7 +70,7 @@ const formatData = data => {
   return data
 }
 
-const DocFragmentInput = ({ title, data, schema, change, remove }) => {
+const DocFragmentInput = ({ title, data, schema, change, remove, diff }) => {
   const type = (schema && schema.type) || 'Unknown'
 
   const getInput = () => {
@@ -85,10 +101,20 @@ const DocFragmentInput = ({ title, data, schema, change, remove }) => {
     <Box>
       {!!remove && <StyledDeleteBtn onClick={remove} />}
       <Flex>
-        <Box width={250}>
-          <FieldLabel>{title}</FieldLabel>
-        </Box>
-        <EditBox flex={1}>{getInput()}</EditBox>
+        {diff ? (
+          <Box width={100}>
+            <DiffArrowWrapper>
+              <FontAwesome name='arrow-right' />
+            </DiffArrowWrapper>
+          </Box>
+        ) : (
+          <Box width={250}>
+            <FieldLabel>{title}</FieldLabel>
+          </Box>
+        )}
+        <EditBox className={diff ? 'diff-display' : ''} flex={1}>
+          {getInput()}
+        </EditBox>
       </Flex>
     </Box>
   )
