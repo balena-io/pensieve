@@ -174,6 +174,7 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 1
+    PS_UUID: e17b21b0-a9d9-11e7-b93c-0de164847969
   Ivysaur:
     Name: Ivysaur
     Height: 1
@@ -186,6 +187,7 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 2
+    PS_UUID: e17b21b1-a9d9-11e7-b93c-0de164847969
   Venusaur:
     Name: Venusaur
     Height: 2
@@ -197,6 +199,7 @@ Pokedex:
     Category: Seed
     Abilities: Overgrow
     National Pokedex number: 3
+    PS_UUID: e17b48c0-a9d9-11e7-b93c-0de164847969
   Charmander:
     Name: Charmander
     Height: 0
@@ -209,6 +212,7 @@ Pokedex:
     Abilities: Blaze
     National Pokedex number: 4
     Favourite: '#Yes'
+    PS_UUID: e17b48c1-a9d9-11e7-b93c-0de164847969
   Charmeleon:
     Name: Charmeleon
     Height: 1.1
@@ -220,6 +224,7 @@ Pokedex:
     Category: Flame
     Abilities: Blaze
     National Pokedex number: 5
+    PS_UUID: e17b48c2-a9d9-11e7-b93c-0de164847969
   Charizard:
     Name: Charizard
     Height: 1.7
@@ -231,6 +236,7 @@ Pokedex:
     Category: Flame
     Abilities: Blaze
     National Pokedex number: 6
+    PS_UUID: e17b48c3-a9d9-11e7-b93c-0de164847969
   Squirtle:
     Name: Squirtle
     Height: 0.5
@@ -242,6 +248,7 @@ Pokedex:
     Category: Tiny Turtle
     Abilities: Torrent
     National Pokedex number: 7
+    PS_UUID: e17b48c4-a9d9-11e7-b93c-0de164847969
   Wartortle:
     Name: Wartortle
     Height: 1
@@ -253,6 +260,7 @@ Pokedex:
     Category: Turtle
     Abilities: Torrent
     National Pokedex number: 8
+    PS_UUID: e17b48c5-a9d9-11e7-b93c-0de164847969
   Blastoise:
     Name: Blastoise
     Height: 1.6
@@ -264,6 +272,7 @@ Pokedex:
     Category: Shellfish
     Abilities: Torrent
     National Pokedex number: 9
+    PS_UUID: e17b48c6-a9d9-11e7-b93c-0de164847969
   Caterpie:
     Name: Caterpie
     Height: 0.3
@@ -275,5 +284,10 @@ Pokedex:
     Category: Worm
     Abilities: Shield Dust
     National Pokedex number: 10
+    PS_UUID: e17b48c7-a9d9-11e7-b93c-0de164847969
   Macaroni 2:
     Description: Macaroni 2
+    PS_UUID: e17b48c8-a9d9-11e7-b93c-0de164847969
+  macaroni 3:
+    Description: macaroni 3
+    PS_UUID: e99cbc50-a9d9-11e7-b93c-0de164847969
