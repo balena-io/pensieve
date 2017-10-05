@@ -61,7 +61,8 @@ class DocFragment extends Component {
       lintError: null,
       validationError: null,
       message: '',
-      deleteMessage: ''
+      deleteMessage: '',
+      loading: false
     }
 
     this.saveChange = this.saveChange.bind(this)
@@ -149,11 +150,30 @@ class DocFragment extends Component {
   saveChange () {
     const source = this.state.edit.content
     const title = this.state.edit.title
-    const message = this.state.message
-    if (!message) {
-      return
+
+    let message = `Edited entry "${this.props.title}"`
+
+    const edits = []
+    _.forEach(this.props.content, (value, key) => {
+      if (value !== this.state.edit.content[key]) {
+        edits.push(`"${key}"`)
+      }
+    })
+    if (edits.length > 1) {
+      message +=
+        ', changing fields ' +
+        edits.slice(0, edits.length - 1).join(', ') +
+        ' and ' +
+        edits.pop()
+    } else if (edits.length === 1) {
+      message += ', changing the field ' + edits[0]
     }
+
     const { schema } = this.props
+
+    this.setState({
+      loading: true
+    })
 
     lint(source)
       .then(() => schemaValidate(schema, source))
@@ -179,11 +199,9 @@ class DocFragment extends Component {
         )
 
         this.setState({
-          loading: true,
-          showSaveModal: false,
           validationError: null
         })
-        GitHubService.commit({
+        return GitHubService.commit({
           content: DocumentService.getSource(),
           message
         }).then(() => {
@@ -249,29 +267,12 @@ class DocFragment extends Component {
         <DocFragmentEditWrapper>
           <GreyDivider />
           <Container>
-            {this.state.showSaveModal && (
-              <Modal
-                title='Describe your changes'
-                cancel={() => this.setState({ showSaveModal: false })}
-                done={() => this.saveChange()}
-                action='Save changes'
-              >
-                <Textarea
-                  rows={4}
-                  onChange={e => this.updateCommitMessage(e)}
-                  placeholder='Please describe your changes'
-                />
-              </Modal>
-            )}
-
             {this.state.loading ? (
-              <FontAwesome style={{ float: 'right' }} spin name='cog' />
+              <Box style={{ height: 32 }} mb={30}>
+                <FontAwesome style={{ float: 'right' }} spin name='cog' />
+              </Box>
             ) : (
-              <Flex
-                align='right'
-                justify='flex-end'
-                style={{ marginBottom: 30 }}
-              >
+              <Flex align='right' justify='flex-end' mb={30}>
                 <ResinBtn
                   style={{ marginRight: 10 }}
                   onClick={() => this.cancelEdit()}
@@ -281,7 +282,7 @@ class DocFragment extends Component {
                 <ResinBtn
                   secondary
                   disabled={this.state.lintError}
-                  onClick={() => this.setState({ showSaveModal: true })}
+                  onClick={() => this.saveChange()}
                 >
                   <FontAwesome name='check' style={{ marginRight: 10 }} />
                   Save Changes
