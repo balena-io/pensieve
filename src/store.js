@@ -45,6 +45,8 @@ const reducer = (state, action) => {
       return defaultState()
     case TYPES.SET_ALERTS:
       return assign(state, { alerts: action.value.slice() })
+    case TYPES.SET_BRANCH_INFO:
+      return assign(state, { branchInfo: action.value })
     case TYPES.SET_CONFIG:
       return assign(state, { config: action.value })
     case TYPES.SET_CONTENT:

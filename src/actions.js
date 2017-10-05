@@ -1,6 +1,7 @@
 export const TYPES = {
   LOGOUT: 'LOGOUT',
   SET_ALERTS: 'SET_ALERTS',
+  SET_BRANCH_INFO: 'SET_BRANCH_INFO',
   SET_CONFIG: 'SET_CONFIG',
   SET_CONTENT: 'SET_CONTENT',
   SET_CREDENTIALS: 'SET_CREDENTIALS',
@@ -17,6 +18,7 @@ export const TYPES = {
 export const actions = {
   logout: () => ({ type: TYPES.LOGOUT }),
   setAlerts: value => ({ type: TYPES.SET_ALERTS, value }),
+  setBranchInfo: value => ({ type: TYPES.SET_BRANCH_INFO, value }),
   setConfig: value => ({ type: TYPES.SET_CONFIG, value }),
   setContent: value => ({ type: TYPES.SET_CONTENT, value }),
   setCredentials: value => ({ type: TYPES.SET_CREDENTIALS, value }),

@@ -42,6 +42,11 @@ export const login = credentials => {
   )
 }
 
+export const getBranch = ({ account, name, ref }) => {
+  repo = gh.getRepo(account, name)
+  return Promise.resolve(repo.getBranch(ref).then(({ data }) => data))
+}
+
 export const getFile = ({ account, name, ref, file }) => {
   repo = gh.getRepo(account, name)
   return Promise.resolve(
