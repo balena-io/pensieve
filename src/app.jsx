@@ -83,6 +83,10 @@ class App extends Component {
       loading: true
     })
 
+    GitHubService.getBranch(this.props.config.repo).then(data => {
+      this.props.setBranchInfo(data)
+    })
+
     this.syncDocument().then(() => {
       this.setState({
         loading: false
@@ -190,6 +194,7 @@ const mapStatetoProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setBranchInfo: value => dispatch(actions.setBranchInfo(value)),
   setConfig: value => dispatch(actions.setConfig(value)),
   setSchema: value => dispatch(actions.setSchema(value)),
   setRules: value => dispatch(actions.setRules(value)),
