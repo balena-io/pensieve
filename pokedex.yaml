@@ -201,7 +201,7 @@ Pokedex:
     National Pokedex number: 3
     PS_UUID: 6c3d8362-a9a8-11e7-ae3f-91a51e45977c
   Charmander:
-    Name: Charmander...
+    Name: Charmander
     Height: 0.6
     Weight: 8.5
     Description: >
@@ -212,7 +212,7 @@ Pokedex:
     Abilities: Blaze
     National Pokedex number: 4
     Favourite: '#Yes'
-    PS_UUID: 82cc5ac0-a9a8-11e7-9305-efd0ba3ab4bb
+    PS_UUID: e25cc560-a9a8-11e7-9c73-11b162cd2c32
   Charmeleon:
     Name: Charmeleon
     Height: 1.1
