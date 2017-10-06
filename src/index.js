@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import store from './store'
 import App from './app'
+import packageConfig from '../package.json'
+
+window.PENSIEVE_VERSION = packageConfig.version
 
 const Pensieve = config => {
   const mountElement = document.getElementById(config.container || 'pensieve')
