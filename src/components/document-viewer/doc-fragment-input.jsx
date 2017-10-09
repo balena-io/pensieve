@@ -5,6 +5,13 @@ import { Input, Textarea, Flex, Box } from 'rebass'
 import FontAwesome from 'react-fontawesome'
 import { DeleteBtn, FieldLabel } from '../shared'
 import types from '../../services/types'
+import MarkdownMark from '../MarkdownMark'
+
+const markStyle = {
+  display: 'inline-block',
+  transform: 'translateY(3px)',
+  marginLeft: 10
+}
 
 const StyledDeleteBtn = styled(DeleteBtn)`
   position: absolute;
@@ -84,6 +91,16 @@ const DocFragmentInput = ({ title, data, schema, change, remove, diff }) => {
       const Control = types[type].Edit
       return <Control value={data} onChange={change} />
     }
+
+    // Just return a short text input for the entry title
+    if (title === 'Entry title') {
+      return (
+        <Input
+          value={formatData(data)}
+          onChange={e => change(e.target.value)}
+        />
+      )
+    }
     return (
       <Textarea
         rows={4}
@@ -97,6 +114,10 @@ const DocFragmentInput = ({ title, data, schema, change, remove, diff }) => {
     return null
   }
 
+  const supportsMarkdown = () =>
+    title !== 'Entry title' &&
+    (type === 'Text' || type === 'Case Insensitive Text' || !(type in types))
+
   return (
     <Box>
       {!!remove && <StyledDeleteBtn onClick={remove} />}
@@ -109,7 +130,10 @@ const DocFragmentInput = ({ title, data, schema, change, remove, diff }) => {
           </Box>
         ) : (
           <Box width={250}>
-            <FieldLabel>{title}</FieldLabel>
+            <FieldLabel>
+              {title}
+              {supportsMarkdown() && <MarkdownMark style={markStyle} />}
+            </FieldLabel>
           </Box>
         )}
         <EditBox className={diff ? 'diff-display' : ''} flex={1}>
