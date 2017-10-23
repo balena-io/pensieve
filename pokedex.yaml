@@ -324,3 +324,6 @@ Pokedex:
   mac101:
     Description: mac101
     PS_UUID: 3ccfef60-a9e3-11e7-b943-8563446582fd
+  Test:
+    Description: macaroni
+    PS_UUID: 6d4696c0-b7d1-11e7-aeb4-5359348dcdcf
