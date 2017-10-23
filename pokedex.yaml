@@ -330,3 +330,6 @@ Pokedex:
   Test2:
     Description: Macaroni2
     PS_UUID: 9b5a8c60-b7d1-11e7-aeb4-5359348dcdcf
+  adasd:
+    Description: Macaroni
+    PS_UUID: a1788ed0-b7d1-11e7-aeb4-5359348dcdcf
