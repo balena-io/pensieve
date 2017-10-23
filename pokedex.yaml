@@ -336,3 +336,6 @@ Pokedex:
   test2:
     Description: macaroni
     PS_UUID: 48ce6330-b7d2-11e7-b6a4-53f4f9b3006b
+  fpfoaas:
+    Description: macaroni
+    PS_UUID: 52a01ed0-b7d2-11e7-aeb4-5359348dcdcf
