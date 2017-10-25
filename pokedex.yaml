@@ -671,3 +671,6 @@ Pokedex:
   xyz:
     Description: something
     PS_UUID: d67a3b60-b970-11e7-a2e1-cd8d258d316f
+  xyz2:
+    Description: test macaroni
+    PS_UUID: f945daf0-b970-11e7-88bb-01288c095cf1
