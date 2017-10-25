@@ -668,3 +668,6 @@ Pokedex:
 
       foobarfoo
     PS_UUID: fb0ddfd0-b967-11e7-96e5-8bfd5cb7a588
+  xyz:
+    Description: something
+    PS_UUID: d67a3b60-b970-11e7-a2e1-cd8d258d316f
