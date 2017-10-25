@@ -561,3 +561,7 @@ Pokedex:
   somevalue:
     test1: test
     PS_UUID: 10d668b0-b962-11e7-82f9-d720229c9cfc
+  asdasd mac:
+    test1: foobar
+    test2: macaroni
+    PS_UUID: 7d7c79e0-b963-11e7-8f19-d544fe0846ed
