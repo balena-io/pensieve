@@ -574,3 +574,35 @@ Pokedex:
   mac 34:
     test1: macaroni
     PS_UUID: 88f894b0-b964-11e7-8f3c-c3730711ec07
+  New test for repro:
+    Name: '1'
+    Height: 2
+    Weight: 3
+    test1: >-
+      Duis risus augue, venenatis vitae purus vitae, hendrerit maximus ante.
+      Nulla lacinia vitae velit non aliquam. Mauris at est eu tortor dictum
+      venenatis. Nulla nec tristique neque. Nullam cursus felis convallis nisi
+      viverra, vel faucibus sapien molestie. Nulla dapibus consequat iaculis.
+      Duis eu luctus purus, ut pretium lorem. In hac habitasse platea dictumst.
+
+
+      Duis risus augue, venenatis vitae purus vitae, hendrerit maximus ante.
+      Nulla lacinia vitae velit non aliquam. Mauris at est eu tortor dictum
+      venenatis. Nulla nec tristique neque. Nullam cursus felis convallis nisi
+      viverra, vel faucibus sapien molestie. Nulla dapibus consequat iaculis.
+      Duis eu luctus purus, ut pretium lorem. In hac habitasse platea dictumst.
+
+
+      Duis risus augue, venenatis vitae purus vitae, hendrerit maximus ante.
+      Nulla lacinia vitae velit non aliquam. Mauris at est eu tortor dictum
+      venenatis. Nulla nec tristique neque. Nullam cursus felis convallis nisi
+      viverra, vel faucibus sapien molestie. Nulla dapibus consequat iaculis.
+      Duis eu luctus purus, ut pretium lorem. In hac habitasse platea dictumst.
+
+
+      Duis risus augue, venenatis vitae purus vitae, hendrerit maximus ante.
+      Nulla lacinia vitae velit non aliquam. Mauris at est eu tortor dictum
+      venenatis. Nulla nec tristique neque. Nullam cursus felis convallis nisi
+      viverra, vel faucibus sapien molestie. Nulla dapibus consequat iaculis.
+      Duis eu luctus purus, ut pretium lorem. In hac habitasse platea dictumst.
+    PS_UUID: ed5eca50-b964-11e7-8f3c-c3730711ec07
