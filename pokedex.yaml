@@ -720,3 +720,7 @@ Pokedex:
   single eagle 1:
     Description: single eagle 1
     PS_UUID: 6aa3d210-b976-11e7-bf05-3937838297f6
+  single eagle 2:
+    Description: single eagle 2
+    test1: single eagle 2
+    PS_UUID: 87286360-b976-11e7-98d6-590243afe45f
