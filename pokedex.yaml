@@ -648,3 +648,6 @@ Pokedex:
   a1:
     test1: a
     PS_UUID: 7a065400-b965-11e7-8f3c-c3730711ec07
+  a2:
+    test1: asd
+    PS_UUID: 7f660f80-b965-11e7-8f3c-c3730711ec07
