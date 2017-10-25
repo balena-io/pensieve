@@ -565,3 +565,6 @@ Pokedex:
     test1: foobar
     test2: macaroni
     PS_UUID: 7d7c79e0-b963-11e7-8f19-d544fe0846ed
+  mac foo:
+    test1: macaroni
+    PS_UUID: 287342c0-b964-11e7-a4f4-41af8300d040
