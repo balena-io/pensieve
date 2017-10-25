@@ -13,7 +13,6 @@ import {
   GreyDivider
 } from '../shared'
 import * as DocumentService from '../../services/document'
-import * as GitHubService from '../../services/github'
 import { lint, schemaValidate } from '../../services/validator'
 import {
   PensieveLinterError,
@@ -22,7 +21,6 @@ import {
 import { actions } from '../../actions'
 import DocFragmentInput from './doc-fragment-input'
 import * as NotificationService from '../../services/notifications'
-import { debug } from '../../util'
 
 const ShortInput = styled(Input)`
   max-width: 300px;
@@ -97,21 +95,7 @@ class DocFragmentCreator extends Component {
     lint(source)
       // When validating, strip the title field from the source
       .then(() => schemaValidate(this.props.schema, source))
-      .then(() =>
-        GitHubService.getDocumentCommit(
-          this.props.config.repo
-        ).then(({ sha }) => {
-          console.warn('finished sync')
-          if (this.props.documentCommit && this.props.documentCommit !== sha) {
-            debug('New commit detected', sha)
-            return DocumentService.syncDocument()
-          }
-          return Promise.resolve()
-        })
-      )
       .then(() => {
-        DocumentService.addFragment(title, source)
-
         this.setState({
           loading: true,
           showSaveModal: false,
@@ -119,11 +103,11 @@ class DocFragmentCreator extends Component {
         })
 
         console.warn('GOING FOR COMMIT')
-        return GitHubService.commit({
-          content: DocumentService.getSource(),
+        return DocumentService.commitFragment(
+          title,
+          source,
           message
-        }).then(() => {
-          this.props.setContent(DocumentService.getJSON())
+        ).then(() => {
           this.props.close()
         })
       })
@@ -274,8 +258,7 @@ class DocFragmentCreator extends Component {
 
 const mapStatetoProps = state => ({
   schema: state.schema,
-  config: state.config,
-  documentCommit: state.documentCommit
+  config: state.config
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -192,20 +192,16 @@ class DocFragment extends Component {
         })
       )
       .then(() => {
-        DocumentService.updateFragment(
-          this.props.content.getUuid(),
-          title,
-          source
-        )
-
         this.setState({
           validationError: null
         })
-        return GitHubService.commit({
-          content: DocumentService.getSource(),
+
+        return DocumentService.updateAndCommitFragment(
+          this.props.content.getUuid(),
+          title,
+          source,
           message
-        }).then(() => {
-          this.props.setContent(DocumentService.getJSON())
+        ).then(() => {
           this.setState({
             showEditor: false
           })
@@ -234,21 +230,13 @@ class DocFragment extends Component {
       return
     }
 
-    DocumentService.deleteFragment(this.props.content.getUuid())
-
     this.setState({
       loading: true,
       showDeleteModal: false,
       validationError: null
     })
 
-    GitHubService.commit({
-      content: DocumentService.getSource(),
-      message
-    })
-      .then(() => {
-        this.props.setContent(DocumentService.getJSON())
-      })
+    DocumentService.deleteFragment(this.props.content.getUuid())
       .catch(NotificationService.error)
       .finally(() => {
         this.setState({
@@ -436,8 +424,7 @@ class DocFragment extends Component {
 
 const mapStatetoProps = state => ({
   config: state.config,
-  schema: state.schema,
-  documentCommit: state.documentCommit
+  schema: state.schema
 })
 
 const mapDispatchToProps = dispatch => ({

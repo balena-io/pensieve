@@ -6,16 +6,10 @@ import * as NotificationService from './notifications'
 import store from '../store'
 import { actions } from '../actions'
 
-window.jsyaml = jsyaml
-
-let innerSource = null
-let innerConfig = null
-let innerJson = null
-
 const PENSIEVE_UUID_KEY = 'PS_UUID'
 
-const getCleanJson = () => {
-  let cleanJson = _.mapValues(innerJson, value => {
+const getCleanJson = data => {
+  let cleanJson = _.mapValues(data, value => {
     let picked = _.assign(
       _.pickBy(
         _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
@@ -48,103 +42,145 @@ class Fragment {
   }
 }
 
-export const setConfig = config => {
-  innerConfig = config
-}
+const inflateSource = (source, contentPath) => {
+  let json = jsyaml.load(source)
 
-export const setSource = source => {
-  innerSource = source
-}
-
-export const getJSON = (ignoreCache = false) => {
-  if (innerJson && !ignoreCache) {
-    return innerJson
-  }
-  let json = jsyaml.load(innerSource)
-  if (innerConfig.contentPath) {
-    json = _.get(json, innerConfig.contentPath)
-  }
-  json = _.mapValues(json, (value, key) => new Fragment(key, value))
-
-  innerJson = json
-
-  return json
-}
-
-export const updateFragment = (uuid, title, content) => {
-  innerJson = _.reduce(
-    innerJson,
-    (result, value, key) => {
-      if (value.getUuid() === uuid) {
-        result[title] = new Fragment(title, content, uuid)
-      } else {
-        result[key] = value
-      }
-      return result
-    },
-    {}
-  )
-
-  let cleanJson = _.mapValues(innerJson, value => {
-    let picked = _.assign(
-      _.pickBy(
-        _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
-        _.negate(_.isFunction)
-      ),
-      { [PENSIEVE_UUID_KEY]: value.getUuid() }
-    )
-    return picked
-  })
-
-  if (innerConfig.contentPath) {
-    const sourceJson = jsyaml.load(innerSource)
-    _.set(sourceJson, innerConfig.contentPath, cleanJson)
-    cleanJson = sourceJson
+  if (contentPath) {
+    json = _.get(json, contentPath)
   }
 
-  innerSource = jsyaml.safeDump(cleanJson)
+  const mapped = _.mapValues(json, (value, key) => new Fragment(key, value))
+
+  return mapped
 }
 
-export const deleteFragment = uuid => {
-  innerJson = _.reduce(
-    innerJson,
-    (result, value, key) => {
-      if (value.getUuid() !== uuid) {
-        result[key] = value
-      }
-      return result
-    },
-    {}
-  )
+export const updateAndCommitFragment = (uuid, title, content, message) => {
+  const { config } = _.cloneDeep(store.getState())
+  let inflated
 
-  let cleanJson = getCleanJson()
+  // Fetch the yaml file from GitHub
+  return GitHubService.getFile(config.repo)
+    .then(source => {
+      // Inflate the Yaml file into JSON data
+      inflated = inflateSource(source, config.contentPath)
+      // Update the fragment with a matching UUID
+      inflated = _.reduce(
+        inflated,
+        (result, value, key) => {
+          if (value.getUuid() === uuid) {
+            result[title] = new Fragment(title, content, uuid)
+          } else {
+            result[key] = value
+          }
+          return result
+        },
+        {}
+      )
 
-  if (innerConfig.contentPath) {
-    const sourceJson = jsyaml.load(innerSource)
-    _.set(sourceJson, innerConfig.contentPath, cleanJson)
-    cleanJson = sourceJson
-  }
+      // Generate the source json
+      const sourceJson = jsyaml.load(source)
 
-  innerSource = jsyaml.safeDump(cleanJson)
+      // set the merged content in the source json
+      _.set(sourceJson, config.contentPath, getCleanJson(inflated))
+
+      // Flip the source json back to yaml
+      const newSource = jsyaml.safeDump(sourceJson)
+
+      return newSource
+    })
+    .then(updatedYaml => {
+      // Commit the merged source yaml
+      return GitHubService.commit({
+        content: updatedYaml,
+        message
+      })
+    })
+    .then(() => {
+      // Update the store with the new content
+      store.dispatch(actions.setContent(inflated))
+    })
 }
 
-export const addFragment = (title, content) => {
-  const update = {}
-  update[title] = new Fragment(title, content)
-  _.assign(innerJson, update)
+export const deleteFragment = (uuid, message) => {
+  const { config } = _.cloneDeep(store.getState())
+  let inflated
 
-  let cleanJson = getCleanJson()
+  // Fetch the yaml file from GitHub
+  return GitHubService.getFile(config.repo)
+    .then(source => {
+      // Inflate the Yaml file into JSON data
+      inflated = inflateSource(source, config.contentPath)
+      // Remove the fragment with a matching UUID
+      inflated = _.reduce(
+        inflated,
+        (result, value, key) => {
+          if (value.getUuid() !== uuid) {
+            result[key] = value
+          }
+          return result
+        },
+        {}
+      )
 
-  if (innerConfig.contentPath) {
-    const sourceJson = jsyaml.load(innerSource)
-    _.set(sourceJson, innerConfig.contentPath, cleanJson)
-    cleanJson = sourceJson
-  }
+      // Generate the source json
+      const sourceJson = jsyaml.load(source)
 
-  innerSource = jsyaml.safeDump(cleanJson)
+      // set the merged content in the source json
+      _.set(sourceJson, config.contentPath, getCleanJson(inflated))
+
+      // Flip the source json back to yaml
+      const newSource = jsyaml.safeDump(sourceJson)
+
+      return newSource
+    })
+    .then(updatedYaml => {
+      // Commit the merged source yaml
+      return GitHubService.commit({
+        content: updatedYaml,
+        message
+      })
+    })
+    .then(() => {
+      // Update the store with the new content
+      store.dispatch(actions.setContent(inflated))
+    })
 }
 
-export const getSource = () => innerSource
+export const commitFragment = (title, data, message) => {
+  const { config } = _.cloneDeep(store.getState())
+  let inflated
+
+  // Fetch the yaml file from GitHub
+  return GitHubService.getFile(config.repo)
+    .then(source => {
+      // Inflate the Yaml file into JSON data
+      inflated = inflateSource(source, config.contentPath)
+      // Merge our current data into the inflated file
+      inflated[title] = new Fragment(title, data)
+
+      // Generate the source json
+      const sourceJson = jsyaml.load(source)
+
+      // set the merged content in the source json
+      _.set(sourceJson, config.contentPath, getCleanJson(inflated))
+
+      // Flip the source json back to yaml
+      const newSource = jsyaml.safeDump(sourceJson)
+
+      return newSource
+    })
+    .then(updatedYaml => {
+      // Commit the merged source yaml
+      return GitHubService.commit({
+        content: updatedYaml,
+        message
+      })
+    })
+    .then(() => {
+      // Update the store with the new content
+      store.dispatch(actions.setContent(inflated))
+    })
+}
 
 export const syncDocument = () => {
   const { config } = store.getState()
@@ -153,8 +189,9 @@ export const syncDocument = () => {
     GitHubService.loadSchema(config),
     GitHubService.getFile(config.repo)
   ]).then(([schema, source]) => {
-    setSource(source)
-    store.dispatch(actions.setContent(getJSON(true)))
+    store.dispatch(
+      actions.setContent(inflateSource(source, config.contentPath))
+    )
     store.dispatch(actions.setSchema(schema))
     let views = null
 
