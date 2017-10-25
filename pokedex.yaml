@@ -693,3 +693,6 @@ Pokedex:
   xyz123456789:
     test1: foo macaroni
     PS_UUID: 5d533ad0-b974-11e7-97c6-db5f3b469b05
+  yz123:
+    test1: mac foo
+    PS_UUID: 73adbbc0-b974-11e7-ab10-63888aaa7dfb
