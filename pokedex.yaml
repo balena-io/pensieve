@@ -770,3 +770,8 @@ Pokedex:
     Description: y3
     test1: y3
     PS_UUID: 06fbb4f0-b979-11e7-82a8-270bcb9ea4c6
+  yx:
+    Description: yx
+    test2: yx
+    test3: yx
+    PS_UUID: 8432e9c0-b979-11e7-aec1-79d7315f71fb
