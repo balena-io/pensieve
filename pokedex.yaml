@@ -568,3 +568,6 @@ Pokedex:
   mac foo:
     test1: macaroni
     PS_UUID: 287342c0-b964-11e7-a4f4-41af8300d040
+  something new:
+    test1: macaroni
+    PS_UUID: 3482e070-b964-11e7-a4f4-41af8300d040
