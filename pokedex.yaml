@@ -558,3 +558,6 @@ Pokedex:
 
       macaroni
     PS_UUID: 6ef75a40-b961-11e7-8951-b57aa1f806ed
+  somevalue:
+    test1: test
+    PS_UUID: 10d668b0-b962-11e7-82f9-d720229c9cfc
