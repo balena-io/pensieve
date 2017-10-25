@@ -783,3 +783,7 @@ Pokedex:
     Description: zzz1
     test1: zzz1
     PS_UUID: 212a87b0-b97f-11e7-8b31-bd456e271509
+  zzz2:
+    Description: zzz2
+    test2: zzz2
+    PS_UUID: 35365db0-b97f-11e7-97bd-fb13583beeed
