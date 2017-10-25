@@ -708,3 +708,6 @@ Pokedex:
   double eagle 4:
     Description: double eagle 4
     PS_UUID: da68e870-b975-11e7-a7f4-99aeabd9bf8d
+  double eagle 5:
+    test1: double eagle 5
+    PS_UUID: 039f23d0-b976-11e7-bcfc-b789adcdccd5
