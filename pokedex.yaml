@@ -680,3 +680,7 @@ Pokedex:
   xyz4:
     test1: macaroni test
     PS_UUID: 803269c0-b971-11e7-ae85-3d907aa66847
+  xyz5:
+    Description: asdasd
+    test2: macaroni
+    PS_UUID: b31832c0-b971-11e7-933b-f1d7f2835d0b
