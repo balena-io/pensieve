@@ -754,3 +754,7 @@ Pokedex:
   eagle 2:
     Description: eagle 2
     PS_UUID: b99c6250-b977-11e7-902d-176d438d2ae6
+  eagle 3:
+    Description: eagle 3
+    test1: eagle 3
+    PS_UUID: c619dd00-b977-11e7-abad-59715a435824
