@@ -16,7 +16,8 @@ const defaultState = () => ({
   rules: [],
   alerts: [],
   documentCommit: null,
-  userIsEditing: false
+  userIsEditing: false,
+  content: {}
 })
 
 const assign = (o1, o2) => _.assign({}, o1, o2)
@@ -33,6 +34,7 @@ const load = () => {
     data.documentCommit = null
     data.alerts = []
     data.userIsEditing = false
+    data.content = {}
     return data
   }
 
@@ -86,7 +88,7 @@ const reducerWrapper = (state, action) => {
 }
 
 const logger = store => next => action => {
-  debug('dispatching', action)
+  debug('dispatching', _.cloneDeep(action))
   const result = next(action)
   debug('next state', store.getState())
   return result

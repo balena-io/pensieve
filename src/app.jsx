@@ -22,8 +22,6 @@ injectGlobal`
   font-family: Roboto,Arial,sans-serif;
 `
 
-const DOCUMENT_POLL_INTERVAL = 3 * 1000
-
 const theme = {
   font: 'Roboto,Arial,sans-serif',
   monospace: 'Ubuntu Mono Web,Courier New,monospace'
@@ -39,31 +37,10 @@ class App extends Component {
 
     this.props.setConfig(this.props.config)
 
-    DocumentService.setConfig(this.props.config)
-
     GitHubService.ready.catch(err => {
       debug(err.message)
       this.setState({ loading: false })
     })
-
-    setInterval(() => {
-      if (!this.props.isLoggedIn) {
-        return
-      }
-
-      GitHubService.getDocumentCommit(
-        this.props.config.repo
-      ).then(({ sha }) => {
-        if (this.props.documentCommit && this.props.documentCommit !== sha) {
-          debug('New commit detected', sha)
-          this.setState({ syncing: true })
-          DocumentService.syncDocument().then(() =>
-            this.setState({ syncing: false })
-          )
-        }
-        this.props.setDocumentCommit(sha)
-      })
-    }, DOCUMENT_POLL_INTERVAL)
   }
 
   componentWillReceiveProps ({ isLoggedIn }) {
