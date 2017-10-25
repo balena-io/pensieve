@@ -289,3 +289,7 @@ Pokedex:
     Description: double eagle 1
     test1: double eagle 1
     PS_UUID: 0cd67560-b990-11e7-bb6d-fb543f0f8057
+  double eagle 2:
+    Description: double eagle 2
+    test1: double eagle 2
+    PS_UUID: 2961bd70-b990-11e7-9436-0b05ef64f7fb
