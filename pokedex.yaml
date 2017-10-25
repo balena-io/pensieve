@@ -651,3 +651,20 @@ Pokedex:
   a2:
     test1: asd
     PS_UUID: 7f660f80-b965-11e7-8f3c-c3730711ec07
+  repro 1 2:
+    Description: |-
+      wat
+
+      it
+
+      be
+    Caught: true
+    test1: |-
+      test
+
+      test
+
+      test
+
+      foobarfoo
+    PS_UUID: fb0ddfd0-b967-11e7-96e5-8bfd5cb7a588
