@@ -748,3 +748,6 @@ Pokedex:
     Description: single eagle 8
     test1: single eagle 8
     PS_UUID: 0a289cd0-b977-11e7-a43b-4906cfa14a19
+  eagle 1:
+    Description: eagle 1
+    PS_UUID: a1f711e0-b977-11e7-902d-176d438d2ae6
