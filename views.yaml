@@ -8,11 +8,15 @@ user:
       id: U6b0SVwOy7JPQXud
       scope: user
     - name: foobar
-      rules:
+      rules: &ref_0
         - name: Full text search
           value: macaroni
           id: filqMLzaFSIRpnOY
       id: NwIoAkGEosg6vz0z
+      scope: user
+    - name: flipper
+      rules: *ref_0
+      id: TvQf4ZKjPQbdlFDQ
       scope: user
 global:
   - name: test
