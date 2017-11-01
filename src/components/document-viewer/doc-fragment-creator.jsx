@@ -3,10 +3,9 @@ import FontAwesome from 'react-fontawesome'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Box, Input, Textarea, Text, Flex } from 'rebass'
+import { Box, Input, Text, Flex } from 'rebass'
 import {
   Container,
-  Modal,
   ResinBtn,
   UnstyledList,
   FieldLabel,
@@ -58,11 +57,6 @@ class DocFragmentCreator extends Component {
     this.saveChange = this.saveChange.bind(this)
   }
 
-  updateCommitMessage (e) {
-    const message = e.target.value
-    this.setState({ message })
-  }
-
   handleChange () {
     const sourceCode = this.refs.ace.editor.getValue()
     this.setState({ sourceCode })
@@ -78,10 +72,7 @@ class DocFragmentCreator extends Component {
   saveChange () {
     const source = _.pickBy(this.state.content, val => val !== '')
     const title = this.state.title
-    const message = this.state.message
-    if (!message) {
-      return
-    }
+    const message = `Created entry "${this.state.title}"`
 
     lint(source)
       // When validating, strip the title field from the source
@@ -89,11 +80,9 @@ class DocFragmentCreator extends Component {
       .then(() => {
         this.setState({
           loading: true,
-          showSaveModal: false,
           validationError: null
         })
 
-        console.warn('GOING FOR COMMIT')
         return DocumentService.commitFragment(
           title,
           source,
@@ -155,21 +144,6 @@ class DocFragmentCreator extends Component {
         <GreyDivider />
 
         <Container>
-          {this.state.showSaveModal && (
-            <Modal
-              title='Describe your changes'
-              cancel={() => this.setState({ showSaveModal: false })}
-              done={() => this.saveChange()}
-              action='Save changes'
-            >
-              <Textarea
-                rows={4}
-                onChange={e => this.updateCommitMessage(e)}
-                placeholder='Please describe your changes'
-              />
-            </Modal>
-          )}
-
           {this.state.loading ? (
             <FontAwesome style={{ float: 'right' }} spin name='cog' />
           ) : (
@@ -184,7 +158,7 @@ class DocFragmentCreator extends Component {
               <ResinBtn
                 secondary
                 disabled={this.state.lintError}
-                onClick={() => this.setState({ showSaveModal: true })}
+                onClick={() => this.saveChange()}
               >
                 <FontAwesome name='check' style={{ marginRight: 10 }} />
                 Save Changes

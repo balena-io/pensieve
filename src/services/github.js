@@ -102,8 +102,6 @@ export const commit = ({ message, content }) => {
 }
 
 export const commitSchema = ({ message, content }) => {
-  message = `Edited schema file using Pensieve\n\n${message}`
-
   const { config } = store.getState()
 
   if (!_.isString(config.schema)) {
