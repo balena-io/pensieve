@@ -7,6 +7,13 @@ user:
           id: AnYWPPGU9rfqLUrQ
       id: U6b0SVwOy7JPQXud
       scope: user
+    - name: foobar
+      rules:
+        - name: Full text search
+          value: macaroni
+          id: filqMLzaFSIRpnOY
+      id: NwIoAkGEosg6vz0z
+      scope: user
 global:
   - name: test
     rules:
