@@ -14,9 +14,6 @@ Pokedex:
   '88':
     Description: macroni
     PS_UUID: 9d4ef940-beeb-11e7-b6b2-5f710ded398d
-  '8080':
-    Description: macaroni
-    PS_UUID: c12e52c0-beeb-11e7-ae6d-bd85f5db14ea
   Bulbasaur:
     Name: Bulbasaur
     Height: 0.7
