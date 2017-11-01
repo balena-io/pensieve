@@ -313,3 +313,6 @@ Pokedex:
     PS_UUID: 44aff500-be9b-11e7-b4fc-79bd42594dc9
   test entry 3:
     PS_UUID: 514e8c40-be9b-11e7-b4fc-79bd42594dc9
+  Tester:
+    Description: macaroni
+    PS_UUID: aba7e780-bee7-11e7-9cc5-6da6768e88d0
