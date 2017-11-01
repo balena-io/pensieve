@@ -8,6 +8,9 @@ Pokedex:
   '3':
     Description: macaroni
     PS_UUID: ed525c10-bee7-11e7-b67a-fb0ca1a4a464
+  '4':
+    Description: macaroni
+    PS_UUID: faae76f0-bee7-11e7-b67a-fb0ca1a4a464
   Bulbasaur:
     Name: Bulbasaur
     Height: 0.7
