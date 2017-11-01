@@ -14,9 +14,3 @@ National Pokedex number:
   type: Integer
 Caught:
   type: Boolean
-bar:
-  type: Case Insensitive Text
-baz:
-  type: Boolean
-hello:
-  type: Boolean
