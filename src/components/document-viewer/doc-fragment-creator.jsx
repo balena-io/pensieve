@@ -43,15 +43,6 @@ class DocFragmentCreator extends Component {
   constructor (props) {
     super(props)
 
-    const json = {}
-    _.forEach(this.props.schema, (value, key) => {
-      const defaultFieldValue = `// ${value.type} value`
-      json[key] = defaultFieldValue
-    })
-    const entryName = `New Entry - ${new Date().toString()}`
-    const entry = {}
-    entry[entryName] = json
-
     const content = _.mapValues(this.props.schema, () => '')
 
     this.state = {

@@ -278,6 +278,12 @@ class DocFragment extends Component {
     return this.state.editorConflict && edit !== source
   }
 
+  contentWithMissingFields () {
+    const defaultFields = _.mapValues(this.props.schema, () => '')
+
+    return _.assign(defaultFields, this.state.edit.content)
+  }
+
   render () {
     if (this.state.showEditor) {
       return (
@@ -332,7 +338,7 @@ class DocFragment extends Component {
                 />
               </InputListItem>
 
-              {_.map(this.state.edit.content, (data, title) => (
+              {_.map(this.contentWithMissingFields(), (data, title) => (
                 <InputListItem key={title}>
                   <Flex>
                     <Box flex='1'>
