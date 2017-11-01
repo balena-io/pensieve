@@ -19,4 +19,4 @@ test1:
 test2:
   type: Text
 test3:
-  type: Text
+  type: Real
