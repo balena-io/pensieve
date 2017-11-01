@@ -42,3 +42,5 @@ export const randomString = (length = 16) => {
 }
 
 export const uuid = uuidv1
+
+export const makeAnchorLink = string => string.toLowerCase().replace(/\W/g, '-')
