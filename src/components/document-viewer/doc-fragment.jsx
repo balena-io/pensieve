@@ -26,6 +26,8 @@ import * as NotificationService from '../../services/notifications'
 import { actions } from '../../actions'
 import { debug, makeAnchorLink, objectDiffCommitMessage } from '../../util'
 
+const SAVE_CHANGE_DEBOUNCE = 1000
+
 const DocFragmentWrapper = styled.li`
   position: relative;
   padding-bottom: 60px;
@@ -94,7 +96,97 @@ class DocFragment extends Component {
       loading: false
     }
 
-    this.saveChange = this.saveChange.bind(this)
+    this.saveChange = _.debounce(
+      () => {
+        const source = this.state.edit.content
+        const title = this.state.edit.title
+
+        let message =
+          `Edited entry "${this.props.title}", ` +
+          objectDiffCommitMessage(this.props.content, this.state.edit.content)
+
+        const { schema } = this.props
+
+        this.setState({
+          loading: true
+        })
+
+        lint(source)
+          .then(() => schemaValidate(schema, source))
+          // Make a final check to see if the document commit has changed before saving
+          // If the commit has changed, we just wait for the sync poll to cycle and let the user resolve the issue
+          .then(() =>
+            GitHubService.getDocumentCommit(
+              this.props.config.repo
+            ).then(({ sha }) => {
+              if (
+                this.props.documentCommit &&
+                this.props.documentCommit !== sha
+              ) {
+                debug('New commit detected', sha)
+                throw new Error(
+                  'The underlying document has changed since you began editing. Please ensure any conflicts are resolved before continuing'
+                )
+              }
+            })
+          )
+          .then(() => {
+            this.setState({
+              validationError: null
+            })
+
+            return DocumentService.updateAndCommitFragment(
+              this.props.content.getUuid(),
+              title,
+              source,
+              message
+            ).then(() => {
+              this.setState({
+                showEditor: false
+              })
+              this.props.setUserIsEditing(false)
+            })
+          })
+          .catch(PensieveLinterError, err => {
+            this.setState({ lintError: err.message })
+          })
+          .catch(PensieveValidationError, err => {
+            this.setState({ validationError: err.message })
+          })
+          .catch(err => {
+            NotificationService.error(err)
+          })
+          .finally(() => {
+            this.setState({
+              loading: false
+            })
+          })
+      },
+      SAVE_CHANGE_DEBOUNCE,
+      { leading: true, trailing: false }
+    )
+
+    this.deleteEntry = _.debounce(
+      () => {
+        const message = `Deleted entry "${this.props.title}"`
+
+        this.setState({
+          loading: true,
+          showDeleteModal: false,
+          validationError: null
+        })
+
+        DocumentService.deleteFragment(this.props.content.getUuid(), message)
+          .catch(NotificationService.error)
+          .finally(() => {
+            this.setState({
+              loading: false
+            })
+          })
+      },
+      SAVE_CHANGE_DEBOUNCE,
+      { leading: true, trailing: false }
+    )
   }
 
   componentWillReceiveProps (nextProps) {
@@ -164,87 +256,6 @@ class DocFragment extends Component {
       edit,
       newFieldTitle: ''
     })
-  }
-
-  saveChange () {
-    const source = this.state.edit.content
-    const title = this.state.edit.title
-
-    let message =
-      `Edited entry "${this.props.title}", ` +
-      objectDiffCommitMessage(this.props.content, this.state.edit.content)
-
-    const { schema } = this.props
-
-    this.setState({
-      loading: true
-    })
-
-    lint(source)
-      .then(() => schemaValidate(schema, source))
-      // Make a final check to see if the document commit has changed before saving
-      // If the commit has changed, we just wait for the sync poll to cycle and let the user resolve the issue
-      .then(() =>
-        GitHubService.getDocumentCommit(
-          this.props.config.repo
-        ).then(({ sha }) => {
-          if (this.props.documentCommit && this.props.documentCommit !== sha) {
-            debug('New commit detected', sha)
-            throw new Error(
-              'The underlying document has changed since you began editing. Please ensure any conflicts are resolved before continuing'
-            )
-          }
-        })
-      )
-      .then(() => {
-        this.setState({
-          validationError: null
-        })
-
-        return DocumentService.updateAndCommitFragment(
-          this.props.content.getUuid(),
-          title,
-          source,
-          message
-        ).then(() => {
-          this.setState({
-            showEditor: false
-          })
-          this.props.setUserIsEditing(false)
-        })
-      })
-      .catch(PensieveLinterError, err => {
-        this.setState({ lintError: err.message })
-      })
-      .catch(PensieveValidationError, err => {
-        this.setState({ validationError: err.message })
-      })
-      .catch(err => {
-        NotificationService.error(err)
-      })
-      .finally(() => {
-        this.setState({
-          loading: false
-        })
-      })
-  }
-
-  deleteEntry () {
-    const message = `Deleted entry "${this.props.title}"`
-
-    this.setState({
-      loading: true,
-      showDeleteModal: false,
-      validationError: null
-    })
-
-    DocumentService.deleteFragment(this.props.content.getUuid(), message)
-      .catch(NotificationService.error)
-      .finally(() => {
-        this.setState({
-          loading: false
-        })
-      })
   }
 
   fieldHasConflict (edit, source) {
