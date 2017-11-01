@@ -34,6 +34,7 @@ export const loadRulesFromUrl = schema => {
 export const updateUrl = rules => {
   // Update url query string
   const { pathname } = history.location
+
   history.push({
     pathname,
     search: qs.stringify(

@@ -26,6 +26,16 @@ class Doc extends Component {
     }
   }
 
+  componentDidMount () {
+    // Anchor links don't work because the document data isn't displayed
+    // immediately on page load. To get around this, we wait for the doc
+    // component to mount and then 'flicker' the hash fragment, triggering the
+    // default browser behaviour and scrolling to the anchor.
+    const hash = window.location.hash
+    window.location.hash = ''
+    window.location.hash = hash
+  }
+
   render () {
     const frags = _.map(this.props.content, (value, key) => {
       if (canShowFrag({ key: value }, this.props.rules)) {

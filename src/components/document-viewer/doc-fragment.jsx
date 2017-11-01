@@ -24,11 +24,30 @@ import {
 } from '../../services/errors'
 import * as NotificationService from '../../services/notifications'
 import { actions } from '../../actions'
-import { debug } from '../../util'
+import { debug, makeAnchorLink } from '../../util'
 
 const DocFragmentWrapper = styled.li`
   position: relative;
   padding-bottom: 60px;
+
+  h2,
+  h3 {
+    .anchor {
+      visibility: hidden;
+      float: left;
+      padding-right: 4px;
+      margin-top: 2px;
+      margin-left: -20px;
+      line-height: 1;
+      font-size: 16px;
+      color: #333;
+    }
+
+    &:hover .anchor {
+      visibility: visible;
+      text-decoration: none;
+    }
+  }
 `
 
 const InputListItem = styled.li`
@@ -46,6 +65,16 @@ const ShortInput = styled(Input)`
   max-width: 300px;
   background-color: white;
 `
+
+const AnchorLink = ({ text }) => (
+  <a
+    className='anchor'
+    href={'#' + makeAnchorLink(text)}
+    id={makeAnchorLink(text)}
+  >
+    <FontAwesome name='link' />
+  </a>
+)
 
 class DocFragment extends Component {
   constructor (props) {
@@ -399,14 +428,20 @@ class DocFragment extends Component {
               </ResinBtn>
             </Flex>
           )}
-          <h2>{this.props.title}</h2>
+          <h2>
+            <AnchorLink text={this.props.title} />
+            {this.props.title}
+          </h2>
           <UnstyledList>
             {_.map(
               this.props.content,
               (data, title) =>
                 _.isFunction(data) ? null : (
                   <li key={title}>
-                    <h3>{title}</h3>
+                    <h3>
+                      <AnchorLink text={this.props.title + '-' + title} />
+                      {title}
+                    </h3>
                     <DocFragmentField
                       data={data}
                       title={title}
