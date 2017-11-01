@@ -304,10 +304,6 @@ Pokedex:
   test value:
     Description: asdasd
     PS_UUID: b5550390-b996-11e7-bdf8-213411f109e5
-  Test entry 1:
-    Description: macaroni
-    Tester: some value
-    PS_UUID: d8b163e0-be98-11e7-b390-11392026c2d4
   Test entry 2:
     Description: macaroni
     PS_UUID: 44aff500-be9b-11e7-b4fc-79bd42594dc9
