@@ -14,6 +14,7 @@ Pokedex:
     PS_UUID: ed525c10-bee7-11e7-b67a-fb0ca1a4a464
   '88':
     Description: macaroni
+    Name: macaroni name
     PS_UUID: e3de2be0-bfba-11e7-b898-6101c2e1da78
   Bulbasaur:
     Name: Bulbasaur
