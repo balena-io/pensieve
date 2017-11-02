@@ -1,36 +1,34 @@
-import React, { Component } from 'react';
-import FontAwesome from 'react-fontawesome';
-import { Flex, Box, Input, Select, Textarea } from 'rebass';
-import styled from 'styled-components';
-import _ from 'lodash';
-import jsyaml from 'js-yaml';
-import { connect } from 'react-redux';
-import { actions } from '../../actions';
-import * as GitHubService from '../../services/github';
-import { ResinBtn, DeleteBtn, Modal, FieldLabel, GreyDivider } from '../shared';
-import Container from '../shared/container';
-import SchemeSieve from '../../services/filter';
+import React, { Component } from 'react'
+import FontAwesome from 'react-fontawesome'
+import { Flex, Box, Input, Select } from 'rebass'
+import styled from 'styled-components'
+import _ from 'lodash'
+import jsyaml from 'js-yaml'
+import { connect } from 'react-redux'
+import { actions } from '../../actions'
+import * as GitHubService from '../../services/github'
+import { ResinBtn, DeleteBtn, FieldLabel, GreyDivider } from '../shared'
+import Container from '../shared/container'
+import SchemeSieve from '../../services/filter'
+import { objectDiffCommitMessage } from '../../util'
 
-const sieve = SchemeSieve();
+const sieve = SchemeSieve()
 
 const ShortSelect = styled(Select)`
   max-width: 300px;
   background-color: white;
-`;
+`
 
 const ShortInput = styled(Input)`
   max-width: 300px;
   background-color: white;
-`;
+`
 
-const TypeSelect = ({ ...props }) =>
-  (<ShortSelect {...props}>
-    {_.map(sieve.getTypes(), type =>
-      (<option key={type}>
-        {type}
-      </option>),
-    )}
-  </ShortSelect>);
+const TypeSelect = ({ ...props }) => (
+  <ShortSelect {...props}>
+    {_.map(sieve.getTypes(), type => <option key={type}>{type}</option>)}
+  </ShortSelect>
+)
 
 const StyledDeleteBtn = styled(DeleteBtn)`
   position: absolute;
@@ -40,7 +38,7 @@ const StyledDeleteBtn = styled(DeleteBtn)`
   &:hover + ${Flex}:after {
     content: '';
     content: '';
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 4px;
     position: absolute;
     left: -5px;
@@ -48,134 +46,131 @@ const StyledDeleteBtn = styled(DeleteBtn)`
     top: -5px;
     bottom: -5px;
   }
-`;
+`
 
 const Wrapper = styled.div`
   background-color: #f3f3f3;
   border-bottom: 2px solid #cccccc;
   margin-bottom: -10px;
   padding-bottom: 60px;
-`;
+`
 
 class SchemaEditor extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
 
     this.state = {
       loading: false,
-      message: '',
       edit: _.cloneDeep(this.props.schema),
-      newFieldTitle: '',
-    };
+      newFieldTitle: ''
+    }
   }
 
-  handleFieldEdit(title, e) {
-    const val = e.target.value;
-    const edit = this.state.edit;
-    edit[title].type = val;
-    this.setState({ edit });
+  handleFieldEdit (title, e) {
+    const val = e.target.value
+    const edit = this.state.edit
+    edit[title].type = val
+    this.setState({ edit })
   }
 
-  handleNewFieldTitleEdit(e) {
-    const val = e.target.value;
-    this.setState({ newFieldTitle: val });
+  handleNewFieldTitleEdit (e) {
+    const val = e.target.value
+    this.setState({ newFieldTitle: val })
   }
 
-  done() {
-    this.props.setIsEditingSchema(false);
+  done () {
+    this.props.setIsEditingSchema(false)
   }
 
-  saveChange() {
-    const source = jsyaml.safeDump(this.state.edit);
+  saveChange () {
+    const original = this.props.schema
+    const modified = this.state.edit
+    const message =
+      `Edited schema, ` + objectDiffCommitMessage(original, modified)
+
+    const source = jsyaml.safeDump(this.state.edit)
     this.setState({
       loading: true,
-      showSaveModal: false,
-      lintError: null,
-    });
-    GitHubService.commitSchema({ content: source, message: this.state.message }).then(() => {
-      this.props.setSchema(jsyaml.load(source));
-      this.done();
+      lintError: null
+    })
+    GitHubService.commitSchema({
+      content: source,
+      message
+    }).then(() => {
+      this.props.setSchema(jsyaml.load(source))
+      this.done()
       this.setState({
-        loading: false,
-      });
-    });
+        loading: false
+      })
+    })
   }
 
-  addNewField(e) {
-    e.preventDefault();
-    const edit = this.state.edit;
-    edit[this.state.newFieldTitle] = { type: sieve.getTypes()[0] };
+  addNewField (e) {
+    e.preventDefault()
+    const edit = this.state.edit
+    edit[this.state.newFieldTitle] = { type: sieve.getTypes()[0] }
     this.setState({
       edit,
-      newFieldTitle: '',
-    });
+      newFieldTitle: ''
+    })
   }
 
-  remove(title) {
-    const edit = this.state.edit;
-    delete edit[title];
-    this.setState({ edit });
+  remove (title) {
+    const edit = this.state.edit
+    delete edit[title]
+    this.setState({ edit })
   }
 
-  updateCommitMessage(e) {
-    const message = e.target.value;
-    this.setState({ message });
-  }
-
-  render() {
-    const fields = _.map(this.state.edit, (value, title) =>
-      (<Box mb={28} style={{ position: 'relative' }} key={title}>
+  render () {
+    const fields = _.map(this.state.edit, (value, title) => (
+      <Box mb={28} style={{ position: 'relative' }} key={title}>
         <StyledDeleteBtn onClick={() => this.remove(title)} />
         <Flex>
           <Box width={250}>
-            <FieldLabel>
-              {title}
-            </FieldLabel>
+            <FieldLabel>{title}</FieldLabel>
           </Box>
           <Box flex={1}>
-            <TypeSelect value={value.type} onChange={e => this.handleFieldEdit(title, e)} />
+            <TypeSelect
+              value={value.type}
+              onChange={e => this.handleFieldEdit(title, e)}
+            />
           </Box>
         </Flex>
-      </Box>),
-    );
+      </Box>
+    ))
 
     return (
       <Wrapper>
         <GreyDivider />
         <Container>
-          {this.state.showSaveModal &&
-            <Modal
-              title="Describe your changes"
-              cancel={() => this.setState({ showSaveModal: false })}
-              done={() => this.saveChange()}
-              action="Save changes"
-            >
-              <Textarea
-                rows={4}
-                onChange={e => this.updateCommitMessage(e)}
-                placeholder="Please describe your changes"
-              />
-            </Modal>}
-
-          <Flex justify="space-between">
+          <Flex justify='space-between'>
             <h2 style={{ marginTop: 0 }}>Edit Schema</h2>
-            {this.state.loading
-              ? <Box>
-                <FontAwesome spin name="cog" />
+            {this.state.loading ? (
+              <Box>
+                <FontAwesome spin name='cog' />
               </Box>
-              : <Flex align="right" justify="flex-end" style={{ marginBottom: 30 }}>
-                <ResinBtn style={{ marginRight: 10 }} onClick={() => this.done()}>
-                    Cancel
+            ) : (
+              <Flex
+                align='right'
+                justify='flex-end'
+                style={{ marginBottom: 30 }}
+              >
+                <ResinBtn
+                  style={{ marginRight: 10 }}
+                  onClick={() => this.done()}
+                >
+                  Cancel
                 </ResinBtn>
                 <ResinBtn
                   secondary
                   disabled={this.state.lintError}
-                  onClick={() => this.setState({ showSaveModal: true })}
+                  onClick={() => this.saveChange()}
                 >
-                  <FontAwesome name="check" style={{ marginRight: 10 }} />
-                    Save Changes
+                  <FontAwesome name='check' style={{ marginRight: 10 }} />
+                  Save Changes
                 </ResinBtn>
-              </Flex>}
+              </Flex>
+            )}
           </Flex>
 
           {fields}
@@ -191,11 +186,11 @@ class SchemaEditor extends Component {
                     mr={10}
                     value={this.state.newFieldTitle}
                     onChange={e => this.handleNewFieldTitleEdit(e)}
-                    placeholder="Enter the field title"
+                    placeholder='Enter the field title'
                   />
                 </Box>
                 <ResinBtn onClick={e => this.addNewField(e)}>
-                  <FontAwesome name="plus" style={{ marginRight: 10 }} />
+                  <FontAwesome name='plus' style={{ marginRight: 10 }} />
                   Add field
                 </ResinBtn>
               </Flex>
@@ -203,18 +198,18 @@ class SchemaEditor extends Component {
           </Box>
         </Container>
       </Wrapper>
-    );
+    )
   }
 }
 
 const mapStatetoProps = state => ({
   schema: state.schema,
-  content: state.content,
-});
+  content: state.content
+})
 
 const mapDispatchToProps = dispatch => ({
   setIsEditingSchema: value => dispatch(actions.setIsEditingSchema(value)),
-  setSchema: value => dispatch(actions.setSchema(value)),
-});
+  setSchema: value => dispatch(actions.setSchema(value))
+})
 
-export default connect(mapStatetoProps, mapDispatchToProps)(SchemaEditor);
+export default connect(mapStatetoProps, mapDispatchToProps)(SchemaEditor)

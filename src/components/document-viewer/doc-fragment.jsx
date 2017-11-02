@@ -3,7 +3,7 @@ import FontAwesome from 'react-fontawesome'
 import _ from 'lodash'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { Flex, Input, Text, Textarea, Box } from 'rebass'
+import { Flex, Input, Text, Box } from 'rebass'
 import DocFragmentField from './doc-fragment-field'
 import DocFragmentInput from './doc-fragment-input'
 import {
@@ -24,7 +24,7 @@ import {
 } from '../../services/errors'
 import * as NotificationService from '../../services/notifications'
 import { actions } from '../../actions'
-import { debug, makeAnchorLink } from '../../util'
+import { debug, makeAnchorLink, objectDiffCommitMessage } from '../../util'
 
 const DocFragmentWrapper = styled.li`
   position: relative;
@@ -143,16 +143,6 @@ class DocFragment extends Component {
     this.setState({ newFieldTitle: val })
   }
 
-  updateCommitMessage (e) {
-    const message = e.target.value
-    this.setState({ message })
-  }
-
-  updateDeleteCommitMessage (e) {
-    const deleteMessage = e.target.value
-    this.setState({ deleteMessage })
-  }
-
   showEditor () {
     // Refresh the edit object in case the document has synced in the background
     this.setState({
@@ -180,23 +170,9 @@ class DocFragment extends Component {
     const source = this.state.edit.content
     const title = this.state.edit.title
 
-    let message = `Edited entry "${this.props.title}"`
-
-    const edits = []
-    _.forEach(this.props.content, (value, key) => {
-      if (value !== this.state.edit.content[key]) {
-        edits.push(`"${key}"`)
-      }
-    })
-    if (edits.length > 1) {
-      message +=
-        ', changing fields ' +
-        edits.slice(0, edits.length - 1).join(', ') +
-        ' and ' +
-        edits.pop()
-    } else if (edits.length === 1) {
-      message += ', changing the field ' + edits[0]
-    }
+    let message =
+      `Edited entry "${this.props.title}", ` +
+      objectDiffCommitMessage(this.props.content, this.state.edit.content)
 
     const { schema } = this.props
 
@@ -254,10 +230,7 @@ class DocFragment extends Component {
   }
 
   deleteEntry () {
-    const message = this.state.deleteMessage
-    if (!message) {
-      return
-    }
+    const message = `Deleted entry "${this.props.title}"`
 
     this.setState({
       loading: true,
@@ -265,7 +238,7 @@ class DocFragment extends Component {
       validationError: null
     })
 
-    DocumentService.deleteFragment(this.props.content.getUuid())
+    DocumentService.deleteFragment(this.props.content.getUuid(), message)
       .catch(NotificationService.error)
       .finally(() => {
         this.setState({
@@ -404,11 +377,9 @@ class DocFragment extends Component {
               done={() => this.deleteEntry()}
               action='Delete entry'
             >
-              <Textarea
-                rows={4}
-                onChange={e => this.updateDeleteCommitMessage(e)}
-                placeholder='Please describe your changes'
-              />
+              <p>
+                Are you sure you want to delete the entry "{this.props.title}"?
+              </p>
             </Modal>
           )}
 
