@@ -12,6 +12,8 @@ import Container from '../shared/container'
 import SchemeSieve from '../../services/filter'
 import { objectDiffCommitMessage } from '../../util'
 
+const SAVE_CHANGE_DEBOUNCE = 1000
+
 const sieve = SchemeSieve()
 
 const ShortSelect = styled(Select)`
@@ -64,6 +66,33 @@ class SchemaEditor extends Component {
       edit: _.cloneDeep(this.props.schema),
       newFieldTitle: ''
     }
+
+    this.saveChange = _.debounce(
+      () => {
+        const original = this.props.schema
+        const modified = this.state.edit
+        const message =
+          `Edited schema, ` + objectDiffCommitMessage(original, modified)
+
+        const source = jsyaml.safeDump(this.state.edit)
+        this.setState({
+          loading: true,
+          lintError: null
+        })
+        GitHubService.commitSchema({
+          content: source,
+          message
+        }).then(() => {
+          this.props.setSchema(jsyaml.load(source))
+          this.done()
+          this.setState({
+            loading: false
+          })
+        })
+      },
+      SAVE_CHANGE_DEBOUNCE,
+      { leading: true, trailing: false }
+    )
   }
 
   handleFieldEdit (title, e) {
@@ -80,29 +109,6 @@ class SchemaEditor extends Component {
 
   done () {
     this.props.setIsEditingSchema(false)
-  }
-
-  saveChange () {
-    const original = this.props.schema
-    const modified = this.state.edit
-    const message =
-      `Edited schema, ` + objectDiffCommitMessage(original, modified)
-
-    const source = jsyaml.safeDump(this.state.edit)
-    this.setState({
-      loading: true,
-      lintError: null
-    })
-    GitHubService.commitSchema({
-      content: source,
-      message
-    }).then(() => {
-      this.props.setSchema(jsyaml.load(source))
-      this.done()
-      this.setState({
-        loading: false
-      })
-    })
   }
 
   addNewField (e) {

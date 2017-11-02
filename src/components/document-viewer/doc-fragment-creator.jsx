@@ -21,6 +21,8 @@ import { actions } from '../../actions'
 import DocFragmentInput from './doc-fragment-input'
 import * as NotificationService from '../../services/notifications'
 
+const SAVE_CHANGE_DEBOUNCE = 1000
+
 const ShortInput = styled(Input)`
   max-width: 300px;
   background-color: white;
@@ -54,7 +56,47 @@ class DocFragmentCreator extends Component {
       newFieldTitle: ''
     }
 
-    this.saveChange = this.saveChange.bind(this)
+    this.saveChange = _.debounce(
+      () => {
+        const source = _.pickBy(this.state.content, val => val !== '')
+        const title = this.state.title
+        const message = `Created entry "${this.state.title}"`
+
+        lint(source)
+          // When validating, strip the title field from the source
+          .then(() => schemaValidate(this.props.schema, source))
+          .then(() => {
+            this.setState({
+              loading: true,
+              validationError: null
+            })
+
+            return DocumentService.commitFragment(
+              title,
+              source,
+              message
+            ).then(() => {
+              this.props.close()
+            })
+          })
+          .catch(PensieveLinterError, err => {
+            this.setState({ lintError: err.message })
+          })
+          .catch(PensieveValidationError, err => {
+            this.setState({ validationError: err.message })
+          })
+          .catch(err => {
+            NotificationService.error(err)
+          })
+          .finally(() => {
+            this.setState({
+              loading: false
+            })
+          })
+      },
+      SAVE_CHANGE_DEBOUNCE,
+      { leading: true, trailing: false }
+    )
   }
 
   handleChange () {
@@ -66,44 +108,6 @@ class DocFragmentCreator extends Component {
       })
       .catch(err => {
         this.setState({ lintError: err.message })
-      })
-  }
-
-  saveChange () {
-    const source = _.pickBy(this.state.content, val => val !== '')
-    const title = this.state.title
-    const message = `Created entry "${this.state.title}"`
-
-    lint(source)
-      // When validating, strip the title field from the source
-      .then(() => schemaValidate(this.props.schema, source))
-      .then(() => {
-        this.setState({
-          loading: true,
-          validationError: null
-        })
-
-        return DocumentService.commitFragment(
-          title,
-          source,
-          message
-        ).then(() => {
-          this.props.close()
-        })
-      })
-      .catch(PensieveLinterError, err => {
-        this.setState({ lintError: err.message })
-      })
-      .catch(PensieveValidationError, err => {
-        this.setState({ validationError: err.message })
-      })
-      .catch(err => {
-        NotificationService.error(err)
-      })
-      .finally(() => {
-        this.setState({
-          loading: false
-        })
       })
   }
 
