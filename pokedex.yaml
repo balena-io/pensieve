@@ -343,7 +343,11 @@ Pokedex:
   '19':
     title: test entry 3
     PS_UUID: 514e8c40-be9b-11e7-b4fc-79bd42594dc9
-  '':
+  '20':
     PS_UUID:
       title: Machamp
       Description: macaroni
+  '21':
+    title: Machamp
+    Description: macaroni
+    PS_UUID: 1b33df70-cee0-11e7-80ef-a146a6b1fb16
