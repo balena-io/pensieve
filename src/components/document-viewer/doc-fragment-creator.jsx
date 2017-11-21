@@ -44,14 +44,20 @@ class DocFragmentCreator extends Component {
   constructor (props) {
     super(props)
 
-    const content = _.mapValues(this.props.schema, () => '')
+    const content = _.reduce(
+      this.props.schema,
+      (carry, value) => {
+        carry[value.name] = ''
+        return carry
+      },
+      {}
+    )
 
     this.state = {
       showEditor: false,
       lintError: null,
       validationError: null,
       message: '',
-      title: '',
       content,
       newFieldTitle: ''
     }
@@ -59,8 +65,8 @@ class DocFragmentCreator extends Component {
     this.saveChange = _.debounce(
       () => {
         const source = _.pickBy(this.state.content, val => val !== '')
-        const title = this.state.title
-        const message = `Created entry "${this.state.title}"`
+        const title = this.state.content[this.props.schema[0].name]
+        const message = `Created entry "${title}"`
 
         lint(source)
           // When validating, strip the title field from the source
@@ -71,11 +77,7 @@ class DocFragmentCreator extends Component {
               validationError: null
             })
 
-            return DocumentService.commitFragment(
-              title,
-              source,
-              message
-            ).then(() => {
+            return DocumentService.commitFragment(source, message).then(() => {
               this.props.close()
             })
           })
@@ -111,20 +113,16 @@ class DocFragmentCreator extends Component {
       })
   }
 
-  removeField (title) {
+  removeField (name) {
     const content = this.state.content
-    delete content[title]
+    delete content[name]
     this.setState({ content })
   }
 
-  handleFieldEdit (title, val) {
+  handleFieldEdit (name, val) {
     const content = this.state.content
-    content[title] = val
+    content[name] = val
     this.setState({ content })
-  }
-
-  handleTitleEdit (title) {
-    this.setState({ title })
   }
 
   handleNewFieldTitleEdit (e) {
@@ -140,6 +138,10 @@ class DocFragmentCreator extends Component {
       content,
       newFieldTitle: ''
     })
+  }
+
+  findSchemaEntry (name) {
+    return _.find(this.props.schema, x => x.name === name)
   }
 
   render () {
@@ -177,22 +179,14 @@ class DocFragmentCreator extends Component {
             <Text color='red'>{this.state.validationError}</Text>
           )}
           <UnstyledList>
-            <InputListItem>
-              <DocFragmentInput
-                data={this.state.title}
-                title='Entry title'
-                change={val => this.handleTitleEdit(val)}
-              />
-            </InputListItem>
-
-            {_.map(this.state.content, (data, title) => (
+            {_.map(this.state.content, (data, name) => (
               <InputListItem>
                 <DocFragmentInput
                   data={data}
-                  title={title}
-                  schema={this.props.schema[title]}
-                  change={val => this.handleFieldEdit(title, val)}
-                  remove={() => this.removeField(title)}
+                  title={name}
+                  schema={this.findSchemaEntry(name)}
+                  change={val => this.handleFieldEdit(name, val)}
+                  remove={() => this.removeField(name)}
                 />
               </InputListItem>
             ))}

@@ -10,7 +10,7 @@ import * as GitHubService from '../../services/github'
 import { ResinBtn, DeleteBtn, FieldLabel, GreyDivider } from '../shared'
 import Container from '../shared/container'
 import SchemeSieve from '../../services/filter'
-import { objectDiffCommitMessage } from '../../util'
+import { objectDiffCommitMessage, transformSchema } from '../../util'
 
 const SAVE_CHANGE_DEBOUNCE = 1000
 
@@ -69,8 +69,8 @@ class SchemaEditor extends Component {
 
     this.saveChange = _.debounce(
       () => {
-        const original = this.props.schema
-        const modified = this.state.edit
+        const original = transformSchema(this.props.schema)
+        const modified = transformSchema(this.state.edit)
         const message =
           `Edited schema, ` + objectDiffCommitMessage(original, modified)
 
@@ -95,10 +95,14 @@ class SchemaEditor extends Component {
     )
   }
 
-  handleFieldEdit (title, e) {
+  handleFieldEdit (name, e) {
     const val = e.target.value
-    const edit = this.state.edit
-    edit[title].type = val
+    const edit = this.state.edit.map(field => {
+      if (field.name === name) {
+        field.type = val
+      }
+      return field
+    })
     this.setState({ edit })
   }
 
@@ -114,31 +118,32 @@ class SchemaEditor extends Component {
   addNewField (e) {
     e.preventDefault()
     const edit = this.state.edit
-    edit[this.state.newFieldTitle] = { type: sieve.getTypes()[0] }
+    edit.push({ name: this.state.newFieldTitle, type: sieve.getTypes()[0] })
     this.setState({
       edit,
       newFieldTitle: ''
     })
   }
 
-  remove (title) {
-    const edit = this.state.edit
-    delete edit[title]
+  remove (name) {
+    const edit = this.state.edit.filter(field => {
+      return field.name !== name
+    })
     this.setState({ edit })
   }
 
   render () {
-    const fields = _.map(this.state.edit, (value, title) => (
-      <Box mb={28} style={{ position: 'relative' }} key={title}>
-        <StyledDeleteBtn onClick={() => this.remove(title)} />
+    const fields = _.map(this.state.edit, field => (
+      <Box mb={28} style={{ position: 'relative' }} key={field.name}>
+        <StyledDeleteBtn onClick={() => this.remove(field.name)} />
         <Flex>
           <Box width={250}>
-            <FieldLabel>{title}</FieldLabel>
+            <FieldLabel>{field.name}</FieldLabel>
           </Box>
           <Box flex={1}>
             <TypeSelect
-              value={value.type}
-              onChange={e => this.handleFieldEdit(title, e)}
+              value={field.type}
+              onChange={e => this.handleFieldEdit(field.name, e)}
             />
           </Box>
         </Flex>
