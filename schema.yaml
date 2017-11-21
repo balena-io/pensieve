@@ -16,3 +16,5 @@
   type: Integer
 - name: Caught
   type: Boolean
+- name: test field
+  type: Date Time
