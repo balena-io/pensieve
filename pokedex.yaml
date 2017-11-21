@@ -238,6 +238,7 @@ Pokedex:
     National Pokedex number: 4
     Favourite: |-
       #Yes
+      `some value`
       #No
     PS_UUID: e17b48c1-a9d9-11e7-b93c-0de164847969
   '8':
