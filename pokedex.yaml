@@ -359,3 +359,25 @@ Pokedex:
       need a way for an admin account to check if a device or an application is
       open for support. This can be done with the following commands:
     PS_UUID: 2589f4f1-cf9e-11e7-bfa9-47804a9510fb
+  - title: Updating the Host OS
+    Imported copy 1: >-
+      __NOTE:__ We support most hostOS update types (1.x->1.x, 1.x->2.x,
+      2.x->2.x), but many of it are manual updates. Here's an update matrix for
+      info, if not sure ask @imrehg in the Support channel before promising an
+      update to the user!
+
+
+      [Matrix of possible version
+      updates](https://docs.google.com/a/resin.io/spreadsheets/d/171cgf11Po5W_TKgg5mRKlj7fbsca4E21iOYMWLg2PMM/edit?usp=sharing)
+    Scheduling an Update: >-
+      If a user asks for updating the host OS on some of their devices, or the
+      whole
+
+      fleet:
+
+
+      * start a thread in Flowdock `r/support` as usual from the support
+      sidebar, and make a "#deviceupdate" hashtag on it, so proper notifications
+      are sent, and give some context there, so the FleetOps team can pick it
+      up!
+    PS_UUID: 6448e250-cf9e-11e7-89fa-dbc79463d60e
