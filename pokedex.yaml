@@ -325,3 +325,37 @@ Pokedex:
     PS_UUID: 81783360-cf6e-11e7-b4a5-f39f082e83ce
   - title: macaroni test entry
     PS_UUID: 3a6d5120-cf9c-11e7-a7af-e99317badbbd
+  - title: Misc
+    raspberry-pi: >-
+      **How to use one-wire temperature sensor:**
+
+      Add:
+
+      ```
+
+      dtoverlay=w1-gpio
+
+      ```
+
+      to `/boot/config.txt`
+
+      See https://resin.io/blog/updating-config-txt-remotely/ on how to do that.
+
+
+      The container should also `modprobe w1-gpio && modprobe w1-therm`. Then
+      the temperature probe should show up under `/sys/bus/w1/devices`
+    PS_UUID: 2589f4f0-cf9e-11e7-bfa9-47804a9510fb
+  - title: Checking if an application or a device open for support
+    Imported copy 1: >-
+      If you are using an admin account, you gain access to all devices and
+      applications. With the new `support agent` role, the account will be
+      limited to only gain read access to devices and applications that are open
+      for support. The customer can open a device for support in the UI.  The
+      process for this, and the canned response to send the user is found here:
+      [https://github.com/resin-io/process/blob/master/process/support/accessing_user_accounts.md](https://github.com/resin-io/process/blob/master/process/support/accessing_user_accounts.md)
+
+
+      Until we transition all support agents to the `support agent` role, we
+      need a way for an admin account to check if a device or an application is
+      open for support. This can be done with the following commands:
+    PS_UUID: 2589f4f1-cf9e-11e7-bfa9-47804a9510fb
