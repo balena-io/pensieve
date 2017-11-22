@@ -1,8 +1,4 @@
 Pokedex:
-  - title: '88'
-    Description: macaroni
-    Name: macaroni name
-    PS_UUID: e3de2be0-bfba-11e7-b898-6101c2e1da78
   - title: Bulbasaur
     Name: Bulbasaur
     Height: 0.7
