@@ -1,4 +1,12 @@
 Pokedex:
+  - title: Discuss Tesla Model 3
+    Category: 'devices, brainstorm,'
+    Description: |-
+      - Attribute 1
+      - Attribute 2
+      - Attribute 3
+        - Nested
+    PS_UUID: 3ac6da70-cfaa-11e7-b369-5f8912ccf1e7
   - title: Changing Wifi credentials on a 2.x device
     Issue: >-
       Users sometimes ask us to change wifi settings on a production device
