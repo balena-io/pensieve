@@ -14,7 +14,7 @@ export const loadRulesFromUrl = schema => {
   if (!history.location.search) {
     return []
   }
-  const inputModels = sieve.makeFilterInputs(schema)
+  const inputModels = sieve.makeFilterInputs(util.transformSchema(schema))
   const parsed = qs.parse(history.location.search.replace(/^\?/, ''))
   const rules = _.map(parsed, ({ n, o, v }) => {
     const rule = {

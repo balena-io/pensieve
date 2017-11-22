@@ -9,7 +9,10 @@ import { actions } from '../actions'
 const PENSIEVE_UUID_KEY = 'PS_UUID'
 
 const getCleanJson = data => {
-  let cleanJson = _.mapValues(data, value => {
+  // This function needs to correctly process the older key/value data structure
+  const mappingFunction = _.isArray(data) ? _.map : _.mapValues
+
+  let cleanJson = mappingFunction(data, value => {
     let picked = _.assign(
       _.pickBy(
         _.mapValues(value, x => (_.isDate(x) ? x.toString() : x)),
@@ -24,7 +27,7 @@ const getCleanJson = data => {
 }
 
 class Fragment {
-  constructor (title, content, uuid = null) {
+  constructor (content, uuid = null) {
     _.forEach(content, (value, key) => {
       if (key === PENSIEVE_UUID_KEY) {
         uuid = value
@@ -38,7 +41,6 @@ class Fragment {
     }
 
     this.getUuid = () => uuid
-    this.getTitle = () => title
   }
 }
 
@@ -49,33 +51,65 @@ const inflateSource = (source, contentPath) => {
     json = _.get(json, contentPath)
   }
 
-  const mapped = _.mapValues(json, (value, key) => new Fragment(key, value))
+  const mapped = _.isArray(json)
+    ? _.map(json, value => new Fragment(value))
+    : _.mapValues(json, value => new Fragment(value))
 
   return mapped
 }
 
-export const updateAndCommitFragment = (uuid, title, content, message) => {
+export const updateAndCommitDocumentStructure = content => {
+  const { config } = _.cloneDeep(store.getState())
+  const cleaned = getCleanJson(content)
+  const transformedDocumentData = _.map(cleaned, (value, key) =>
+    _.assign({}, { title: key }, value)
+  )
+
+  // Fetch the yaml file from GitHub
+  return GitHubService.getFile(config.repo)
+    .then(source => {
+      // Generate the source json
+      const sourceJson = jsyaml.load(source)
+      // set the merged content in the source json
+      _.set(sourceJson, config.contentPath, transformedDocumentData)
+
+      // Flip the source json back to yaml
+      const newSource = jsyaml.safeDump(sourceJson)
+
+      return newSource
+    })
+    .then(updatedYaml => {
+      // Commit the merged source yaml
+      return GitHubService.commit({
+        content: updatedYaml,
+        message: 'Update document to v2 structure'
+      })
+    })
+    .then(() => {
+      // Update the store with the new content
+      store.dispatch(
+        actions.setContent(
+          transformedDocumentData.map(value => new Fragment(value))
+        )
+      )
+    })
+}
+
+export const updateAndCommitFragment = (uuid, content, message) => {
   const { config } = _.cloneDeep(store.getState())
   let inflated
 
   // Fetch the yaml file from GitHub
   return GitHubService.getFile(config.repo)
     .then(source => {
-      // Inflate the Yaml file into JSON data
-      inflated = inflateSource(source, config.contentPath)
-      // Update the fragment with a matching UUID
-      inflated = _.reduce(
-        inflated,
-        (result, value, key) => {
-          if (value.getUuid() === uuid) {
-            result[title] = new Fragment(title, content, uuid)
-          } else {
-            result[key] = value
-          }
-          return result
-        },
-        {}
-      )
+      // Inflate the Yaml file into JSON data, then update the fragment with a matching UUID
+      inflated = _.map(inflateSource(source, config.contentPath), value => {
+        if (value.getUuid() === uuid) {
+          return new Fragment(content, uuid)
+        } else {
+          return value
+        }
+      })
 
       // Generate the source json
       const sourceJson = jsyaml.load(source)
@@ -111,16 +145,9 @@ export const deleteFragment = (uuid, message) => {
       // Inflate the Yaml file into JSON data
       inflated = inflateSource(source, config.contentPath)
       // Remove the fragment with a matching UUID
-      inflated = _.reduce(
-        inflated,
-        (result, value, key) => {
-          if (value.getUuid() !== uuid) {
-            result[key] = value
-          }
-          return result
-        },
-        {}
-      )
+      inflated = inflated.filter(entry => {
+        return entry.getUuid() !== uuid
+      })
 
       // Generate the source json
       const sourceJson = jsyaml.load(source)
@@ -146,7 +173,7 @@ export const deleteFragment = (uuid, message) => {
     })
 }
 
-export const commitFragment = (title, data, message) => {
+export const commitFragment = (data, message) => {
   const { config } = _.cloneDeep(store.getState())
   let inflated
 
@@ -156,7 +183,7 @@ export const commitFragment = (title, data, message) => {
       // Inflate the Yaml file into JSON data
       inflated = inflateSource(source, config.contentPath)
       // Merge our current data into the inflated file
-      inflated[title] = new Fragment(title, data)
+      inflated.push(new Fragment(data))
 
       // Generate the source json
       const sourceJson = jsyaml.load(source)

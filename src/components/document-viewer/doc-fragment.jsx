@@ -84,7 +84,6 @@ class DocFragment extends Component {
 
     this.state = {
       edit: {
-        title: this.props.title,
         content: _.cloneDeep(this.props.content)
       },
       newFieldTitle: '',
@@ -99,10 +98,10 @@ class DocFragment extends Component {
     this.saveChange = _.debounce(
       () => {
         const source = this.state.edit.content
-        const title = this.state.edit.title
+        const title = this.state.edit.content[this.getTitleKey()]
 
         let message =
-          `Edited entry "${this.props.title}", ` +
+          `Edited entry "${title}", ` +
           objectDiffCommitMessage(this.props.content, this.state.edit.content)
 
         const { schema } = this.props
@@ -137,7 +136,6 @@ class DocFragment extends Component {
 
             return DocumentService.updateAndCommitFragment(
               this.props.content.getUuid(),
-              title,
               source,
               message
             ).then(() => {
@@ -168,7 +166,8 @@ class DocFragment extends Component {
 
     this.deleteEntry = _.debounce(
       () => {
-        const message = `Deleted entry "${this.props.title}"`
+        const title = this.props.content[this.getTitleKey()]
+        const message = `Deleted entry "${title}"`
 
         this.setState({
           loading: true,
@@ -192,20 +191,23 @@ class DocFragment extends Component {
   componentWillReceiveProps (nextProps) {
     if (this.state.showEditor) {
       if (
-        nextProps.title !== this.state.edit.title ||
         JSON.stringify(this.state.edit.content) !==
-          JSON.stringify(nextProps.content)
+        JSON.stringify(nextProps.content)
       ) {
         this.setState({ editorConflict: true })
       }
     }
   }
 
+  getTitleKey () {
+    // The first item in the schema is treated as the title
+    return this.props.schema[0].name
+  }
+
   cancelEdit () {
     this.setState({
       showEditor: false,
       edit: {
-        title: this.props.title,
         content: _.cloneDeep(this.props.content)
       }
     })
@@ -215,12 +217,6 @@ class DocFragment extends Component {
   removeField (title) {
     const edit = this.state.edit
     delete edit.content[title]
-    this.setState({ edit })
-  }
-
-  handleTitleEdit (val) {
-    const edit = this.state.edit
-    edit.title = val
     this.setState({ edit })
   }
 
@@ -241,7 +237,6 @@ class DocFragment extends Component {
       editorConflict: false,
       showEditor: true,
       edit: {
-        title: this.props.title,
         content: _.cloneDeep(this.props.content)
       }
     })
@@ -263,9 +258,20 @@ class DocFragment extends Component {
   }
 
   contentWithMissingFields () {
-    const defaultFields = _.mapValues(this.props.schema, () => '')
+    const defaultFields = _.reduce(
+      this.props.schema,
+      (carry, value) => {
+        carry[value.name] = ''
+        return carry
+      },
+      {}
+    )
 
     return _.assign(defaultFields, this.state.edit.content)
+  }
+
+  findSchemaEntry (name) {
+    return _.find(this.props.schema, x => x.name === name)
   }
 
   render () {
@@ -314,14 +320,6 @@ class DocFragment extends Component {
             )}
 
             <UnstyledList>
-              <InputListItem>
-                <DocFragmentInput
-                  data={this.state.edit.title}
-                  title='Entry title'
-                  change={val => this.handleTitleEdit(val)}
-                />
-              </InputListItem>
-
               {_.map(this.contentWithMissingFields(), (data, title) => (
                 <InputListItem key={title}>
                   <Flex>
@@ -329,7 +327,7 @@ class DocFragment extends Component {
                       <DocFragmentInput
                         data={data}
                         title={title}
-                        schema={this.props.schema[title]}
+                        schema={this.findSchemaEntry(title)}
                         change={val => this.handleFieldEdit(title, val)}
                         remove={() => this.removeField(title)}
                       />
@@ -339,7 +337,7 @@ class DocFragment extends Component {
                         <DocFragmentInput
                           data={this.props.content[title]}
                           title={title}
-                          schema={this.props.schema[title]}
+                          schema={this.findSchemaEntry(title)}
                           change={_.noop}
                           diff
                         />
@@ -389,7 +387,7 @@ class DocFragment extends Component {
               action='Delete entry'
             >
               <p>
-                Are you sure you want to delete the entry "{this.props.title}"?
+                Are you sure you want to delete the entry "{this.props.content[this.getTitleKey()]}"?
               </p>
             </Modal>
           )}
@@ -417,27 +415,32 @@ class DocFragment extends Component {
             </Flex>
           )}
           <h2>
-            <AnchorLink text={this.props.title} />
-            {this.props.title}
+            <AnchorLink text={this.props.content[this.getTitleKey()]} />
+            {this.props.content[this.getTitleKey()]}
           </h2>
           <UnstyledList>
-            {_.map(
-              this.props.content,
-              (data, title) =>
-                _.isFunction(data) ? null : (
-                  <li key={title}>
-                    <h3>
-                      <AnchorLink text={this.props.title + '-' + title} />
-                      {title}
-                    </h3>
-                    <DocFragmentField
-                      data={data}
-                      title={title}
-                      schema={this.props.schema[title]}
+            {_.map(this.props.content, (data, title) => {
+              if (title === this.getTitleKey()) {
+                return null
+              }
+              return _.isFunction(data) ? null : (
+                <li key={title}>
+                  <h3>
+                    <AnchorLink
+                      text={
+                        this.props.content[this.getTitleKey()] + '-' + title
+                      }
                     />
-                  </li>
-                )
-            )}
+                    {title}
+                  </h3>
+                  <DocFragmentField
+                    data={data}
+                    title={title}
+                    schema={this.findSchemaEntry(title)}
+                  />
+                </li>
+              )
+            })}
           </UnstyledList>
         </Container>
       </DocFragmentWrapper>

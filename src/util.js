@@ -11,6 +11,18 @@ export const debug = (...params) => {
   }
 }
 
+export const transformSchema = schema => {
+  if (!_.isArray(schema)) {
+    return {}
+  }
+  let newSchema = {}
+  schema.forEach(entry => {
+    newSchema[entry.name] = _.omit(entry, 'name')
+  })
+
+  return newSchema
+}
+
 export const loadScript = url =>
   new Promise(resolve => {
     const scriptTag = document.createElement('script')
@@ -45,7 +57,8 @@ export const randomString = (length = 16) => {
 
 export const uuid = uuidv1
 
-export const makeAnchorLink = string => string.toLowerCase().replace(/\W/g, '-')
+export const makeAnchorLink = string =>
+  string && string.toLowerCase().replace(/\W/g, '-')
 
 // Returns an array of fields where the value of 'modified' is different to the value of 'base'
 export const diffObject = (base, modified) => {
@@ -90,4 +103,8 @@ export const objectDiffCommitMessage = (original, modified) => {
   }
 
   return message.join(', ')
+}
+
+export const dataStructureNeedsUpdate = content => {
+  return !_.isArray(content)
 }

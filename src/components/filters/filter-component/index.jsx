@@ -49,6 +49,8 @@ const SimpleSearchBox = styled.div`
   }
 `
 
+const { transformSchema } = util
+
 const FilterInput = props => {
   if (
     props.type === 'string' ||
@@ -101,10 +103,12 @@ class Filters extends Component {
   }
 
   generateFreshEdit () {
-    if (!this.props.schema) {
-      return {}
+    if (!_.isArray(this.props.schema)) {
+      return []
     }
-    const inputModels = sieve.makeFilterInputs(this.props.schema)
+    const inputModels = sieve.makeFilterInputs(
+      transformSchema(this.props.schema)
+    )
 
     const edit = {
       name: Object.keys(inputModels).shift(),
@@ -130,7 +134,9 @@ class Filters extends Component {
   }
 
   addRule (rule) {
-    const inputModels = sieve.makeFilterInputs(this.props.schema)
+    const inputModels = sieve.makeFilterInputs(
+      transformSchema(this.props.schema)
+    )
 
     if (!rule) {
       rule = _.cloneDeep(this.state.edit)
@@ -191,7 +197,9 @@ class Filters extends Component {
   handleEditChange (e, attribute) {
     const update = this.state.edit
     const value = e.target.value
-    const inputModels = sieve.makeFilterInputs(this.props.schema)
+    const inputModels = sieve.makeFilterInputs(
+      transformSchema(this.props.schema)
+    )
 
     if (attribute === 'name' && update.name !== value) {
       update.name = e.target.value
@@ -252,7 +260,9 @@ class Filters extends Component {
   }
 
   render () {
-    const inputModels = sieve.makeFilterInputs(this.props.schema)
+    const inputModels = sieve.makeFilterInputs(
+      transformSchema(this.props.schema)
+    )
 
     return (
       <div style={{ position: 'relative', marginBottom: 20 }}>

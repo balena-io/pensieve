@@ -37,19 +37,18 @@ class Doc extends Component {
   }
 
   render () {
-    const frags = _.map(this.props.content, (value, key) => {
-      if (canShowFrag({ key: value }, this.props.rules)) {
-        return (
-          <DocFragment
-            key={value.getUuid()}
-            title={key}
-            content={value}
-            schema={this.props.schema}
-          />
-        )
+    const frags = _.map(this.props.content, value => {
+      if (!value || !canShowFrag({ key: value }, this.props.rules)) {
+        return null
       }
 
-      return null
+      return (
+        <DocFragment
+          key={value.getUuid()}
+          content={value}
+          schema={this.props.schema}
+        />
+      )
     })
 
     return (

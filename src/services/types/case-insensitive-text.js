@@ -4,7 +4,7 @@ import React from 'react'
 import { Textarea } from 'rebass'
 import * as markdown from '../markdown'
 
-export const toLowerCase = fn => (target, value) =>
+export const toLowerCase = fn => (target = '', value) =>
   fn(target.toLowerCase(), value.toLowerCase())
 
 export const rules = {
