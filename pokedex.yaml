@@ -1,23 +1,22 @@
 Pokedex:
-  - title: '1'
+  '1':
     Description: macaroni 1234
     Category: macaroni 1
     Name: macaroni 1
     Abilities: macaroni 1
     foo: tester
-    test: flubablub
     PS_UUID: c3baede0-bee7-11e7-9cc5-6da6768e88d0
-  - title: '2'
+  '2':
     Description: macaroni
     PS_UUID: cbd8df00-bee7-11e7-9cc5-6da6768e88d0
-  - title: '3'
+  '3':
     Description: macaroni
     PS_UUID: ed525c10-bee7-11e7-b67a-fb0ca1a4a464
-  - title: '88'
+  '88':
     Description: macaroni
     Name: macaroni name
     PS_UUID: e3de2be0-bfba-11e7-b898-6101c2e1da78
-  - title: Bulbasaur
+  Bulbasaur:
     Name: Bulbasaur
     Height: 0.7
     Weight: 6.9
@@ -193,7 +192,7 @@ Pokedex:
     Abilities: Overgrow
     National Pokedex number: 1
     PS_UUID: e17b21b0-a9d9-11e7-b93c-0de164847969
-  - title: Ivysaur
+  Ivysaur:
     Name: Ivysaur
     Height: 1
     Weight: 13
@@ -206,7 +205,7 @@ Pokedex:
     Abilities: Overgrow
     National Pokedex number: 2
     PS_UUID: e17b21b1-a9d9-11e7-b93c-0de164847969
-  - title: Venusaur
+  Venusaur:
     Name: Venusaur
     Height: 2
     Weight: 100
@@ -218,7 +217,7 @@ Pokedex:
     Abilities: Overgrow
     National Pokedex number: 3
     PS_UUID: e17b48c0-a9d9-11e7-b93c-0de164847969
-  - title: Charmander
+  Charmander:
     Name: Charmander
     Height: 0
     Weight: 8.5
@@ -231,7 +230,7 @@ Pokedex:
     National Pokedex number: 4
     Favourite: '#Yes'
     PS_UUID: e17b48c1-a9d9-11e7-b93c-0de164847969
-  - title: Charmeleon
+  Charmeleon:
     Name: Charmeleon
     Height: 1.1
     Weight: 19
@@ -243,7 +242,7 @@ Pokedex:
     Abilities: Blaze
     National Pokedex number: 5
     PS_UUID: e17b48c2-a9d9-11e7-b93c-0de164847969
-  - title: Charizard
+  Charizard:
     Name: Charizard
     Height: 1.7
     Weight: 90.5
@@ -255,7 +254,7 @@ Pokedex:
     Abilities: Blaze
     National Pokedex number: 6
     PS_UUID: e17b48c3-a9d9-11e7-b93c-0de164847969
-  - title: Squirtle
+  Squirtle:
     Name: Squirtle
     Height: 0.5
     Weight: 9
@@ -267,7 +266,7 @@ Pokedex:
     Abilities: Torrent
     National Pokedex number: 7
     PS_UUID: e17b48c4-a9d9-11e7-b93c-0de164847969
-  - title: Wartortle
+  Wartortle:
     Name: Wartortle
     Height: 1
     Weight: 22.5
@@ -279,7 +278,7 @@ Pokedex:
     Abilities: Torrent
     National Pokedex number: 8
     PS_UUID: e17b48c5-a9d9-11e7-b93c-0de164847969
-  - title: Blastoise
+  Blastoise:
     Name: Blastoise
     Height: 1.6
     Weight: 85.5
@@ -291,7 +290,7 @@ Pokedex:
     Abilities: Torrent
     National Pokedex number: 9
     PS_UUID: e17b48c6-a9d9-11e7-b93c-0de164847969
-  - title: Caterpie
+  Caterpie:
     Name: Caterpie
     Height: 0.3
     Weight: 2.9
@@ -303,24 +302,24 @@ Pokedex:
     Abilities: Shield Dust
     National Pokedex number: 10
     PS_UUID: e17b48c7-a9d9-11e7-b93c-0de164847969
-  - title: double eagle 1
+  double eagle 1:
     Description: double eagle 1 test2
     test1: double eagle 1
     PS_UUID: 0cd67560-b990-11e7-bb6d-fb543f0f8057
-  - title: double eagle 2
+  double eagle 2:
     Description: double eagle 2
     test1: double eagle 2
     PS_UUID: 2961bd70-b990-11e7-9436-0b05ef64f7fb
-  - title: double eagle 3
+  double eagle 3:
     Description: double eagle 3
     test1: double eagle 3
     PS_UUID: 91da2db0-b995-11e7-a2b6-037be398e12d
-  - title: double eagle 4
+  double eagle 4:
     Description: double eagle 4
     test1: double eagle 4
     PS_UUID: a2318730-b995-11e7-9bb3-3192b09e943d
-  - title: test value
+  test value:
     Description: asdasd
     PS_UUID: b5550390-b996-11e7-bdf8-213411f109e5
-  - title: test entry 3
+  test entry 3:
     PS_UUID: 514e8c40-be9b-11e7-b4fc-79bd42594dc9
