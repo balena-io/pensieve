@@ -318,7 +318,8 @@ Pokedex:
     PS_UUID: 514e8c40-be9b-11e7-b4fc-79bd42594dc9
   - title: Machamp
     Name: Machamp
-    Height: 1
-    Weight: 2
+    Height: 2
     Description: lorem ipsum dolor sit amet
+    Category: Fighting
+    Abilities: Mega Punch
     PS_UUID: 81783360-cf6e-11e7-b4a5-f39f082e83ce
