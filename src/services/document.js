@@ -173,6 +173,13 @@ export const deleteFragment = (uuid, message) => {
     })
 }
 
+/**
+ * @description
+ * Commit one or more new fragments to GitHub
+ *
+ * @param {*} data - A single entry object or an array of entry objects
+ * @param {*} message - The commit message to send to GitHub
+ */
 export const commitFragment = (data, message) => {
   const { config } = _.cloneDeep(store.getState())
   let inflated
@@ -182,8 +189,13 @@ export const commitFragment = (data, message) => {
     .then(source => {
       // Inflate the Yaml file into JSON data
       inflated = inflateSource(source, config.contentPath)
+
       // Merge our current data into the inflated file
-      inflated.push(new Fragment(data))
+      if (_.isArray(data)) {
+        inflated = _.concat(data.map(d => new Fragment(d)), inflated)
+      } else {
+        inflated.unshift(new Fragment(data))
+      }
 
       // Generate the source json
       const sourceJson = jsyaml.load(source)

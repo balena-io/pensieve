@@ -12,6 +12,7 @@ import Filters from '../filters'
 import Doc from './doc'
 import DocFragmentCreator from './doc-fragment-creator'
 import SchemaEditor from '../schema-editor'
+import MarkdownImporter from '../MarkdownImporter'
 import { Container, ResinBtn } from '../shared'
 import { colors } from '../../theme'
 import { dataStructureNeedsUpdate } from '../../util'
@@ -33,7 +34,8 @@ class DocumentViewer extends Component {
 
     this.state = {
       filterRules: [],
-      updating: false
+      updating: false,
+      showImportMarkdownForm: false
     }
   }
 
@@ -104,25 +106,42 @@ class DocumentViewer extends Component {
       <Box mt={40}>
         <Container>
           <Filters schema={this.props.schema} />
-          <Flex align='right' justify='flex-end' style={{ marginBottom: 30 }}>
-            {schemaIsEditable && (
-              <SkeleBtn
-                style={{ marginRight: 10 }}
-                onClick={() => this.editSchema()}
-              >
-                <span>
-                  <FontAwesome name='list-alt' style={{ marginRight: 10 }} />
-                  Edit schema
-                </span>
-              </SkeleBtn>
-            )}
-            <ResinBtn onClick={() => this.setState({ showNewEntryForm: true })}>
-              <FontAwesome name='plus' style={{ marginRight: 10 }} />
-              Add entry
+          <Flex justify='space-between'>
+            <ResinBtn
+              onClick={() => this.setState({ showImportMarkdownForm: true })}
+            >
+              <FontAwesome name='file-text-o' style={{ marginRight: 10 }} />
+              Import markdown
             </ResinBtn>
+
+            <Flex align='right' justify='flex-end' style={{ marginBottom: 30 }}>
+              {schemaIsEditable && (
+                <SkeleBtn
+                  style={{ marginRight: 10 }}
+                  onClick={() => this.editSchema()}
+                >
+                  <span>
+                    <FontAwesome name='list-alt' style={{ marginRight: 10 }} />
+                    Edit schema
+                  </span>
+                </SkeleBtn>
+              )}
+              <ResinBtn
+                onClick={() => this.setState({ showNewEntryForm: true })}
+              >
+                <FontAwesome name='plus' style={{ marginRight: 10 }} />
+                Add entry
+              </ResinBtn>
+            </Flex>
           </Flex>
         </Container>
         {this.props.isEditingSchema && <SchemaEditor />}
+        {this.state.showImportMarkdownForm && (
+          <MarkdownImporter
+            schema={this.props.schema}
+            close={() => this.setState({ showImportMarkdownForm: false })}
+          />
+        )}
         {this.state.showNewEntryForm && (
           <DocFragmentCreator
             schema={this.props.schema}
