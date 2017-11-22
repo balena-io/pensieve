@@ -1,4 +1,41 @@
 Pokedex:
+  - title: Changing Wifi credentials on a 2.x device
+    Issue: >-
+      Users sometimes ask us to change wifi settings on a production device
+      (maybe even remote device). Should direct them to [our
+      docs](https://docs.resin.io/deployment/network/2.0.0/#changing-the-network-at-runtime)
+      where there's some scripts to do it as self-service using NetworkManager
+      over dbus using Python. But that's not always an option, and if we need to
+      change network settings, it's good to know how.
+    Solution: >-
+      Log into the device. The rest of the work will be through `nmcli`, the
+      NetworkManager command line interface (see more in [their
+      docs](https://developer.gnome.org/NetworkManager/stable/nmcli.html):
+
+
+      * run `nmcli` on its own to show all interfaces and what connections they
+      have, or `nmcli c` for a connection summary, where all connection files
+      known to NM are listed, with the connected ones highlighted
+
+      * If there's already a wifi interface, the best is to clone it into a new
+      one:
+
+
+      ```
+
+      nmcli c clone resin-wifi resin-wifi2
+
+      nmcli c modify resin-wifi2 wifi.ssid NEWSSID wifi-sec.psk NEWPASSWORD
+
+      ```
+
+      This will set up a new connection. You can use `nmcli c up resin-wifi2` to
+      try to connect to it then (will likely break you current connection, if
+      everything goes well). If need to remove old connections, don't forget not
+      just removing with `nmcli c delete <CONNECTIONNAME>`, but also from
+      `/mnt/boot/system-connections` too, otherwise it will be copied back from
+      there on the next boot.
+    PS_UUID: c8a35820-cf9e-11e7-a757-3d198c8f8371
   - title: Bulbasaur
     Name: Bulbasaur
     Height: 0.7
