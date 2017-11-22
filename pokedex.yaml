@@ -1,4 +1,11 @@
 Pokedex:
+  - title: Testing imported copy and lowercase field names
+    category testing imported copy key: ''
+    Description: |-
+      * testing
+        * nested
+          * entries
+    PS_UUID: 7501f7f0-cfab-11e7-9a9e-6787423ebdde
   - title: Discuss Tesla Model 3
     Category: 'devices, brainstorm,'
     Description: |-
