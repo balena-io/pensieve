@@ -1,7 +1,5 @@
 - name: title
   type: Case Insensitive Text
-- name: Name
-  type: Short Text
 - name: Height
   type: Real
 - name: Weight
