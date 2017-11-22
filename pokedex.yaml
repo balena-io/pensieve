@@ -316,3 +316,9 @@ Pokedex:
     PS_UUID: b5550390-b996-11e7-bdf8-213411f109e5
   - title: test entry 3
     PS_UUID: 514e8c40-be9b-11e7-b4fc-79bd42594dc9
+  - title: Machamp
+    Name: Machamp
+    Height: 1
+    Weight: 2
+    Description: lorem ipsum dolor sit amet
+    PS_UUID: 81783360-cf6e-11e7-b4a5-f39f082e83ce
