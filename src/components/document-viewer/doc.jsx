@@ -3,15 +3,15 @@ import _ from 'lodash'
 import { connect } from 'react-redux'
 import DocFragment from './doc-fragment'
 import { GitHubMarkdown, UnstyledList } from '../shared'
-import SchemaSeive from '../../services/filter'
+import { SchemaSieve } from 'resin-components'
 
-const seive = SchemaSeive()
+const sieve = SchemaSieve()
 
 const canShowFrag = (fragment, rules) => {
   let source = _.cloneDeep(fragment)
 
   rules.forEach(rule => {
-    source = seive.filter(source, rule)
+    source = sieve.filter(source, rule)
   })
 
   return Object.keys(source).length > 0

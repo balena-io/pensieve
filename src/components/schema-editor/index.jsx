@@ -1,20 +1,27 @@
 import React, { Component } from 'react'
 import FontAwesome from 'react-fontawesome'
-import { Flex, Box, Input, Select } from 'rebass'
+import {
+  Flex,
+  Box,
+  Input,
+  Select,
+  Button,
+  DeleteButton,
+  SchemaSieve
+} from 'resin-components'
 import styled from 'styled-components'
 import _ from 'lodash'
 import jsyaml from 'js-yaml'
 import { connect } from 'react-redux'
 import { actions } from '../../actions'
 import * as GitHubService from '../../services/github'
-import { ResinBtn, DeleteBtn, FieldLabel, GreyDivider } from '../shared'
+import { FieldLabel, GreyDivider } from '../shared'
 import Container from '../shared/container'
-import SchemeSieve from '../../services/filter'
 import { objectDiffCommitMessage, transformSchema } from '../../util'
 
 const SAVE_CHANGE_DEBOUNCE = 1000
 
-const sieve = SchemeSieve()
+const sieve = SchemaSieve()
 
 const ShortSelect = styled(Select)`
   max-width: 300px;
@@ -32,7 +39,7 @@ const TypeSelect = ({ ...props }) => (
   </ShortSelect>
 )
 
-const StyledDeleteBtn = styled(DeleteBtn)`
+const StyledDeleteBtn = styled(DeleteButton)`
   position: absolute;
   right: -35px;
   top: 2px;
@@ -166,20 +173,17 @@ class SchemaEditor extends Component {
                 justify='flex-end'
                 style={{ marginBottom: 30 }}
               >
-                <ResinBtn
-                  style={{ marginRight: 10 }}
-                  onClick={() => this.done()}
-                >
+                <Button style={{ marginRight: 10 }} onClick={() => this.done()}>
                   Cancel
-                </ResinBtn>
-                <ResinBtn
+                </Button>
+                <Button
                   secondary
                   disabled={this.state.lintError}
                   onClick={() => this.saveChange()}
                 >
                   <FontAwesome name='check' style={{ marginRight: 10 }} />
                   Save Changes
-                </ResinBtn>
+                </Button>
               </Flex>
             )}
           </Flex>
@@ -200,10 +204,10 @@ class SchemaEditor extends Component {
                     placeholder='Enter the field title'
                   />
                 </Box>
-                <ResinBtn onClick={e => this.addNewField(e)}>
+                <Button onClick={e => this.addNewField(e)}>
                   <FontAwesome name='plus' style={{ marginRight: 10 }} />
                   Add field
-                </ResinBtn>
+                </Button>
               </Flex>
             </form>
           </Box>

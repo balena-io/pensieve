@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Box } from 'rebass';
+import styled from 'styled-components'
+import { Box } from 'resin-components'
 
 const Container = styled(Box)`
   padding-left: 15px;
@@ -18,6 +18,6 @@ const Container = styled(Box)`
   @media (min-width: 1200px) {
     max-width: 1170px;
   }
-`;
+`
 
-export default Container;
+export default Container

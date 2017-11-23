@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { DeleteBtn } from '../shared'
+import { DeleteButton } from 'resin-components'
 import { colors } from '../../theme'
 
 const AlertElement = styled.div`
@@ -40,7 +40,7 @@ const AlertElement = styled.div`
 const Alert = props => (
   <AlertElement className={props.type}>
     {!!props.dismiss && (
-      <DeleteBtn className='dismissBtn' onClick={props.dismiss} />
+      <DeleteButton className='dismissBtn' onClick={props.dismiss} />
     )}
     {props.children}
   </AlertElement>

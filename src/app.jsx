@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import FontAwesome from 'react-fontawesome'
 import { injectGlobal } from 'styled-components'
-import { Provider } from 'rebass'
+import { Provider } from 'resin-components'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Alerts from './components/alerts'
@@ -21,11 +21,6 @@ injectGlobal`
   body { margin: 0; }
   font-family: Roboto,Arial,sans-serif;
 `
-
-const theme = {
-  font: 'Roboto,Arial,sans-serif',
-  monospace: 'Ubuntu Mono Web,Courier New,monospace'
-}
 
 class App extends Component {
   constructor (props) {
@@ -60,36 +55,40 @@ class App extends Component {
       loading: true
     })
 
-    DocumentService.syncDocument().then(() => {
-      this.setState({
-        loading: false
-      })
+    DocumentService.syncDocument()
+      .then(() => {
+        this.setState({
+          loading: false
+        })
 
-      const { defaultView } = this.props.config
+        const { defaultView } = this.props.config
 
-      // If a default view has been specified and there is no search query
-      // in the url, load the default view.
-      if (defaultView && !searchExists()) {
-        if (_.isString(defaultView)) {
-          // If the default view is a string, assume it is the name of a global view
-          const view = _.find(this.props.views.global, { name: defaultView })
-          if (view) {
-            updateUrl(view.rules)
+        // If a default view has been specified and there is no search query
+        // in the url, load the default view.
+        if (defaultView && !searchExists()) {
+          if (_.isString(defaultView)) {
+            // If the default view is a string, assume it is the name of a global view
+            const view = _.find(this.props.views.global, { name: defaultView })
+            if (view) {
+              updateUrl(view.rules)
+            }
+          } else {
+            // If the value is not a string, assume it is an array of filter views
+            updateUrl(defaultView)
           }
-        } else {
-          // If the value is not a string, assume it is an array of filter views
-          updateUrl(defaultView)
         }
-      }
 
-      this.props.setRules(loadRulesFromUrl(this.props.schema))
-    })
+        this.props.setRules(loadRulesFromUrl(this.props.schema))
+      })
+      // fetch branch information
+      .then(() => GitHubService.getBranch(this.props.config.repo))
+      .then(this.props.setBranchInfo)
   }
 
   render () {
     if (this.state.loading) {
       return (
-        <Provider theme={theme}>
+        <Provider>
           <Header />
 
           <Container mt={30}>
@@ -101,7 +100,7 @@ class App extends Component {
 
     if (!this.props.isLoggedIn) {
       return (
-        <Provider theme={theme}>
+        <Provider>
           <Header />
 
           <Login />
@@ -110,7 +109,7 @@ class App extends Component {
     }
 
     return (
-      <Provider theme={theme}>
+      <Provider>
         <Header />
 
         <Container>

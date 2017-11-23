@@ -1,10 +1,16 @@
 import React from 'react'
 import _ from 'lodash'
 import styled from 'styled-components'
-import { Input, Textarea, Flex, Box } from 'rebass'
+import {
+  DeleteButton,
+  Input,
+  Textarea,
+  Flex,
+  Box,
+  PineTypes
+} from 'resin-components'
 import FontAwesome from 'react-fontawesome'
-import { DeleteBtn, FieldLabel } from '../shared'
-import types from '../../services/types'
+import { FieldLabel } from '../shared'
 import MarkdownMark from '../MarkdownMark'
 
 const markStyle = {
@@ -13,7 +19,7 @@ const markStyle = {
   marginLeft: 10
 }
 
-const StyledDeleteBtn = styled(DeleteBtn)`
+const StyledDeleteBtn = styled(DeleteButton)`
   position: absolute;
   right: -35px;
   top: 2px;
@@ -82,13 +88,13 @@ const DocFragmentInput = ({ title, data, schema, change, remove, diff }) => {
 
   const getInput = () => {
     if (type === 'Text' || type === 'Case Insensitive Text') {
-      const Control = types[type].Edit
+      const Control = PineTypes[type].Edit
       return (
         <Control rows={calcTextareaSize(data)} value={data} onChange={change} />
       )
     }
-    if (type in types) {
-      const Control = types[type].Edit
+    if (type in PineTypes) {
+      const Control = PineTypes[type].Edit
       return <Control value={data} onChange={change} />
     }
 
@@ -116,7 +122,9 @@ const DocFragmentInput = ({ title, data, schema, change, remove, diff }) => {
 
   const supportsMarkdown = () =>
     title !== 'Entry title' &&
-    (type === 'Text' || type === 'Case Insensitive Text' || !(type in types))
+    (type === 'Text' ||
+      type === 'Case Insensitive Text' ||
+      !(type in PineTypes))
 
   return (
     <Box>

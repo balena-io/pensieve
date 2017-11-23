@@ -1,6 +1,6 @@
 {
   "name": "pensieve",
-  "version": "2.19.0",
+  "version": "2.20.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
@@ -39,10 +39,10 @@
     "react-fontawesome": "^1.6.1",
     "react-redux": "^5.0.6",
     "react-scripts": "1.0.11",
-    "rebass": "^1.0.3",
     "redux": "^3.7.2",
     "regex-parser": "^2.2.7",
-    "resin-semver": "^0.8.0",
+    "resin-components": "2.3.5",
+    "resin-semver": "^1.2.1",
     "sanitize-html": "^1.14.1",
     "showdown": "^1.7.1",
     "styled-components": "^2.1.2",

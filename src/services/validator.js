@@ -1,7 +1,7 @@
 import Promise from 'bluebird'
 import yamlLint from 'yaml-lint'
 import _ from 'lodash'
-import SchemaSieve from './filter'
+import { SchemaSieve } from 'resin-components'
 import { PensieveLinterError, PensieveValidationError } from './errors'
 
 const sieve = SchemaSieve()
