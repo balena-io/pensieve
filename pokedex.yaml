@@ -1,4 +1,7 @@
 Pokedex:
+  - title: Lapras
+    Caught: 'false'
+    PS_UUID: 6ce703e0-d036-11e7-9eea-1b3735c3e4e0
   - title: Drowzee
     Caught: '1'
     PS_UUID: 57849e90-d036-11e7-9eea-1b3735c3e4e0
