@@ -1,7 +1,4 @@
 Pokedex:
-  - title: Drowzee
-    Caught: '1'
-    PS_UUID: 57849e90-d036-11e7-9eea-1b3735c3e4e0
   - title: imported copy testing
     Description: what is imported copy?
     PS_UUID: f9a7a400-cfab-11e7-9a9e-6787423ebdde
