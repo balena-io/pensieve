@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import FontAwesome from 'react-fontawesome'
-import { Flex, Box, Textarea } from 'rebass'
+import { Flex, Box, Button, Textarea } from 'resin-components'
 import styled from 'styled-components'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import { actions } from '../actions'
 import { commitFragment } from '../services/document'
-import { ResinBtn, GreyDivider, GitHubMarkdown } from './shared'
+import { GreyDivider, GitHubMarkdown } from './shared'
 import Container from './shared/container'
 import { convert } from '../services/importer'
 import * as NotificationService from '../services/notifications'
@@ -45,9 +45,9 @@ class SchemaEditor extends Component {
         this.setState({ loading: true })
         commitFragment(
           entries,
-          `Imported ${entries.length} entr${entries.length > 1
-            ? 'ies'
-            : 'y'} from markdown`
+          `Imported ${entries.length} entr${
+            entries.length > 1 ? 'ies' : 'y'
+          } from markdown`
         )
           .catch(err => {
             NotificationService.error(err)
@@ -84,16 +84,16 @@ class SchemaEditor extends Component {
                 justify='flex-end'
                 style={{ marginBottom: 30 }}
               >
-                <ResinBtn
+                <Button
                   style={{ marginRight: 10 }}
                   onClick={() => this.props.close()}
                 >
                   Cancel
-                </ResinBtn>
-                <ResinBtn secondary onClick={() => this.import()}>
+                </Button>
+                <Button secondary onClick={() => this.import()}>
                   <FontAwesome name='check' style={{ marginRight: 10 }} />
                   Import
-                </ResinBtn>
+                </Button>
               </Flex>
             )}
           </Flex>

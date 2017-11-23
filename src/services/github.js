@@ -118,17 +118,32 @@ export const commitSchema = ({ message, content }) => {
 export const commitViews = views => {
   const message = 'Views edited using Pensieve'
 
-  // Set skipinvalid so that the dump doesn't fail if an operator or value is `undefined`
-  // This can happen in the case of a simple text search
-  const yaml = jsyaml.safeDump(views, { skipInvalid: true })
-
   const { config } = store.getState()
 
-  return Promise.resolve(
-    repo.writeFile(config.repo.ref, 'views.yaml', yaml, message, {
-      encode: true
+  return getFile(_.assign({}, config.repo, { file: 'views.yaml' }))
+    .then(source => {
+      // Generate the source json
+      const sourceJson = jsyaml.load(source)
+
+      // If the source is an array, merge our changes in, otherwise just commit the views array
+      let mergedViews
+      if (_.isArray(sourceJson)) {
+        mergedViews = _.unionBy(views, sourceJson, 'key')
+      }
+
+      return mergedViews || views
     })
-  )
+    .then(data => {
+      // Set skipinvalid so that the dump doesn't fail if an operator or value is `undefined`
+      // This can happen in the case of a simple text search
+      const yaml = jsyaml.safeDump(data, { skipInvalid: true })
+
+      return Promise.resolve(
+        repo.writeFile(config.repo.ref, 'views.yaml', yaml, message, {
+          encode: true
+        })
+      )
+    })
 }
 
 // Resolves if login information is stored, otherwise it rejects

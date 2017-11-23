@@ -1,23 +1,18 @@
 import React, { Component } from 'react'
 import FontAwesome from 'react-fontawesome'
 import styled from 'styled-components'
-import { Box, Button, Flex } from 'rebass'
+import { Box, Button, Flex, Heading } from 'resin-components'
 import { connect } from 'react-redux'
 import { Container } from '../shared'
 import { actions } from '../../actions'
 
 const BlackBox = styled.div`
-  height: 60px;
   background-color: #000000;
   position: relative;
 `
 
-const Title = styled.h1`
-  margin: 0;
-  font-weight: 200;
-  font-size: 24px;
-  letter-spacing: 0.4px;
-  color: #ffffff;
+const HeaderButton = styled(Button)`
+  background: white;
 `
 
 class Header extends Component {
@@ -28,29 +23,31 @@ class Header extends Component {
   }
 
   render () {
+    console.log(this.props)
     return (
       <BlackBox>
         <Container>
-          <Flex pt={15} justify='space-between'>
-            <Title>{this.props.config.repo.name}</Title>
+          <Flex py={15} justify='space-between'>
+            <Heading.h3 color='#fff' mt={1}>
+              {this.props.config.repo.name}
+            </Heading.h3>
             <Box>
               {!!this.props.branchInfo && (
-                <Button
-                  is='a'
-                  bg='white'
-                  color='black'
+                <HeaderButton
                   mr={10}
-                  href={this.props.branchInfo._links.html}
+                  onClick={() =>
+                    window.open(this.props.branchInfo._links.html, '_blank')
+                  }
                 >
                   <FontAwesome style={{ marginRight: 5 }} name='github-alt' />
                   Repository
-                </Button>
+                </HeaderButton>
               )}
               {this.props.isLoggedIn && (
-                <Button onClick={() => this.logout()} bg='white' color='red'>
+                <HeaderButton color='red' onClick={() => this.logout()}>
                   <FontAwesome style={{ marginRight: 5 }} name='sign-out' />
                   Logout
-                </Button>
+                </HeaderButton>
               )}
             </Box>
           </Flex>

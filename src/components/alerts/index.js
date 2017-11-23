@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 import { connect } from 'react-redux'
-import { Box } from 'rebass'
+import { Box } from 'resin-components'
 import Alert from './alert'
 import * as NotificationService from '../../services/notifications'
 

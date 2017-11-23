@@ -3,17 +3,10 @@ import FontAwesome from 'react-fontawesome'
 import _ from 'lodash'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
-import { Flex, Input, Text, Box } from 'rebass'
+import { Flex, Input, Text, Box, Button, Modal } from 'resin-components'
 import DocFragmentField from './doc-fragment-field'
 import DocFragmentInput from './doc-fragment-input'
-import {
-  UnstyledList,
-  ResinBtn,
-  Modal,
-  Container,
-  FieldLabel,
-  GreyDivider
-} from '../shared'
+import { UnstyledList, Container, FieldLabel, GreyDivider } from '../shared'
 import Alert from '../alerts/alert'
 import * as DocumentService from '../../services/document'
 import * as GitHubService from '../../services/github'
@@ -115,19 +108,19 @@ class DocFragment extends Component {
           // Make a final check to see if the document commit has changed before saving
           // If the commit has changed, we just wait for the sync poll to cycle and let the user resolve the issue
           .then(() =>
-            GitHubService.getDocumentCommit(
-              this.props.config.repo
-            ).then(({ sha }) => {
-              if (
-                this.props.documentCommit &&
-                this.props.documentCommit !== sha
-              ) {
-                debug('New commit detected', sha)
-                throw new Error(
-                  'The underlying document has changed since you began editing. Please ensure any conflicts are resolved before continuing'
-                )
+            GitHubService.getDocumentCommit(this.props.config.repo).then(
+              ({ sha }) => {
+                if (
+                  this.props.documentCommit &&
+                  this.props.documentCommit !== sha
+                ) {
+                  debug('New commit detected', sha)
+                  throw new Error(
+                    'The underlying document has changed since you began editing. Please ensure any conflicts are resolved before continuing'
+                  )
+                }
               }
-            })
+            )
           )
           .then(() => {
             this.setState({
@@ -286,20 +279,20 @@ class DocFragment extends Component {
               </Box>
             ) : (
               <Flex align='right' justify='flex-end' mb={30}>
-                <ResinBtn
+                <Button
                   style={{ marginRight: 10 }}
                   onClick={() => this.cancelEdit()}
                 >
                   Cancel
-                </ResinBtn>
-                <ResinBtn
+                </Button>
+                <Button
                   secondary
                   disabled={this.state.lintError}
                   onClick={() => this.saveChange()}
                 >
                   <FontAwesome name='check' style={{ marginRight: 10 }} />
                   Save Changes
-                </ResinBtn>
+                </Button>
               </Flex>
             )}
 
@@ -362,10 +355,10 @@ class DocFragment extends Component {
                       placeholder='Enter the field title'
                     />
                   </Box>
-                  <ResinBtn onClick={e => this.addNewField(e)}>
+                  <Button onClick={e => this.addNewField(e)}>
                     <FontAwesome name='plus' style={{ marginRight: 10 }} />
                     Add field
-                  </ResinBtn>
+                  </Button>
                 </Flex>
               </form>
             </Box>
@@ -387,7 +380,9 @@ class DocFragment extends Component {
               action='Delete entry'
             >
               <p>
-                Are you sure you want to delete the entry "{this.props.content[this.getTitleKey()]}"?
+                Are you sure you want to delete the entry "{
+                  this.props.content[this.getTitleKey()]
+                }"?
               </p>
             </Modal>
           )}
@@ -396,22 +391,20 @@ class DocFragment extends Component {
             <FontAwesome style={{ float: 'right' }} spin name='cog' />
           ) : (
             <Flex align='right' justify='flex-end' style={{ marginBottom: 30 }}>
-              <ResinBtn
+              <Button
                 style={{ marginRight: 10 }}
                 onClick={() => this.showEditor()}
               >
                 <FontAwesome name='pencil' style={{ marginRight: 10 }} />
                 Edit Entry
-              </ResinBtn>
+              </Button>
 
-              <ResinBtn
-                onClick={() => this.setState({ showDeleteModal: true })}
-              >
+              <Button onClick={() => this.setState({ showDeleteModal: true })}>
                 <Text color='red'>
                   <FontAwesome name='trash' style={{ marginRight: 10 }} />
                   Delete Entry
                 </Text>
-              </ResinBtn>
+              </Button>
             </Flex>
           )}
           <h2>

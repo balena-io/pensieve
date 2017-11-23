@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import _ from 'lodash'
 import jsyaml from 'js-yaml'
-import { Flex, Box } from 'rebass'
+import { Flex, Box, Button } from 'resin-components'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import FontAwesome from 'react-fontawesome'
@@ -13,11 +13,11 @@ import Doc from './doc'
 import DocFragmentCreator from './doc-fragment-creator'
 import SchemaEditor from '../schema-editor'
 import MarkdownImporter from '../MarkdownImporter'
-import { Container, ResinBtn } from '../shared'
+import { Container } from '../shared'
 import { colors } from '../../theme'
 import { dataStructureNeedsUpdate } from '../../util'
 
-const SkeleBtn = styled(ResinBtn)`
+const SkeleBtn = styled(Button)`
   color: ${colors.blue};
   border: 0;
   > span {
@@ -94,9 +94,9 @@ class DocumentViewer extends Component {
             <p>
               You will need to update your Pensieve installation to continue.
             </p>
-            <ResinBtn primary onClick={() => this.updateDataStructure()}>
+            <Button primary onClick={() => this.updateDataStructure()}>
               Update now
-            </ResinBtn>
+            </Button>
           </Container>
         </Box>
       )
@@ -107,12 +107,12 @@ class DocumentViewer extends Component {
         <Container>
           <Filters schema={this.props.schema} />
           <Flex justify='space-between'>
-            <ResinBtn
+            <Button
               onClick={() => this.setState({ showImportMarkdownForm: true })}
             >
               <FontAwesome name='file-text-o' style={{ marginRight: 10 }} />
               Import markdown
-            </ResinBtn>
+            </Button>
 
             <Flex align='right' justify='flex-end' style={{ marginBottom: 30 }}>
               {schemaIsEditable && (
@@ -126,12 +126,10 @@ class DocumentViewer extends Component {
                   </span>
                 </SkeleBtn>
               )}
-              <ResinBtn
-                onClick={() => this.setState({ showNewEntryForm: true })}
-              >
+              <Button onClick={() => this.setState({ showNewEntryForm: true })}>
                 <FontAwesome name='plus' style={{ marginRight: 10 }} />
                 Add entry
-              </ResinBtn>
+              </Button>
             </Flex>
           </Flex>
         </Container>

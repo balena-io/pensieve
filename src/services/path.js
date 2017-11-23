@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { createBrowserHistory } from 'history'
 import qs from 'qs'
-import SchemaSieve from './filter'
+import { SchemaSieve } from 'resin-components'
 import * as util from '../util'
 
 const history = createBrowserHistory()

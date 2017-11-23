@@ -3,14 +3,8 @@ import FontAwesome from 'react-fontawesome'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Box, Input, Text, Flex } from 'rebass'
-import {
-  Container,
-  ResinBtn,
-  UnstyledList,
-  FieldLabel,
-  GreyDivider
-} from '../shared'
+import { Box, Button, Input, Text, Flex } from 'resin-components'
+import { Container, UnstyledList, FieldLabel, GreyDivider } from '../shared'
 import * as DocumentService from '../../services/document'
 import { lint, schemaValidate } from '../../services/validator'
 import {
@@ -154,21 +148,21 @@ class DocFragmentCreator extends Component {
             <FontAwesome style={{ float: 'right' }} spin name='cog' />
           ) : (
             <Flex align='right' justify='flex-end' style={{ marginBottom: 30 }}>
-              <ResinBtn
+              <Button
                 style={{ marginRight: 10 }}
                 onClick={() => this.props.close()}
               >
                 <FontAwesome name='tick' style={{ marginRight: 10 }} />
                 Cancel
-              </ResinBtn>
-              <ResinBtn
+              </Button>
+              <Button
                 secondary
                 disabled={this.state.lintError}
                 onClick={() => this.saveChange()}
               >
                 <FontAwesome name='check' style={{ marginRight: 10 }} />
                 Save Changes
-              </ResinBtn>
+              </Button>
             </Flex>
           )}
 
@@ -206,10 +200,10 @@ class DocFragmentCreator extends Component {
                     placeholder='Enter the field title'
                   />
                 </Box>
-                <ResinBtn onClick={e => this.addNewField(e)}>
+                <Button onClick={e => this.addNewField(e)}>
                   <FontAwesome name='plus' style={{ marginRight: 10 }} />
                   Add field
-                </ResinBtn>
+                </Button>
               </Flex>
             </form>
           </Box>

@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import types from '../../services/types'
+import { PineTypes } from 'resin-components'
 import * as markdown from '../../services/markdown'
 
 const DocFragmentField = ({ title, data, schema }) => {
@@ -9,8 +9,8 @@ const DocFragmentField = ({ title, data, schema }) => {
   if (_.isFunction(data)) {
     return null
   }
-  if (type in types) {
-    const Display = types[type].Display
+  if (type in PineTypes) {
+    const Display = PineTypes[type].Display
     return <Display data={data} />
   }
   return (

@@ -1,10 +1,8 @@
-import styled from 'styled-components';
-import { Divider } from 'rebass';
+import React from 'react'
+import { Divider } from 'resin-components'
 
-const GreyDivider = styled(Divider)`
-  border-bottom-width: 2px;
-  margin-bottom: 25px;
-  color: #ccc;
-`;
+const GreyDivider = props => {
+  return <Divider color='#ccc' mb={25} {...props} />
+}
 
-export default GreyDivider;
+export default GreyDivider
