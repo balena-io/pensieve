@@ -1,7 +1,14 @@
 - key: global
   scopeLabel: everyone
   title: Global
-  data: []
+  data:
+    - name: tester
+      rules:
+        - name: Full text search
+          value: char
+          id: l7lVKLmnllR8FeVn
+      id: 22Go4zuVHCqJiQQ9
+      scopeKey: global
 - key: user
   scopeLabel: just me
   title: User
