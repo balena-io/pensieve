@@ -1,7 +1,4 @@
 Pokedex:
-  - title: imported copy testing
-    Description: what is imported copy?
-    PS_UUID: f9a7a400-cfab-11e7-9a9e-6787423ebdde
   - title: Testing imported copy and lowercase field names
     category testing imported copy key: ''
     Description: |-
