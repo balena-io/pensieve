@@ -9,14 +9,3 @@
           id: l7lVKLmnllR8FeVn
       id: 22Go4zuVHCqJiQQ9
       scopeKey: global
-- key: user
-  scopeLabel: just me
-  title: User
-  data:
-    - name: test view
-      rules:
-        - name: Full text search
-          value: char
-          id: bHhYN8W7ZKO1lJhh
-      id: XsakbNpfLZxgxRll
-      scopeKey: user
