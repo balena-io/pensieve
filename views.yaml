@@ -9,9 +9,9 @@
           id: l7lVKLmnllR8FeVn
       id: 22Go4zuVHCqJiQQ9
       scopeKey: global
-- key: LucianBuzzo
+- key: TestUser
   scopeLabel: just me
-  title: LucianBuzzo
+  title: TestUser
   data:
     - name: macaroni
       rules:
