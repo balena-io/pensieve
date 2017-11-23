@@ -9,6 +9,17 @@
           id: l7lVKLmnllR8FeVn
       id: 22Go4zuVHCqJiQQ9
       scopeKey: global
+- key: LucianBuzzo
+  scopeLabel: just me
+  title: LucianBuzzo
+  data:
+    - name: my mac
+      rules:
+        - name: Full text search
+          value: macaroni
+          id: T3ZkJo7NgNGKvqxv
+      id: wyQ4EgGv6J4pwzxi
+      scopeKey: LucianBuzzo
 - key: TestUser
   scopeLabel: just me
   title: TestUser
