@@ -9,3 +9,14 @@
           id: l7lVKLmnllR8FeVn
       id: 22Go4zuVHCqJiQQ9
       scopeKey: global
+- key: LucianBuzzo
+  scopeLabel: just me
+  title: LucianBuzzo
+  data:
+    - name: macaroni
+      rules:
+        - name: Full text search
+          value: macaroni
+          id: G1M2z7kWhqrbo1fh
+      id: H9BALQr2nwKpQ08o
+      scopeKey: LucianBuzzo
