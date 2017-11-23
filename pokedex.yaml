@@ -365,8 +365,6 @@ Pokedex:
     Category: Fighting
     Abilities: Mega Punch
     PS_UUID: 81783360-cf6e-11e7-b4a5-f39f082e83ce
-  - title: macaroni test entry
-    PS_UUID: 3a6d5120-cf9c-11e7-a7af-e99317badbbd
   - title: Misc
     raspberry-pi: >-
       **How to use one-wire temperature sensor:**
