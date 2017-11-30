@@ -111,6 +111,10 @@ class Login extends Component {
               </a>{' '}
               for more information about GitHub Personal API tokens.
             </p>
+            <p>
+              Pensieve needs to read files and metadata from the repository, and make
+              commits on your behalf. Thus, the `repo` token scope is required.
+            </p>
             <form onSubmit={this.loginToken}>
               <div>
                 <Input
