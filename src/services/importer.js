@@ -1,3 +1,4 @@
+import { PineTypes } from 'resin-components'
 /**
  * @description
  * Converts a markdown file into an array of objects, using the headers as keys.
@@ -23,9 +24,15 @@ export const convert = (schema, markdown) => {
     segments.forEach(segment => {
       const [segmentKey] = segment.match(/^.*$/m)
       const segmentValue = segment.replace(segmentKey, '')
-      if (segmentKey.trim().length) {
-        entry[segmentKey.trim()] = segmentValue.trim()
-      } else if (segmentValue.trim().length) {
+      const name = segmentKey.trim()
+      const value = segmentValue.trim()
+      if (name) {
+        const schemaEntry = schema.find(e => e.name === name)
+        entry[name] =
+          schemaEntry && schemaEntry.type
+            ? PineTypes[schemaEntry.type].normalize(value)
+            : value
+      } else if (value) {
         // If there is a value, but no key, then we need to add a key to hold the content so it's not lost
         // This key should not already exist on the entry, otherwise we may accidentally overwrite data
         let key = 'Imported copy '
@@ -34,7 +41,7 @@ export const convert = (schema, markdown) => {
           count++
         }
 
-        entry[key + count] = segmentValue.trim()
+        entry[key + count] = value
       }
     })
     return entry
