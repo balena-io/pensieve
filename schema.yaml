@@ -14,3 +14,5 @@
   type: Integer
 - name: Caught
   type: Boolean
+- name: test
+  type: Boolean
