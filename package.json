@@ -1,13 +1,12 @@
 {
   "name": "pensieve",
-  "version": "2.20.2",
+  "version": "2.21.0",
   "description": "",
   "main": "src/index.js",
   "scripts": {
     "start": "react-scripts start",
     "build": "webpack",
-    "test":
-      "npm run lint && mocha --compilers js:babel-core/register test/*.spec.js",
+    "test": "npm run lint && mocha --compilers js:babel-core/register test/*.spec.js",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "precommit": "lint-staged",
@@ -82,9 +81,16 @@
     "webpack": "^3.5.5"
   },
   "babel": {
-    "presets": ["stage-3", "latest"]
+    "presets": [
+      "stage-3",
+      "latest"
+    ]
   },
   "lint-staged": {
-    "*.{js,jsx}": ["prettier-eslint --write", "npm run lint", "git add"]
+    "*.{js,jsx}": [
+      "prettier-eslint --write",
+      "npm run lint",
+      "git add"
+    ]
   }
 }
