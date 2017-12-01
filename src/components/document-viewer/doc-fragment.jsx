@@ -18,6 +18,7 @@ import {
 import * as NotificationService from '../../services/notifications'
 import { actions } from '../../actions'
 import { debug, makeAnchorLink, objectDiffCommitMessage } from '../../util'
+import { PENSIEVE_IMPORTED_COPY_FIELD_KEY } from '../../services/importer'
 
 const SAVE_CHANGE_DEBOUNCE = 1000
 
@@ -421,14 +422,16 @@ class DocFragment extends Component {
               }
               return _.isFunction(data) ? null : (
                 <li key={title}>
-                  <h3>
-                    <AnchorLink
-                      text={
-                        this.props.content[this.getTitleKey()] + '-' + title
-                      }
-                    />
-                    {title}
-                  </h3>
+                  {title.indexOf(PENSIEVE_IMPORTED_COPY_FIELD_KEY) === -1 && (
+                    <h3>
+                      <AnchorLink
+                        text={
+                          this.props.content[this.getTitleKey()] + '-' + title
+                        }
+                      />
+                      {title}
+                    </h3>
+                  )}
                   <DocFragmentField
                     data={data}
                     title={title}
