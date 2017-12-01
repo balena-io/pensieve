@@ -27,6 +27,9 @@ const DocFragmentWrapper = styled.li`
 
   h2,
   h3 {
+    padding-left: 20px;
+    margin-left: -20px;
+
     .anchor {
       visibility: hidden;
       float: left;
