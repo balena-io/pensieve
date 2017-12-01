@@ -1,4 +1,8 @@
 import { PineTypes } from 'resin-components'
+
+export const PENSIEVE_IMPORTED_COPY_FIELD_KEY =
+  '$PENSIEVE_IMPORTED_COPY_FIELD_KEY'
+
 /**
  * @description
  * Converts a markdown file into an array of objects, using the headers as keys.
@@ -35,7 +39,7 @@ export const convert = (schema, markdown) => {
       } else if (value) {
         // If there is a value, but no key, then we need to add a key to hold the content so it's not lost
         // This key should not already exist on the entry, otherwise we may accidentally overwrite data
-        let key = 'Imported copy '
+        let key = PENSIEVE_IMPORTED_COPY_FIELD_KEY
         let count = 1
         while (entry.hasOwnProperty(key + count)) {
           count++

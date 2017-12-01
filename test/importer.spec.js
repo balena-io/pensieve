@@ -122,7 +122,7 @@ describe('importer', () => {
 
     it('should add preliminary text copy using a special key', () => {
       expect(importer.convert(schema, sourceFile)[2]).to.include({
-        'Imported copy 1': 'One of my favourites'
+        $PENSIEVE_IMPORTED_COPY_FIELD_KEY1: 'One of my favourites'
       })
     })
 
