@@ -64,7 +64,7 @@ export const makeAnchorLink = string =>
 export const diffObject = (base, modified) => {
   const changes = []
   _.forEach(base, (value, key) => {
-    if (_(modified).has(key) && !_.isEqual(value, modified[key])) {
+    if (_.has(modified, key) && !_.isEqual(value, modified[key])) {
       changes.push(key)
     }
   })
