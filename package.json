@@ -6,7 +6,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "webpack",
-    "test": "npm run lint && mocha --compilers js:babel-core/register test/*.spec.js",
+    "test":
+      "npm run lint && mocha --compilers js:babel-core/register test/*.spec.js",
     "eject": "react-scripts eject",
     "lint": "eslint src/",
     "precommit": "lint-staged",
@@ -41,7 +42,7 @@
     "react-scripts": "1.0.11",
     "redux": "^3.7.2",
     "regex-parser": "^2.2.7",
-    "resin-components": "2.6.0",
+    "resin-components": "2.13.1",
     "resin-semver": "^1.2.1",
     "sanitize-html": "^1.14.1",
     "showdown": "^1.7.1",
@@ -81,16 +82,9 @@
     "webpack": "^3.5.5"
   },
   "babel": {
-    "presets": [
-      "stage-3",
-      "latest"
-    ]
+    "presets": ["stage-3", "latest"]
   },
   "lint-staged": {
-    "*.{js,jsx}": [
-      "prettier-eslint --write",
-      "npm run lint",
-      "git add"
-    ]
+    "*.{js,jsx}": ["prettier-eslint --write", "npm run lint", "git add"]
   }
 }

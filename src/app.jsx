@@ -7,6 +7,7 @@ import _ from 'lodash'
 import Alerts from './components/alerts'
 import Header from './components/header'
 import DocumentViewer from './components/document-viewer'
+import Readme from './components/Readme'
 import Login from './components/login'
 import { Container } from './components/shared'
 import * as GitHubService from './services/github'
@@ -83,6 +84,15 @@ class App extends Component {
       // fetch branch information
       .then(() => GitHubService.getBranch(this.props.config.repo))
       .then(this.props.setBranchInfo)
+      .then(() => {
+        const { account, name, ref } = this.props.config.repo
+        GitHubService.getFile({
+          account,
+          name,
+          ref,
+          file: 'README.md'
+        }).then(this.props.setReadme)
+      })
   }
 
   render () {
@@ -116,6 +126,10 @@ class App extends Component {
           <Alerts />
         </Container>
 
+        <Container>
+          <Readme />
+        </Container>
+
         <DocumentViewer />
         {this.state.syncing && (
           <div
@@ -144,6 +158,7 @@ const mapDispatchToProps = dispatch => ({
   setBranchInfo: value => dispatch(actions.setBranchInfo(value)),
   setConfig: value => dispatch(actions.setConfig(value)),
   setSchema: value => dispatch(actions.setSchema(value)),
+  setReadme: value => dispatch(actions.setReadme(value)),
   setRules: value => dispatch(actions.setRules(value)),
   setContent: value => dispatch(actions.setContent(value)),
   setViews: value => dispatch(actions.setViews(value)),
