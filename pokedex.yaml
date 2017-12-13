@@ -1,39 +1,4 @@
 Pokedex:
-  - title: Bluez (Bluetooth protocol stack) support
-    $PENSIEVE_IMPORTED_COPY_FIELD_KEY1: >-
-      For the `wheezy` image, bluez v4 is available via the apt package manager.
-      However, that image provides experimental support for systemd, and thus,
-      we do not encourage users to enable systemd via their Dockerfile. This
-      could lead to udevd problems, which in turn could lead to bluetooth
-      problems.
-
-      We suggest users to use the `jessie` image and to enable systemd support
-      in their container via their Dockerfile. In that distro, bluez v5 will be
-      available via the apt package manager. In order for the bluetooth to be
-      fully functional, the `bluez-utils` package must also be downloaded.
-
-
-      If for application-specific reasons, another version of bluez must be
-      used, then:
-
-
-      1. Get the preferred version sources
-
-      2. Install dependencies: `sudo apt-get install -y libusb-dev libdbus-1-dev
-      libglib2.0-dev libudev-dev libical-dev libreadline-dev`
-
-      3. Enter bluez directory and type: `./configure && make && sudo make
-      install`
-
-
-      Since the bluez service runs with systemd:
-
-      * `systemctl status bluetooth` # check status
-
-      * `sudo systemctl start bluetooth` # start service
-
-      * `sudo systemctl enable bluetooth` # to enable run at boot
-    PS_UUID: 5f00d050-d6ab-11e7-974f-e95cc6e177f7
   - title: Shelder
     Caught: false
     PS_UUID: ac9212c0-d688-11e7-aa16-0f429a0f090a
