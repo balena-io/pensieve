@@ -17,6 +17,7 @@ const defaultState = () => ({
   alerts: [],
   documentCommit: null,
   userIsEditing: false,
+  readmeOpen: true,
   content: {}
 })
 
@@ -35,6 +36,9 @@ const load = () => {
     data.alerts = []
     data.userIsEditing = false
     data.content = {}
+    if (!data.hasOwnProperty('readmeOpen')) {
+      data.readmeOpen = true
+    }
     return data
   }
 
@@ -61,6 +65,10 @@ const reducer = (state, action) => {
       return assign(state, { isEditingSchema: action.value })
     case TYPES.SET_IS_LOGGED_IN:
       return assign(state, { isLoggedIn: action.value })
+    case TYPES.SET_README:
+      return assign(state, { readme: _.cloneDeep(action.value) })
+    case TYPES.SET_README_OPEN:
+      return assign(state, { readmeOpen: _.cloneDeep(action.value) })
     case TYPES.SET_RULES:
       return assign(state, { rules: _.cloneDeep(action.value) })
     case TYPES.SET_SCHEMA:

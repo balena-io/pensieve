@@ -103,9 +103,13 @@ class DocumentViewer extends Component {
     }
 
     return (
-      <Box mt={40}>
+      <Box mt={15}>
         <Container>
-          <Filters schema={this.props.schema} />
+          <Filters
+            addFilterButtonProps={{ w: 135 }}
+            viewsMenuButtonProps={{ w: 135 }}
+            schema={this.props.schema}
+          />
           <Flex justify='space-between'>
             <Button
               onClick={() => this.setState({ showImportMarkdownForm: true })}
