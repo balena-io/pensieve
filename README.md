@@ -57,7 +57,7 @@ Your HTML page would look like this:
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Scratchpad</title>
+    <title>Pensieve</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Ubuntu+Mono">
@@ -68,7 +68,7 @@ Your HTML page would look like this:
 
     <script>
       Pensieve({
-        // The path to you schema file or an object literal of your schema
+        // The path to your schema file or an object literal of your schema
         schema: 'schema.yaml',
         // The attribute that your document's content is set under
         contentPath: 'content',
