@@ -43,6 +43,8 @@ export const updateUrl = rules => {
         o: operator,
         v: value
       }))
-    )
+    ),
+    // Preserve the existing hash
+    hash: window.location.hash
   })
 }
