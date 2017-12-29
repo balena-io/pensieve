@@ -18,7 +18,7 @@ import {
 import * as NotificationService from '../../services/notifications'
 import { actions } from '../../actions'
 import { debug, makeAnchorLink, objectDiffCommitMessage } from '../../util'
-import { PENSIEVE_IMPORTED_COPY_FIELD_KEY } from '../../services/importer'
+import { PENSIEVE_IMPORTED_COPY_FIELD_KEY } from '../../constants'
 
 const SAVE_CHANGE_DEBOUNCE = 1000
 
@@ -412,7 +412,7 @@ class DocFragment extends Component {
             </Flex>
           )}
           <h2>
-            <AnchorLink text={this.props.content[this.getTitleKey()]} />
+            <AnchorLink text={this.props.content.getUuid()} />
             {this.props.content[this.getTitleKey()]}
           </h2>
           <UnstyledList>
@@ -425,9 +425,7 @@ class DocFragment extends Component {
                   {title.indexOf(PENSIEVE_IMPORTED_COPY_FIELD_KEY) === -1 && (
                     <h3>
                       <AnchorLink
-                        text={
-                          this.props.content[this.getTitleKey()] + '-' + title
-                        }
+                        text={this.props.content.getUuid() + '-' + title}
                       />
                       {title}
                     </h3>

@@ -5,8 +5,7 @@ import * as GitHubService from './github'
 import * as NotificationService from './notifications'
 import store from '../store'
 import { actions } from '../actions'
-
-const PENSIEVE_UUID_KEY = 'PS_UUID'
+import { PENSIEVE_UUID_KEY } from '../constants'
 
 const getCleanJson = data => {
   // This function needs to correctly process the older key/value data structure
