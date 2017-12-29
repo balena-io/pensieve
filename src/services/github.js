@@ -13,7 +13,7 @@ let repo
 const b64DecodeUnicode = str =>
   decodeURIComponent(
     Array.prototype.map
-      .call(atob(str), c => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+      .call(atob(str), c => '%' + `00${c.charCodeAt(0).toString(16)}`.slice(-2))
       .join('')
   )
 
@@ -156,3 +156,11 @@ export const ready = new Promise((resolve, reject) => {
 
   return reject(new Error('There are no stored login credentials'))
 })
+
+export const submitPensieveIssue = (title, body) =>
+  Promise.resolve(
+    gh.getIssues('resin-io', 'pensieve').createIssue({
+      title,
+      body
+    })
+  )
