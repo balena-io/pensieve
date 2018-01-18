@@ -57,7 +57,7 @@ Pokedex:
       `/mnt/boot/system-connections` too, otherwise it will be copied back from
       there on the next boot.
     PS_UUID: c8a35820-cf9e-11e7-a757-3d198c8f8371
-  - title: Bulbasaur2
+  - title: Bulbasaur
     Name: Bulbasaur
     Height: 0.7
     Weight: 6.9
