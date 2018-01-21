@@ -2,7 +2,7 @@ Pokedex:
   - title: Shelder
     Caught: false
     Height: 2
-    Weight: 2
+    Weight: 3
     Description: Lorem ipsum dolor sit amet
     PS_UUID: ac9212c0-d688-11e7-aa16-0f429a0f090a
   - title: Testing imported copy and lowercase field names
