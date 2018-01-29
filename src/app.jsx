@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import FontAwesome from 'react-fontawesome'
 import { injectGlobal } from 'styled-components'
-import { Provider } from 'resin-components'
+import { Flex, Provider } from 'resin-components'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Alerts from './components/alerts'
 import Header from './components/header'
 import DocumentViewer from './components/document-viewer'
 import Readme from './components/Readme'
+import IssueReport from './components/IssueReport'
 import Login from './components/login'
 import { Container } from './components/shared'
 import * as GitHubService from './services/github'
@@ -127,7 +128,10 @@ class App extends Component {
         </Container>
 
         <Container>
-          <Readme />
+          <Flex justify='space-between'>
+            <IssueReport />
+            <Readme />
+          </Flex>
         </Container>
 
         <DocumentViewer />
