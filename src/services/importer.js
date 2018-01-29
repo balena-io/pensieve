@@ -1,7 +1,6 @@
 import { PineTypes } from 'resin-components'
 
-export const PENSIEVE_IMPORTED_COPY_FIELD_KEY =
-  '$PENSIEVE_IMPORTED_COPY_FIELD_KEY'
+import { PENSIEVE_IMPORTED_COPY_FIELD_KEY } from '../constants'
 
 /**
  * @description
