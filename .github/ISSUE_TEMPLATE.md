@@ -12,8 +12,7 @@
 
 ## Specifications
 
-- Browser:
-- OS:
+<!-- Please post a link from https://www.whatsmybrowser.org/ -->
 
 ## Screenshots
 
