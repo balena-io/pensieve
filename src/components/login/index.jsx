@@ -113,7 +113,8 @@ class Login extends Component {
             </p>
             <p>
               Pensieve needs to read files and metadata from the repository, and make
-              commits on your behalf. Thus, the `repo` token scope is required.
+              commits on your behalf. Thus, the `repo` token scope is required,
+              in full and not just parts of it.
             </p>
             <form onSubmit={this.loginToken}>
               <div>
