@@ -88,6 +88,11 @@ Your HTML page would look like this:
 </html>
 ```
 
+Usage with GitHub Pages
+-----------------------
+
+A common pattern is to use GitHub pages to host the HTML file that contains Pensieve. Be advised that enabling github pages on your master branch **will make the entire contents of your repository publicly accessible**. If you want to use GitHub pages to host your Pensieve instance and your repo is private, it is recommended that you use a seperate branch that *only* contains the HTML file and files that you do not consider sensitive.
+
 Schema
 ------
 
