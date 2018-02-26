@@ -8,6 +8,15 @@ Pensieve
 Usage
 -----
 
+Your repo will need 4 files to work with Pensieve (assuming you're serving pensieve from the repo containing the data):
+
+1. `document.yaml`, containing the data read/written by Pensieve. Initialize with `DataPath: []`
+2. `schema.yaml`, containing the structure of the data you'll be storing. See the schema section below.
+3. `views.yaml`, containing saved views. Initialize the repo with an empty views file.
+4. `index.html`, which loads Pensieve
+
+If you're hosting pensieve elsewhere, you just need the 3 YAML files.
+
 Add the following to the `<head>` element on your page:
 
 ```html
