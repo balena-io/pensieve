@@ -147,14 +147,14 @@ export const commitViews = views => {
 }
 
 // Resolves if login information is stored, otherwise it rejects
-export const ready = new Promise((resolve, reject) => {
+export const ready = Promise.try(() => {
   const { credentials } = store.getState()
 
   if (credentials) {
     return login(credentials)
   }
 
-  return reject(new Error('There are no stored login credentials'))
+  throw new Error('There are no stored login credentials')
 })
 
 export const submitPensieveIssue = (title, body) =>
