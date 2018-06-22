@@ -49,8 +49,15 @@ export const dismiss = id => {
   store.dispatch(actions.setAlerts(alerts.filter(a => a.id !== id)))
 }
 
-export const error = message => {
-  createNotification('error', message)
+export const error = error => {
+  console.log({ error })
+  let notice = error.message || error
+  // Try and extract github error response data
+  const data = _.get(error, 'response.data')
+  if (data.message) {
+    notice += `\r\n${data.message}`
+  }
+  createNotification('error', notice)
 }
 
 export const warning = message => {
