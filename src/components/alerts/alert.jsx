@@ -4,6 +4,7 @@ import { DeleteButton } from 'resin-components'
 import { colors } from '../../theme'
 
 const AlertElement = styled.div`
+  white-space: pre;
   border-radius: 4px;
   color: white;
   padding-top: 10px;
