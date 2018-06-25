@@ -50,7 +50,6 @@ export const dismiss = id => {
 }
 
 export const error = error => {
-  console.log({ error })
   let notice = error.message || error
   // Try and extract github error response data
   const data = _.get(error, 'response.data')
