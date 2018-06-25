@@ -1,6 +1,6 @@
 {
   "name": "pensieve",
-  "version": "2.23.5",
+  "version": "2.23.6",
   "description": "",
   "main": "src/index.js",
   "scripts": {
