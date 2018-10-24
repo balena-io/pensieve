@@ -18,6 +18,7 @@
   },
   "author": "Lucian Buzzo <lucian@resin.io>",
   "license": "Apache-2.0",
+  "private": true,
   "bugs": {
     "url": "https://github.com/resin-io/pensieve/issues"
   },
@@ -43,7 +44,7 @@
     "redux": "^3.7.2",
     "regex-parser": "^2.2.7",
     "resin-components": "2.13.1",
-    "resin-semver": "^1.2.1",
+    "resin-semver": "^1.4.0",
     "sanitize-html": "^1.14.1",
     "showdown": "^1.7.1",
     "styled-components": "^2.1.2",
